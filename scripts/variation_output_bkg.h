@@ -32,6 +32,7 @@
 #include "TString.h"
 #include "TStyle.h"
 #include "TKey.h"
+#include "TLine.h"
 
 // C++ includes
 #include <iostream>
@@ -86,12 +87,40 @@ class variation_output_bkg {
         TH1D_hist.at(klargest_flash_z)			= new TH1D("h_largest_flash_z", "h_largest_flash_z", 		125, 0, 1000);
         TH1D_hist.at(klargest_flash_time)		= new TH1D("h_largest_flash_time", "h_largest_flash_time",	50, 0, 20);
         TH1D_hist.at(klargest_flash_pe)			= new TH1D("h_largest_flash_pe", "h_largest_flash_pe", 		30, 0, 6000);
-        TH1D_hist.at(kFlash_TPCObj_Dist)		= new TH1D("h_Flash_TPCObj_Dist", "h_Flash_TPCObj_Dist", 	50, 0, 200); // Largest flash to TPC OBj Vtx Dist
+        TH1D_hist.at(kFlash_TPCObj_Dist)		= new TH1D("h_Flash_TPCObj_Dist", "h_Flash_TPCObj_Dist", 	50, 0, 200);     // Largest flash to TPC OBj Vtx Dist
 
+        TH1D_hist.at(kshower_phi_pi0) 			= new TH1D("h_shower_phi_pi0",    "h_shower_phi_pi0",	    12 , -180 ,180); // Shower Phi pi0
+        TH1D_hist.at(kshower_phi_bkg_el) 		= new TH1D("h_shower_phi_bkg_el", "h_shower_phi_bkg_el",    12 , -180 ,180); // Shower Phi bkg electrons
+        TH1D_hist.at(kshower_phi_other) 		= new TH1D("h_shower_phi_other",  "h_shower_phi_other",	    12 , -180 ,180); // Shower Phi
+        
+        TH1D_hist.at(kshower_phi_pi0_wrapped)     = new TH1D("h_shower_phi_pi0_wrapped",    "h_shower_phi_pi0_wrapped",	   5, 0, 90); // Shower Phi pi0 wrapped
+        TH1D_hist.at(kshower_phi_bkg_el_wrapped)  = new TH1D("h_shower_phi_bkg_el_wrapped", "h_shower_phi_bkg_el_wrapped", 5, 0, 90); // Shower Phi bkg electrons wrapped
+        TH1D_hist.at(kshower_phi_other_wrapped)   = new TH1D("h_shower_phi_other_wrapped",  "h_shower_phi_other_wrapped",  5, 0, 90); // Shower Phi wrapped
 
-        // Resize and create histograms
+        TH1D_hist.at(kshower_E_pi0) 			  = new TH1D("h_shower_E_pi0",    "h_shower_E_pi0",	    7 , 0, 3 ); // Shower E pi0
+        TH1D_hist.at(kshower_E_bkg_el) 		      = new TH1D("h_shower_E_bkg_el", "h_shower_E_bkg_el",  7 , 0, 3 ); // Shower E bkg electrons
+        TH1D_hist.at(kshower_E_other) 		      = new TH1D("h_shower_E_other",  "h_shower_E_other",	7 , 0, 3 ); // Shower E other
+        TH1D_hist.at(kshower_E) 		          = new TH1D("h_shower_E",        "h_shower_E",	        7 , 0, 3 ); // Shower E
+
+        // 2D Histograms
         TH2D_hist.resize(kTH2D_names_MAX);
-        TH2D_hist.at(kEnu_ETheta) = new TH2D("h_Enu_ETheta", "Enu_ETheta", 10, 0, 5, 12, 0, 180);
+        TH2D_hist.at(kEBkg_Theta)       = new TH2D("h_EBkg_Theta",       "EBkg_Theta",       7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_Phi)         = new TH2D("h_EBkg_Phi",         "EBkg_Phi",         7, 0, 3, 12, -180, 180); 
+    
+        TH2D_hist.at(kEBkg_pi0_Theta)   = new TH2D("h_EBkg_pi0_Theta",   "EBkg_pi0_Theta",   7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_pi0_Phi)     = new TH2D("h_EBkg_pi0_Phi",     "EBkg_pi0_Phi",     7, 0, 3, 12, -180, 180);
+        
+        TH2D_hist.at(kEBkg_e_Theta)     = new TH2D("h_EBkg_e_Theta",     "EBkg_e_Theta",     7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_e_Phi)       = new TH2D("h_EBkg_e_Phi",       "EBkg_e_Phi",       7, 0, 3, 12, -180, 180);
+        
+        TH2D_hist.at(kEBkg_other_Theta) = new TH2D("h_EBkg_other_Theta", "EBkg_other_Theta", 7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_other_Phi)   = new TH2D("h_EBkg_other_Phi",   "EBkg_other_Phi",   7, 0, 3, 12, -180, 180);
+
+        TH2D_hist.at(kEBkg_Phi_wrapped)         = new TH2D("h_EBkg_Phi_wrapped",         "EBkg_Phi_wrapped",         7, 0, 3, 5, 0, 90); 
+        TH2D_hist.at(kEBkg_pi0_Phi_wrapped)     = new TH2D("h_EBkg_pi0_Phi_wrapped",     "EBkg_pi0_Phi_wrapped",     7, 0, 3, 5, 0, 90);
+        TH2D_hist.at(kEBkg_e_Phi_wrapped)       = new TH2D("h_EBkg_e_Phi_wrapped",       "EBkg_e_Phi_wrapped",       7, 0, 3, 5, 0, 90);
+        TH2D_hist.at(kEBkg_other_Phi_wrapped)   = new TH2D("h_EBkg_other_Phi_wrapped",   "EBkg_other_Phi_wrapped",   7, 0, 3, 5, 0, 90);
+       
     }
     
     // ----------------------
@@ -100,31 +129,39 @@ class variation_output_bkg {
     void run_var(const char * file1, TString mode, const std::vector<double> _config, TString plot_config);
 
     // ----------------------
-    //   Other Functions
+    //   General Functions
     // ----------------------
     int GetLeadingShowerIndex(const int n_pfp, int n_tpc_obj, xsecAna::TPCObjectContainer tpc_obj);     // Returns the index of the leading shower
     double GetLongestTrackLength(const int n_pfp, int n_tpc_obj, xsecAna::TPCObjectContainer tpc_obj);  // Returns the length of the longest track
-    void DrawTH1D(TH1D* h, double POT_Scaling); // Function that draws a TH1D histogram
-    void DrawTH2D(TH2D* h, double POT_Scaling); // Function that draws a TH2D histogram
-    double GetPOT(const char * _file1); 		// Gets the POT stored in an external file
-    void PlotVariatons(TFile* f_var_out); 		// Plots the variation files on the same plot
-    std::vector<std::string> GrabDirs(TFile* f_var_out); // Grabs the directories in the file
-    void DrawTH1D_SAME(TH1D* hist, std::string variation, TLegend* legend, std::string histname); 	// Function that draws a TH1D histogram for the same plot
-    void GetNumber_Track_Shower(const int n_pfp, int n_tpc_obj,
+    void DrawTH1D(TH1D* h, double POT_Scaling);                                                         // Function that draws a TH1D histogram
+    void DrawTH2D(TH2D* h, double POT_Scaling);                                                         // Function that draws a TH2D histogram
+    double GetPOT(const char * _file1); 		                                                        // Gets the POT stored in an external file
+    void PlotVariatons(TFile* f_var_out); 		                                                        // Plots the variation files on the same plot
+    void PlotVariatonsNuMIBNB();                                                                        // Plotting function to compare the NuMI and BNB CV variations
+    std::vector<std::string> GrabDirs(TFile* f_var_out);                                                // Grabs the directories in the file
+    void DrawTH1D_SAME(TH1D* hist, std::string variation, TLegend* legend, std::string histname);       // Function that draws a TH1D histogram for the same plot
+    void DrawTH2D_SAME(TH2D* hist, std::string variation, std::string histname);                        // Function that draws a TH2D histogram for the same plot
+    void DrawTH1D_Ratio(TH1D* hist, std::string histname);                       // As above but for drawing the ratios
+    
+    void GetNumber_Track_Shower(const int n_pfp, int n_tpc_obj,                                         // Utility function to get the number of tracks and showers
                                      xsecAna::TPCObjectContainer tpc_obj, int &n_showers, int &n_tracks,
-                                     int &n_pfp_50Hits, int &n_tracks_50Hits, int &n_showers_50Hits); // Utility function to get the number of tracks and showers
-    double pfp_vtx_distance(double tpc_vtx_x, double tpc_vtx_y, double tpc_vtx_z,
-                                       double pfp_vtx_x, double pfp_vtx_y, double pfp_vtx_z); // Calculates the pfp to nu vertex distance
+                                     int &n_pfp_50Hits, int &n_tracks_50Hits, int &n_showers_50Hits);
+    
+    double pfp_vtx_distance(double tpc_vtx_x, double tpc_vtx_y, double tpc_vtx_z,                       // Calculates the pfp to nu vertex distance
+                                       double pfp_vtx_x, double pfp_vtx_y, double pfp_vtx_z);
     
     bool in_fv(double x, double y, double z, std::vector<double> fv_boundary_v);
     std::pair<std::string, int> TPCO_Classifier(xsecAna::TPCObjectContainer tpc_obj, bool true_in_tpc, bool has_pi0);
     std::string Background_Classifier(int mc_pdg, std::string tpc_obj_classfication);
+    double WrapPhi(double phi);                                                                         // A function to wrap phi from 360 to 90 degrees to increse statistics
 
+    // ----------------------
     // Flash Functions
-    std::vector<std::vector<double>> GetLargestFlashVector(TFile* f, double flash_time_start, double flash_time_end); 				// Function to resize opical entries to same size of events and get largest flash vector
-    bool flash_in_time(double flash_time, double flash_start, double flash_end); 	// Decides whether flash is in time or not
-    bool flash_pe(int flash_pe, int flash_pe_threshold); 							// Decides whether flash has sufficient PE
-    double Flash_TPCObj_vtx_Dist(double tpc_vtx_y, double tpc_vtx_z, double flash_vtx_y, double flash_vtx_z); // Returns the 2D distance of the flash to TPC OBj Vertex
+    // ----------------------
+    std::vector<std::vector<double>> GetLargestFlashVector(TFile* f, double flash_time_start, double flash_time_end); // Function to resize opical entries to same size of events and get largest flash vector
+    bool flash_in_time(double flash_time, double flash_start, double flash_end); 	                                  // Decides whether flash is in time or not
+    bool flash_pe(int flash_pe, int flash_pe_threshold); 							                                  // Decides whether flash has sufficient PE
+    double Flash_TPCObj_vtx_Dist(double tpc_vtx_y, double tpc_vtx_z, double flash_vtx_y, double flash_vtx_z);         // Returns the 2D distance of the flash to TPC OBj Vertex
     
  
     // ----------------------
@@ -157,17 +194,17 @@ class variation_output_bkg {
     double ldg_shwr_CTheta{0};			// Leading shower cos theta
     double long_Track_ldg_shwr{0};		// Longest track / leading shower length
     // Leading shower momentum
-    int n_pfp{0};					// Number of pfp in TPC Obj
-    int n_pfp_50Hits{0};			// Number of pfp in TPC Obj with > 50 Hits
-    int n_tracks{0};				// Number of Tracks in TPC Obj
-    int n_tracks_50Hits{0};			// Number of Tracks in TPC Obj with > 50 Hits
-    int n_showers{0};				// Number of Showers in TPC Obj
-    int n_showers_50Hits{0};		// Number of showers in TPC Obj with > 50 Hits
-    double track_phi{0};			// Track Phi
-    int nue_cc_counter{0};			// Number of reco nue + nuebar
-    int other_counter{0};			// Counter for not numu/nue
-    int sig_counter{0};				// Number reco signal events
-    int bkg_counter{0};				// Number reco background events
+    int n_pfp{0};					    // Number of pfp in TPC Obj
+    int n_pfp_50Hits{0};			    // Number of pfp in TPC Obj with > 50 Hits
+    int n_tracks{0};				    // Number of Tracks in TPC Obj
+    int n_tracks_50Hits{0};			    // Number of Tracks in TPC Obj with > 50 Hits
+    int n_showers{0};				    // Number of Showers in TPC Obj
+    int n_showers_50Hits{0};		    // Number of showers in TPC Obj with > 50 Hits
+    double track_phi{0};			    // Track Phi
+    int nue_cc_counter{0};			    // Number of reco nue + nuebar
+    int other_counter{0};			    // Counter for not numu/nue
+    int sig_counter{0};				    // Number reco signal events
+    int bkg_counter{0};				    // Number reco background events
     
     
     double tpc_obj_vtx_x{0}, tpc_obj_vtx_y{0}, tpc_obj_vtx_z{0}; // TPCObj Vertex X, Y, Z
@@ -259,21 +296,27 @@ class variation_output_bkg {
     //      Histograms
     // ----------------------
     std::vector<TH1D*> TH1D_hist;
-    enum TH1D_names{ ktotal_hits,kldg_shwr_hits, kldg_shwr_hits_WPlane,
-                     kldg_shwr_Open_Angle, kldg_shwr_dEdx_WPlane, kldg_shwr_HitPerLen,
-                     kldg_shwr_Phi,kldg_shwr_Phi_wrapped, kldg_shwr_Theta,kldg_shwr_CTheta,
-                     klong_Track_ldg_shwr, ktpc_obj_vtx_x, ktpc_obj_vtx_y, ktpc_obj_vtx_z,
-                     kn_pfp, kn_pfp_50Hits, kn_tracks, kn_tracks_50Hits, kn_showers,
-                     kn_showers_50Hits, ktrack_phi, kshower_phi, klargest_flash_y, klargest_flash_z,
-                     klargest_flash_time, klargest_flash_pe, kFlash_TPCObj_Dist,
-                     kshower_Nu_vtx_Dist, ktrack_Nu_vtx_Dist, kselected,
+    enum TH1D_names{ ktotal_hits,             kldg_shwr_hits,             kldg_shwr_hits_WPlane,
+                     kldg_shwr_Open_Angle,    kldg_shwr_dEdx_WPlane,      kldg_shwr_HitPerLen,
+                     kldg_shwr_Phi,           kldg_shwr_Phi_wrapped,      kldg_shwr_Theta,               kldg_shwr_CTheta,
+                     klong_Track_ldg_shwr,    ktpc_obj_vtx_x,             ktpc_obj_vtx_y,                ktpc_obj_vtx_z,
+                     kn_pfp, kn_pfp_50Hits,   kn_tracks,                  kn_tracks_50Hits,              kn_showers,
+                     kn_showers_50Hits,       ktrack_phi,                 kshower_phi, klargest_flash_y, klargest_flash_z,
+                     klargest_flash_time,     klargest_flash_pe,          kFlash_TPCObj_Dist,
+                     kshower_Nu_vtx_Dist,     ktrack_Nu_vtx_Dist,         kselected,
+                     kshower_phi_pi0,         kshower_phi_bkg_el,         kshower_phi_other,             kshower_E, 
+                     kshower_phi_pi0_wrapped, kshower_phi_bkg_el_wrapped, kshower_phi_other_wrapped,
+                     kshower_E_pi0,           kshower_E_bkg_el,           kshower_E_other,
                      kTH1D_names_MAX};
 
     
     
     // 2D Histograms -- histograms now created in the default constructor
     std::vector<TH2D*> TH2D_hist;
-    enum TH2D_names{ kEnu_ETheta, 
+    enum TH2D_names{ kEBkg_Theta,        kEBkg_Phi,      kEBkg_Phi_wrapped,
+                     kEBkg_pi0_Theta,    kEBkg_pi0_Phi,  kEBkg_pi0_Phi_wrapped,
+                     kEBkg_e_Theta,      kEBkg_e_Phi,    kEBkg_e_Phi_wrapped,
+                     kEBkg_other_Theta,  kEBkg_other_Phi,kEBkg_other_Phi_wrapped,
                      kTH2D_names_MAX};
 
     
@@ -281,7 +324,6 @@ class variation_output_bkg {
     //      Other
     // ----------------------
     TFile * f_var_out;
-    bool PlotVar{false};
 
     double largest_flash_y{0};
     double largest_flash_z{0};

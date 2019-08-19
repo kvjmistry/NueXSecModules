@@ -61,18 +61,20 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
     //*************************** RUN PLOTTING FUNCTION PLOT***********************
     // if bool true just run this function
-    if (plot_config == "same") PlotVar = true; 
-    else PlotVar = false; 
-
-    if (PlotVar) {
+    if (plot_config == "same") {
         PlotVariatons(f_var_out); 
+        return; 
+    }
+    if (plot_config == "bnbnumi"){
+        PlotVariatonsNuMIBNB(); 
         return; 
     }
     //*************************** POT Scaling *************************************
     std::cout << "=================================================\n" << std::endl;
     
     double CV_POT =  GetPOT("/uboone/data/users/kmistry/work/NueXSection_Outputs/detector_variations/filter_BNBCV.root");
-    double POT_Scaling =  CV_POT / GetPOT(_file1);
+    // double POT_Scaling =  CV_POT / GetPOT(_file1);
+    double POT_Scaling =  1.0;
     std::cout << "POT Scaling:\t" << POT_Scaling << std::endl;
     std::cout << "=================================================\n" << std::endl;
     
@@ -194,12 +196,12 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
             // Other histograms
             n_tracks = 0; n_showers = 0; n_pfp_50Hits = 0; n_tracks_50Hits = 0; n_showers_50Hits = 0;
             GetNumber_Track_Shower(n_pfp, n_tpc_obj, tpc_obj, n_showers, n_tracks, n_pfp_50Hits, n_tracks_50Hits, n_showers_50Hits );// Get the number of tracks and showers
-            TH1D_hist.at(kn_pfp)			  ->Fill(n_tracks + n_showers);
-            TH1D_hist.at(kn_pfp_50Hits)	  ->Fill(n_pfp_50Hits);
-            TH1D_hist.at(kn_tracks)		  ->Fill(n_tracks);
-            TH1D_hist.at(kn_tracks_50Hits)   ->Fill(n_tracks_50Hits);
-            TH1D_hist.at(kn_showers)		  ->Fill(n_showers);
-            TH1D_hist.at(kn_showers_50Hits)  ->Fill(n_showers_50Hits);
+            TH1D_hist.at(kn_pfp)            ->Fill(n_tracks + n_showers);
+            TH1D_hist.at(kn_pfp_50Hits)     ->Fill(n_pfp_50Hits);
+            TH1D_hist.at(kn_tracks)         ->Fill(n_tracks);
+            TH1D_hist.at(kn_tracks_50Hits)  ->Fill(n_tracks_50Hits);
+            TH1D_hist.at(kn_showers)        ->Fill(n_showers);
+            TH1D_hist.at(kn_showers_50Hits) ->Fill(n_showers_50Hits);
 
             const double Flash_TPCObj_Dist = Flash_TPCObj_vtx_Dist(tpc_obj_vtx_y, tpc_obj_vtx_z, largest_flash_y, largest_flash_z);
             TH1D_hist.at(kFlash_TPCObj_Dist) ->Fill(Flash_TPCObj_Dist);
@@ -295,12 +297,6 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
             if (bool_sig) sig_counter++;
             if (!bool_sig) bkg_counter++;
-            
-            // Fill some MC Truth info here
-            if (!bool_sig) {
-
-
-            }
 
             //if (!bool_sig ) std::cout << tpc_classification.first << std::endl;
 
@@ -328,7 +324,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                 const double pfp_dir_y = pfp_obj.pfpDirY();
                 const double pfp_dir_z = pfp_obj.pfpDirZ();
 
-                const double mc_theta  = pfp_obj.mcTheta();
+                const double mc_Theta  = pfp_obj.mcTheta();
                 const double mc_Phi    = pfp_obj.mcPhi();
                 const double mc_Energy = pfp_obj.mcEnergy();
                 const double mc_pdg    = pfp_obj.MCPdgCode();
@@ -349,8 +345,6 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
                     // std::cout << tpc_classification.first << std::endl;
                     
-
-                    
                     TH1D_hist.at(ktotal_hits) ->Fill(num_pfp_hits);
 
                     const double shower_phi = atan2(pfp_obj.pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
@@ -363,7 +357,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
                         std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
 
-                        std::cout << "mc_pdg: " << mc_pdg << " parent pdg:  " << mc_parent_pdg <<"  Classifier: " << tpc_classification.first << "  bkg class:  " << bkg_class << std::endl;
+                        // std::cout << "mc_pdg: " << mc_pdg << " parent pdg:  " << mc_parent_pdg <<"  Classifier: " << tpc_classification.first << "  bkg class:  " << bkg_class << std::endl;
 
                         TH1D_hist.at(kselected) ->Fill(0);
 
@@ -378,29 +372,59 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         TH1D_hist.at(kldg_shwr_Open_Angle)	 ->Fill(pfp_obj.pfpOpenAngle() * (180 / 3.1415) );
                         TH1D_hist.at(kldg_shwr_dEdx_WPlane)	 ->Fill(pfp_obj.PfpdEdx().at(2) ); 	// W Plane
                         TH1D_hist.at(kldg_shwr_HitPerLen)	 ->Fill(num_pfp_hits / pfp_obj.pfpLength() );
-                        TH1D_hist.at(kldg_shwr_Phi)			 ->Fill(leading_shower_phi);
-                        TH1D_hist.at(kldg_shwr_Theta)		 ->Fill(leading_shower_theta);
+                        TH1D_hist.at(kldg_shwr_Phi)			 ->Fill(mc_Phi);
+                        TH1D_hist.at(kldg_shwr_Theta)		 ->Fill(mc_Theta);
                         TH1D_hist.at(kldg_shwr_CTheta)		 ->Fill(cos(leading_shower_theta * 3.1414 / 180.));
                         TH1D_hist.at(klong_Track_ldg_shwr)	 ->Fill(longest_track_length / leading_shower_length);
 
                         // Wrap phi from 0 to 90
-                        // 90 to 180
-                        if      (leading_shower_phi > 90   && leading_shower_phi < 180) leading_shower_phi = 180 - leading_shower_phi;
-                        // 0 to -90
-                        else if (leading_shower_phi > -90  && leading_shower_phi < 0)   leading_shower_phi = leading_shower_phi * -1;
-                        // -90 to -180
-                        else if (leading_shower_phi > -180 && leading_shower_phi < -90) leading_shower_phi = 180 - (leading_shower_phi * -1);
+                        double leading_shower_phi_wrapped   = WrapPhi(mc_Phi);
+                        double mc_phi_wrapped               = WrapPhi(mc_Phi);
+                        TH1D_hist.at(kldg_shwr_Phi_wrapped) ->Fill(mc_phi_wrapped);
+                        TH1D_hist.at(kshower_E)             ->Fill(mc_Energy);
 
-                        TH1D_hist.at(kldg_shwr_Phi_wrapped) ->Fill(leading_shower_phi);
+                        // Fill the phi distribtuons for the bkgs
+                        if (bkg_class == "pi0_gamma") {
+                            TH1D_hist.at(kshower_phi_pi0)        ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_pi0)          ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_pi0_wrapped)->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_pi0_Theta)        ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_pi0_Phi)          ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_pi0_Phi_wrapped)  ->Fill(mc_Energy, mc_phi_wrapped);
+                        }
+                        
+                        if (bkg_class == "bkg_e") {
+                            TH1D_hist.at(kshower_phi_bkg_el)        ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_bkg_el)          ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_bkg_el_wrapped)->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_e_Theta)             ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_e_Phi)               ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_e_Phi_wrapped)       ->Fill(mc_Energy, mc_phi_wrapped);
+                        }
+                        
+                        if (bkg_class == "other_bkg") {
+                            TH1D_hist.at(kshower_phi_other)         ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_other)           ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_other_wrapped) ->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_other_Theta)         ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_other_Phi)           ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_other_Phi_wrapped)   ->Fill(mc_Energy, mc_phi_wrapped);
+                        }
 
                         // Vertex Information - require a shower so fill once  when leading shower
                         TH1D_hist.at(ktpc_obj_vtx_x) ->Fill(tpc_obj_vtx_x);
                         TH1D_hist.at(ktpc_obj_vtx_y) ->Fill(tpc_obj_vtx_y);
                         TH1D_hist.at(ktpc_obj_vtx_z) ->Fill(tpc_obj_vtx_z);
+                    
+                        // 2D histos of the energy of the background particle vs angle
+                        TH2D_hist.at(kEBkg_Theta)         ->Fill(mc_Energy, mc_Theta);
+                        TH2D_hist.at(kEBkg_Phi)           ->Fill(mc_Energy, mc_Phi);
+                        TH2D_hist.at(kEBkg_Phi_wrapped)   ->Fill(mc_Energy, mc_phi_wrapped);
+
                     }
                 
                 }
-                    
+                
                 
                 // Track like
                 if ( pfp_pdg == 13) {
@@ -499,6 +523,295 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 } // END MAIN
 //***************************************************************************
 //***************************************************************************
+void variation_output_bkg::PlotVariatons(TFile* f_var_out){
+    f_var_out->cd();
+    
+    // Grab the variation folders in the file
+    std::vector<std::string> variations = variation_output_bkg::GrabDirs(f_var_out); 
+
+     // ************************** 1D Histograms *******************************
+    std::vector<std::string> histnames = {"h_total_hits",             "h_ldg_shwr_hits",             "h_ldg_shwr_hits_WPlane",
+                                          "h_ldg_shwr_Open_Angle",    "h_ldg_shwr_dEdx_WPlane",      "h_ldg_shwr_HitPerLen",
+                                          "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",      "h_ldg_shwr_Theta",       "h_ldg_shwr_CTheta",
+                                          "h_long_Track_ldg_shwr",    "h_tpc_obj_vtx_x",             "h_tpc_obj_vtx_y",        "h_tpc_obj_vtx_z",
+                                          "h_n_pfp",                  "h_n_pfp_50Hits",              "h_n_tracks",             "h_n_tracks_50Hits",  "h_n_showers",
+                                          "h_n_showers_50Hits",       "h_track_phi",                 "h_shower_phi",           "h_largest_flash_y",  "h_largest_flash_z",
+                                          "h_largest_flash_time",     "h_largest_flash_pe",          "h_Flash_TPCObj_Dist",
+                                          "h_shower_Nu_vtx_Dist",     "h_track_Nu_vtx_Dist",         "h_selected",
+                                          "h_shower_phi_pi0",         "h_shower_phi_bkg_el",         "h_shower_phi_other",
+                                          "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_el_wrapped", "h_shower_phi_other_wrapped",
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_el",           "h_shower_E_other",       "h_shower_E" };
+
+    // Loop over the histograms
+    for (int j=0; j < histnames.size(); j++){
+        TH1D* hist;
+        
+        // Canvas + Legend
+        TCanvas* c = new TCanvas();
+        TLegend* legend;
+        if (histnames[j] == "h_ldg_shwr_CTheta") legend = new TLegend(0.15, 0.55, 0.37, 0.85); // Reposition
+        else if (histnames[j] == "h_tpc_obj_vtx_x" || histnames[j] == "h_tpc_obj_vtx_y" || histnames[j] == "h_tpc_obj_vtx_z" )
+                legend = new TLegend(0.15, 0.15, 0.37, 0.45); // Reposition
+        else if (histnames[j] == "h_largest_flash_z" ) legend = new TLegend(0.35, 0.59, 0.57, 0.89);
+        else legend = new TLegend(0.72, 0.59, 0.94, 0.89);
+
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+
+        // Loop over variation directories
+        for (int i=0; i < variations.size(); i++){
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(),histnames[j].c_str() );
+
+            hist = (TH1D*)f_var_out->Get(name);
+            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
+
+            DrawTH1D_SAME(hist, variations[i], legend, histnames[j]);
+
+
+        }
+
+        // Print the Canvas
+        char Canvas_name[500];
+        snprintf(Canvas_name, 500, "plots/%s.pdf",histnames[j].c_str() ); 
+        legend->Draw();
+        c->Print(Canvas_name);
+
+    }
+    
+    // ************************ 1D Histograms ratio ****************************
+    std::string histname_ratio;
+    std::vector<std::string> histnames_phi_theta = {"h_ldg_shwr_Phi", "h_ldg_shwr_Theta", "h_ldg_shwr_Phi_wrapped", "h_selected"};
+    
+    for (int j=0; j < histnames_phi_theta.size(); j++){
+        TH1D* hist;
+        TH1D* hist_CV;
+        
+        // Canvas + Legend
+        TCanvas* c = new TCanvas();
+        TLegend* legend = new TLegend(0.72, 0.59, 0.94, 0.89);
+
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+
+        // Loop over variation directories
+        for (int i=0; i < variations.size(); i++){
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(), histnames_phi_theta[j].c_str() );
+            hist = (TH1D*)f_var_out->Get(name);
+            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
+
+            char name_CV[500];
+            snprintf(name_CV, 500, "BNBCV/%s", histnames_phi_theta[j].c_str() );
+            hist_CV = (TH1D*)f_var_out->Get(name_CV);
+            if (hist_CV == NULL ) std::cout << "ERROR: Can't get CV Histogram!" << std::endl;
+
+            histname_ratio = histnames_phi_theta[j] + "_ratio";
+            
+            // hist->Sumw2();
+            // hist_CV->Sumw2();
+
+            TH1D* hist_divide = (TH1D*) hist->Clone("hist_divide");
+            hist_divide->Sumw2();
+            
+            hist_divide->Divide(hist_CV);
+
+            if (variations[i] == "BNBCV"){
+                for (unsigned int k=1; k < hist_divide->GetNbinsX()+1; 	k++ ){
+                    hist_divide->SetBinContent(k, 1);
+                }
+            }
+            
+            DrawTH1D_SAME(hist_divide, variations[i], legend, histname_ratio);
+            
+        }
+        
+        // Print the Canvas
+        char Canvas_name[500];
+        snprintf(Canvas_name, 500, "plots/%s.pdf",histname_ratio.c_str() ); 
+        legend->Draw();
+        c->Print(Canvas_name);
+    }
+    // ************************** 2D Histograms ********************************
+    std::vector<std::string> histnames_2D = {"h_EBkg_Theta", "h_EBkg_Phi"};
+
+    // Loop over the histograms
+    for (int j=0; j < histnames_2D.size(); j++){
+        TH2D* hist;
+        
+        // Loop over variation directories
+        for (int i=0; i < variations.size(); i++){
+            // Canvas + Legend
+            TCanvas* c = new TCanvas();
+
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(),histnames_2D[j].c_str() );
+
+            hist = (TH2D*)f_var_out->Get(name);
+            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
+
+            DrawTH2D_SAME(hist, variations[i], histnames_2D[j]);
+
+            // Print the Canvas
+            char Canvas_name[1000];
+            snprintf(Canvas_name, 1000, "plots/%s_%s.pdf",histnames_2D[j].c_str(), variations[i].c_str() ); 
+            c->Print(Canvas_name);
+            c->Close();
+        }
+    }
+    
+    // Close the file
+    f_var_out->Close();
+
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::PlotVariatonsNuMIBNB(){
+    
+    // Get the files
+    TFile *f_bnb, *f_numi;
+
+    // create plots folder if it does not exist
+    system("if [ ! -d \"plots/numi_bnb_comparisons\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons; fi");
+    
+    f_bnb  = new TFile("plots/variation_out_bnb_bkg.root" ,"UPDATE");
+    f_numi = new TFile("plots/variation_out_numi_bkg.root","UPDATE");
+   
+    
+    // Grab the variation folders in the file
+    std::vector<std::string> variations = {"NuMICV", "BNBCV"};
+
+     // ************************** 1D Histograms *******************************
+    std::vector<std::string> histnames = {"h_total_hits",             "h_ldg_shwr_hits",             "h_ldg_shwr_hits_WPlane",
+                                         "h_ldg_shwr_Open_Angle",     "h_ldg_shwr_dEdx_WPlane",      "h_ldg_shwr_HitPerLen",
+                                         "h_ldg_shwr_Phi",            "h_ldg_shwr_Phi_wrapped",      "h_ldg_shwr_Theta",     "h_ldg_shwr_CTheta",
+                                          "h_long_Track_ldg_shwr",    "h_tpc_obj_vtx_x",             "h_tpc_obj_vtx_y",      "h_tpc_obj_vtx_z",
+                                          "h_n_pfp",                  "h_n_pfp_50Hits",              "h_n_tracks",           "h_n_tracks_50Hits", "h_n_showers",
+                                          "h_n_showers_50Hits",       "h_track_phi",                 "h_shower_phi",         "h_largest_flash_y", "h_largest_flash_z",
+                                          "h_largest_flash_time",     "h_largest_flash_pe",          "h_Flash_TPCObj_Dist",
+                                          "h_shower_Nu_vtx_Dist",     "h_track_Nu_vtx_Dist",         "h_selected",
+                                          "h_shower_phi_pi0",         "h_shower_phi_other",
+                                          "h_shower_phi_pi0_wrapped", "h_shower_phi_other_wrapped",
+                                          "h_shower_E_pi0",           "h_shower_E_other",            "h_shower_E"
+                                        //   "h_shower_phi_bkg_el", "h_shower_phi_bkg_el_wrapped", "h_shower_E_bkg_el"
+                                          };
+
+    std::vector<std::string> histnames_ratio = {
+        "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",      "h_ldg_shwr_Theta",
+        "h_shower_phi_pi0_wrapped", "h_shower_phi_other_wrapped",
+        "h_shower_E_pi0",           "h_shower_E_bkg_el",           "h_shower_E_other", "h_shower_E"
+    };
+
+    // Loop over the histograms
+    for (int j=0; j < histnames.size(); j++){
+        std::vector<TH1D*> hist(variations.size());
+        
+        // Canvas + Legend
+        TCanvas* c = new TCanvas();
+        TLegend* legend = new TLegend(0.72, 0.59, 0.94, 0.89);
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+
+        // Loop over variation directories and get the histograms
+        for (int i=0; i < variations.size(); i++){
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(),histnames[j].c_str() );
+
+            hist.at(i) = (TH1D*)f_bnb->Get(name);
+            if (hist.at(i) == NULL ) hist.at(i) = (TH1D*)f_numi->Get(name); // If no histogram in bnb file, try the numi one
+            if (hist.at(i) == NULL ) std::cout << "ERROR: Can't get Histogram! " << name << std::endl;
+
+        }
+
+        // Get the histogram areas
+        std::vector<double> hist_areas(variations.size());
+        for (int i=0; i < variations.size(); i++){
+           hist_areas.at(i) = hist.at(i)->Integral(0, -1);
+        }
+
+        // Now we want to normalise the histograms by area -- scale everything to first variation = numi
+        for (int i=1; i < variations.size(); i++){
+           hist.at(i)->Scale(hist_areas.at(i - 1) / hist_areas.at(i));
+        }
+
+        // Look to see if we want to make a ratio plot
+        bool bool_string{false};
+        for (int i = 0; i < histnames_ratio.size(); i++){
+        
+            size_t found = histnames.at(j).find(histnames_ratio.at(i)); 
+            
+            // Got the variation match
+            if (found != std::string::npos) {
+                bool_string = true;
+            }
+        }
+
+        // Divde out the bnb to numi histgram
+        TH1D *hist_divide = (TH1D*) hist.at(1)->Clone("hist_divide"); // BNB CV
+        if (bool_string) {
+            hist_divide->Sumw2();
+            hist_divide->Divide(hist.at(0)); // NuMI CV
+        }
+
+
+        // Now draw the histograms
+        for (int i=0; i < variations.size(); i++){
+            DrawTH1D_SAME(hist.at(i), variations[i], legend, histnames[j]);
+        }
+
+        // Print the Canvas
+        char Canvas_name[500];
+        snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s.pdf",histnames[j].c_str() ); 
+        legend->Draw();
+        c->Print(Canvas_name);
+
+        if (bool_string) {
+            c->Clear();
+            DrawTH1D_Ratio(hist_divide,  histnames[j]);
+            snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s_ratio.pdf",histnames[j].c_str() );
+            c->Print(Canvas_name);
+        }
+    }
+    
+    // ************************** 2D Histograms ********************************
+    std::vector<std::string> histnames_2D = {"h_EBkg_Theta",       "h_EBkg_Phi",       "h_EBkg_Phi_wrapped",
+                                             "h_EBkg_pi0_Theta",   "h_EBkg_pi0_Phi",   "h_EBkg_pi0_Phi_wrapped",
+                                            //  "h_EBkg_e_Theta",     "h_EBkg_e_Phi",     "h_EBkg_e_Phi_wrapped",
+                                             "h_EBkg_other_Theta", "h_EBkg_other_Phi", "h_EBkg_other_Phi_wrapped" };
+
+    // Loop over the histograms
+    for (int j=0; j < histnames_2D.size(); j++){
+        TH2D* hist;
+        
+        // Loop over variation directories
+        for (int i=0; i < variations.size(); i++){
+            // Canvas + Legend
+            TCanvas* c = new TCanvas();
+
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(),histnames_2D[j].c_str() );
+
+            hist = (TH2D*)f_bnb->Get(name);
+            if (hist == NULL ) hist = (TH2D*)f_numi->Get(name); // If no histogram in bnb file, try the numi one
+            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram! " << name << std::endl;
+
+            DrawTH2D_SAME(hist, variations[i], histnames_2D[j]);
+
+            // Print the Canvas
+            char Canvas_name[1000];
+            snprintf(Canvas_name, 1000, "plots/numi_bnb_comparisons/%s_%s.pdf",histnames_2D[j].c_str(), variations[i].c_str() ); 
+            c->Print(Canvas_name);
+            c->Close();
+        }
+    }
+    
+    // Close the file
+    f_bnb ->Close();
+    f_numi->Close();
+
+}
+//***************************************************************************
+//***************************************************************************
 int variation_output_bkg::GetLeadingShowerIndex(const int n_pfp, int n_tpc_obj, xsecAna::TPCObjectContainer tpc_obj){
     int leading_index{0};
     int most_hits{0};
@@ -593,9 +906,9 @@ void variation_output_bkg::DrawTH1D(TH1D* h, double POT_Scaling){
     h->SetLineColor(kMagenta+3);
     h->SetLineWidth(2);
     h->SetLineStyle(1);
-
     h->Scale(POT_Scaling);
-    h->Draw("his");
+    h->SetOption("hist, E");
+    h->Draw("hist, E");
 
 }
 //***************************************************************************
@@ -642,7 +955,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_Phi"){
         hist->SetTitle(";Leading Shower #phi [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,40);
+        // hist->GetYaxis()->SetRangeUser(0,40);
     }
     else if (histname == "h_ldg_shwr_Theta"){
         hist->SetTitle(";Leading Shower #theta [degrees];Entries");
@@ -654,7 +967,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped"){
         hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,40);
+        // hist->GetYaxis()->SetRangeUser(0,40);
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped_ratio"){
         hist->SetTitle(";Leading Shower #phi (wrapped) ratio [degrees];Ratio");
@@ -714,7 +1027,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_shower_phi"){
         hist->SetTitle("; Shower #phi [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,1200);
+        hist->GetYaxis()->SetRangeUser(0,500);
     }			
     else if (histname == "h_largest_flash_y"){
         hist->SetTitle(";Largest Flash Y [cm];Entries");
@@ -747,21 +1060,69 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     else if (histname == "h_selected"){
         hist->SetTitle("; Num Background Selected;Entries");
         hist->GetXaxis()->SetLabelOffset(999);
-           hist->GetXaxis()->SetLabelSize(0);
-        // hist->GetYaxis()->SetRangeUser(0,18000);
+        hist->GetXaxis()->SetLabelSize(0);
+        hist->GetYaxis()->SetRangeUser(100,600);
     }
     else if (histname == "h_selected_ratio"){
         hist->SetTitle("; Num Background Selected;Ratio");
         hist->GetXaxis()->SetLabelOffset(999);
-           hist->GetXaxis()->SetLabelSize(0);
+        hist->GetXaxis()->SetLabelSize(0);
         hist->GetYaxis()->SetRangeUser(0,2);
+    }
+    else if (histname ==  "h_shower_phi_pi0"){
+        hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,50);
+    }
+    else if (histname ==  "h_shower_phi_bkg_el"){
+        hist->SetTitle("; Leading Shower Phi e Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,10);
+    }
+    else if (histname ==  "h_shower_phi_other"){
+        hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,30);
+    }
+    else if (histname ==  "h_shower_phi_pi0_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,120);
+    }
+    else if (histname ==  "h_shower_phi_bkg_el_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped e Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,15);
+    }
+    else if (histname ==  "h_shower_phi_other_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,70);
+    }
+    else if (histname ==  "h_shower_E_pi0"){
+        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [GeV];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,50);
+    }
+    else if (histname ==  "h_shower_E_bkg_el"){
+        hist->SetTitle("; Leading Shower Energy e Bkg [GeV];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,10);
+    }
+    else if (histname ==  "h_shower_E_other"){
+        hist->SetTitle("; Leading Shower Energy Other Bkg [GeV];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,30);
+    }
+    else if (histname ==  "h_shower_E"){
+        hist->SetTitle("; Leading Shower Energy Bkg [GeV];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,30);
     }
     else return;
 
-    std::string draw_spec = "his, same";
+    std::string draw_spec = "hist,E, same";
+    hist->SetOption("hist, E");
+
+    hist->GetXaxis()->SetLabelSize(0.05);
+	hist->GetXaxis()->SetTitleSize(0.05);
+	hist->GetYaxis()->SetLabelSize(0.05);
+	hist->GetYaxis()->SetTitleSize(0.05);
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.12);
 
     if ((histname == "h_ldg_shwr_Theta_ratio" || histname == "h_ldg_shwr_Phi_ratio" || histname == "h_ldg_shwr_Phi_wrapped_ratio") && variation != "BNBCV"  )
-        draw_spec = "e1, same";
+        draw_spec = "E, same";
 
     // ----------------------
     //    Draw Specifiers
@@ -770,8 +1131,16 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
         hist->SetLineColor(kBlack);
         hist->SetLineWidth(2);
         hist->SetLineStyle(1);
-        legend->AddEntry(hist, "CV", "l");
-        hist->Draw(draw_spec.c_str());
+        
+
+        if (variation == "NuMICV"){
+            hist->SetLineColor(kAzure-6);
+            legend->AddEntry(hist, "NuMI CV", "l");
+        }
+        else
+            legend->AddEntry(hist, "BNB CV", "l");
+
+            hist->Draw(draw_spec.c_str());
     } 
     else if  (variation == "BNBwithDIC"         || variation == "NuMIwithDIC"){
         hist->SetLineColor(kMagenta+2);
@@ -897,6 +1266,264 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
         std::cout << "Error! Could not match varations:\t" << variation << std::endl;
         return;
     }
+
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string histname){
+
+    TLine *line;
+
+    hist->GetXaxis()->SetLabelSize(0.05);
+	hist->GetXaxis()->SetTitleSize(0.05);
+	hist->GetYaxis()->SetLabelSize(0.05);
+	hist->GetYaxis()->SetTitleSize(0.05);
+	gPad->SetLeftMargin(0.15);
+	gPad->SetBottomMargin(0.12);
+
+    if (histname == "h_ldg_shwr_Phi"){
+        hist->SetTitle(";Leading Shower #phi [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,40);
+        line = new TLine(-180,1,180,1); 
+    }
+    else if (histname == "h_ldg_shwr_Theta"){
+        hist->SetTitle(";Leading Shower #theta [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,7000);
+        line = new TLine(0,1,180,1); 
+    }
+    else if (histname == "h_ldg_shwr_Phi_wrapped"){
+        hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,40);
+        line = new TLine(0,1,90,1); 
+    }
+    else if (histname ==  "h_shower_phi_pi0"){
+        hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,50);
+        line = new TLine(-180,1,180,1); 
+    }
+    else if (histname ==  "h_shower_phi_bkg_el"){
+        hist->SetTitle("; Leading Shower Phi e Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,10);
+        line = new TLine(-180,1,180,1); 
+    }
+    else if (histname ==  "h_shower_phi_other"){
+        hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,30);
+        line = new TLine(-180,1,180,1);  
+    }
+    else if (histname ==  "h_shower_phi_pi0_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,120);
+        line = new TLine(0,1,90,1); 
+    }
+    else if (histname ==  "h_shower_phi_bkg_el_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped e Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,15);
+        line = new TLine(0,1,90,1); 
+    }
+    else if (histname ==  "h_shower_phi_other_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,70);
+        line = new TLine(0,1,90,1); 
+    }
+    else if (histname ==  "h_shower_E_pi0"){
+        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,50);
+        line = new TLine(0,1,3,1); 
+    }
+    else if (histname ==  "h_shower_E_bkg_el"){
+        hist->SetTitle("; Leading Shower Energy e Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,10);
+        line = new TLine(0,1,3,1);  
+    }
+    else if (histname ==  "h_shower_E_other"){
+        hist->SetTitle("; Leading Shower Energy Other Bkg [degrees];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,30);
+        line = new TLine(0,1,3,1); 
+    }
+    else if (histname ==  "h_shower_E"){
+        hist->SetTitle("; Leading Shower Bkg Energy[GeV];Ratio BNB / NuMI CV");
+        // hist->GetYaxis()->SetRangeUser(0,30);
+        line = new TLine(0,1,3,1); 
+    }
+
+    hist->SetLineColor(kBlack);
+    hist->SetLineWidth(2);
+
+    hist->SetOption("E");
+    hist->Draw();
+
+    
+    line->SetLineStyle(7);
+    line->Draw();
+
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std::string histname){
+    
+    // IncreaseLabelSize(hist);
+
+    std::string draw_spec;
+
+    // Find the ratio in the string
+    bool bool_ratio{false};
+    size_t found = histname.find("ratio"); 
+    
+    // Got a ratio plot instead
+    if (found != std::string::npos) bool_ratio = true;
+
+    draw_spec = "colz";
+
+    std::string variation_name = " ";
+
+    // ----------------------
+    //    Draw Specifiers
+    // ----------------------
+    if (variation == "BNBCV"){
+        variation_name = "BNB CV";
+    } 
+    else if (variation == "NuMICV"){
+         variation_name = "NuMI CV";
+    }
+    else if  (variation == "BNBwithDIC" || variation == "NuMIwithDIC"){
+        variation_name = "DIC";
+    }
+    else if  (variation == "BNBEnhancedTPCVis" || variation == "NuMIEnhancedTPCVis"){ 
+        variation_name = "Enhanced TPC Vis.";
+    }
+    else if  (variation == "BNBaltDeadChannels" || variation == "NuMIaltDeadChannels"){ 
+        variation_name = "Alt. Dead Chan.";
+    }
+    else if  (variation == "BNBdeadSaturatedChannels" || variation == "NuMIdeadSaturatedChannels"){
+        variation_name = "Dead Sat. Chan.";
+    }
+    else if  (variation == "BNBstretchResp" || variation == "NuMIstretchResp"){
+        variation_name = "Stretch Resp.";
+    }
+    else if  (variation == "BNBsqueezeResp" || variation == "NuMIsqueezeResp"){
+        variation_name = "Squeeze Resp.";
+    }
+    else if  (variation == "BNBupPEnoise" || variation == "NuMIupPEnoise"){
+        variation_name = "PE Noise Up";
+    }
+    else if  (variation == "BNBnoiseAmpDown" || variation == "NuMInoiseAmpDown"){
+        variation_name = "Noise Amp. Down";
+    }
+    else if  (variation == "BNBdownPEnoise" || variation == "NuMIdownPEnoise"){
+        variation_name = "PE Noise Down";
+    }
+    else if  (variation == "BNBnoiseAmpUp" || variation == "NuMInoiseAmpUp"){
+        variation_name = "Noise Amp. Up";
+    }
+    else if  (variation == "BNBDTdown" || variation == "NuMIDTdown"){
+        variation_name = "DT Down";
+    }
+    else if  (variation == "BNBDTup" || variation == "NuMIDTup"){
+        variation_name = "DT Up";
+    }
+    else if  (variation == "BNBDLup" || variation == "NuMIDLup"){
+        variation_name = "DL Up";
+    }
+    else if  (variation == "BNBDLdown" || variation == "NuMIDLdown"){
+        variation_name = "DL Down";
+    }
+    else if  (variation == "BNBdataSCE" || variation == "NuMIdataSCE"){
+        variation_name = "SCE";
+    }
+    else if  (variation == "BNBLArG4BugFix" || variation == "NuMILArG4BugFix"){
+        variation_name = "LArG4BugFix";
+    }
+    else if  (variation == "BNBBirksRecomb" || variation == "NuMIBirksRecomb"){
+        variation_name = "Birks Recomb.";
+    }
+    else {
+        std::cout << "Error! Could not match varations:\t" << variation << std::endl;
+        return;
+    }
+
+    // ----------------------
+    //    Axis Specifiers
+    // ----------------------
+    if (histname == "h_EBkg_Theta" || histname == "h_EBkg_Theta_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower MC Energy [GeV]; Leading Shower MC Theta [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Energy [GeV]; Leading Shower MC Theta [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_Phi" || histname == "h_EBkg_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower MC Energy [GeV]; Leading Shower MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Energy [GeV]; Leading Shower MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_Phi_wrapped" || histname == "h_EBkg_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower MC Energy [GeV]; Leading Shower MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Energy [GeV]; Leading Shower MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    
+    else if (histname == "h_EBkg_pi0_Theta" || histname == "h_EBkg_pi0_Theta_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Theta [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Theta [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_pi0_Phi" || histname == "h_EBkg_pi0_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_pi0_Phi_wrapped" || histname == "h_EBkg_pi0_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+   
+    else if (histname == "h_EBkg_e_Theta" || histname == "h_EBkg_e_Theta_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Theta [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Theta [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_e_Phi" || histname == "h_EBkg_e_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_e_Phi_wrapped" || histname == "h_EBkg_e_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg e MC Energy [GeV]; Leading Shower Bkg e MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+   
+    else if (histname == "h_EBkg_other_Theta" || histname == "h_EBkg_other_Theta_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Theta [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Theta [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_other_Phi" || histname == "h_EBkg_other_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_EBkg_other_Phi_wrapped" || histname == "h_EBkg_other_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+
+    hist->GetXaxis()->SetLabelSize(0.05);
+	hist->GetXaxis()->SetTitleSize(0.05);
+	hist->GetYaxis()->SetLabelSize(0.05);
+	hist->GetYaxis()->SetTitleSize(0.05);
+	hist->GetZaxis()->SetLabelSize(0.05);
+	hist->GetZaxis()->SetTitleSize(0.05);
+	gPad->SetLeftMargin(0.15);
+	gPad->SetRightMargin(0.2);
+	gPad->SetBottomMargin(0.13);
+	hist->SetMarkerSize(1.8);
+   
+    
+    // gPad->SetLogz();
+    hist->Draw(draw_spec.c_str());
+
 }
 //***************************************************************************
 //***************************************************************************
@@ -965,119 +1592,6 @@ std::vector<std::string> variation_output_bkg::GrabDirs(TFile* f_var_out) {
     std::cout << "=================================================\n" << std::endl;
 
     return (variations);
-}
-//***************************************************************************
-//***************************************************************************
-void variation_output_bkg::PlotVariatons(TFile* f_var_out){
-    f_var_out->cd();
-    
-    // Grab the variation folders in the file
-    std::vector<std::string> variations = variation_output_bkg::GrabDirs(f_var_out); 
-
-    
-    std::vector<std::string> histnames = {"h_total_hits","h_ldg_shwr_hits", "h_ldg_shwr_hits_WPlane",
-                                         "h_ldg_shwr_Open_Angle", "h_ldg_shwr_dEdx_WPlane", "h_ldg_shwr_HitPerLen",
-                                         "h_ldg_shwr_Phi","h_ldg_shwr_Phi_wrapped", "h_ldg_shwr_Theta","h_ldg_shwr_CTheta",
-                                          "h_long_Track_ldg_shwr", "h_tpc_obj_vtx_x", "h_tpc_obj_vtx_y", "h_tpc_obj_vtx_z",
-                                          "h_n_pfp", "h_n_pfp_50Hits", "h_n_tracks", "h_n_tracks_50Hits", "h_n_showers",
-                                          "h_n_showers_50Hits", "h_track_phi", "h_shower_phi", "h_largest_flash_y", "h_largest_flash_z",
-                                          "h_largest_flash_time", "h_largest_flash_pe", "h_Flash_TPCObj_Dist",
-                                          "h_shower_Nu_vtx_Dist", "h_track_Nu_vtx_Dist", "h_selected" };
-
-    // Loop over the histograms
-    for (int j=0; j < histnames.size(); j++){
-        TH1D* hist;
-        
-        // Canvas + Legend
-        TCanvas* c = new TCanvas();
-        TLegend* legend;
-        if (histnames[j] == "h_ldg_shwr_CTheta") legend = new TLegend(0.15, 0.55, 0.37, 0.85); // Reposition
-        else if (histnames[j] == "h_tpc_obj_vtx_x" || histnames[j] == "h_tpc_obj_vtx_y" || histnames[j] == "h_tpc_obj_vtx_z" )
-                legend = new TLegend(0.15, 0.15, 0.37, 0.45); // Reposition
-        else if (histnames[j] == "h_largest_flash_z" ) legend = new TLegend(0.35, 0.59, 0.57, 0.89);
-        else legend = new TLegend(0.72, 0.59, 0.94, 0.89);
-
-        legend->SetBorderSize(0);
-        legend->SetFillStyle(0);
-
-        // Loop over variation directories
-        for (int i=0; i < variations.size(); i++){
-            char name[500];
-            snprintf(name, 500, "%s/%s", variations[i].c_str(),histnames[j].c_str() );
-
-            hist = (TH1D*)f_var_out->Get(name);
-            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
-
-            DrawTH1D_SAME(hist, variations[i], legend, histnames[j]);
-
-
-        }
-
-        // Print the Canvas
-        char Canvas_name[500];
-        snprintf(Canvas_name, 500, "plots/%s.pdf",histnames[j].c_str() ); 
-        legend->Draw();
-        c->Print(Canvas_name);
-
-    }
-    
-    // Make a Ratio Plot for leading shower phi and theta
-    // Canvas + Legend
-    std::string histname_ratio;
-    std::vector<std::string> histnames_phi_theta = {"h_ldg_shwr_Phi", "h_ldg_shwr_Theta", "h_ldg_shwr_Phi_wrapped", "h_selected"};
-    
-    for (int j=0; j < histnames_phi_theta.size(); j++){
-        TH1D* hist;
-        TH1D* hist_CV;
-        
-        // Canvas + Legend
-        TCanvas* c = new TCanvas();
-        TLegend* legend = new TLegend(0.72, 0.59, 0.94, 0.89);
-
-        legend->SetBorderSize(0);
-        legend->SetFillStyle(0);
-
-        // Loop over variation directories
-        for (int i=0; i < variations.size(); i++){
-            char name[500];
-            snprintf(name, 500, "%s/%s", variations[i].c_str(), histnames_phi_theta[j].c_str() );
-            hist = (TH1D*)f_var_out->Get(name);
-            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
-
-            char name_CV[500];
-            snprintf(name_CV, 500, "BNBCV/%s", histnames_phi_theta[j].c_str() );
-            hist_CV = (TH1D*)f_var_out->Get(name_CV);
-            if (hist_CV == NULL ) std::cout << "ERROR: Can't get CV Histogram!" << std::endl;
-
-            histname_ratio = histnames_phi_theta[j] + "_ratio";
-            
-            // hist->Sumw2();
-            // hist_CV->Sumw2();
-
-            TH1D* hist_divide = (TH1D*) hist->Clone("hist_divide");
-            
-            hist_divide->Divide(hist_CV);
-
-            if (variations[i] == "BNBCV"){
-                for (unsigned int k=1; k < hist_divide->GetNbinsX()+1; 	k++ ){
-                    hist_divide->SetBinContent(k, 1);
-                }
-            }
-            
-            DrawTH1D_SAME(hist_divide, variations[i], legend, histname_ratio);
-            
-        }
-        
-        // Print the Canvas
-        char Canvas_name[500];
-        snprintf(Canvas_name, 500, "plots/%s.pdf",histname_ratio.c_str() ); 
-        legend->Draw();
-        c->Print(Canvas_name);
-    }
-    
-    // Close the file
-    f_var_out->Close();
-
 }
 //***************************************************************************
 //************************** Flash Functions ********************************
@@ -1882,14 +2396,33 @@ bool variation_output_bkg::ContainedTracksCut(std::vector<double> fv_boundary_v,
 std::string variation_output_bkg::Background_Classifier(int mc_pdg, std::string tpc_obj_classification){
     std::string classification = "NULL";
 
-    if (mc_pdg == 11)
-        classification = "bkg e";                                // out of fv, mixed, cosmic (see two nc_pi0 ??)
+    // Due to low statistics we remove this catogory and absorb it into "other"
+    // if (mc_pdg == 11)
+    //     classification = "bkg_e";                                // out of fv, mixed, cosmic (see two nc_pi0 ??)
     
-    else if (mc_pdg == 22 && tpc_obj_classification != "cosmic") // photons from pi 0
-        classification = "pi0 gamma";
+    if (mc_pdg == 22 && tpc_obj_classification != "cosmic") // photons from pi 0
+        classification = "pi0_gamma";
     
     else 
-        classification = "other bkg";
+        classification = "other_bkg";
 
     return classification; 
 }
+//***************************************************************************
+//***************************************************************************
+double variation_output_bkg::WrapPhi(double phi){
+    double phi_wrapped{0};
+
+     // 90 to 180
+    if      (phi > 90   && phi < 180) phi_wrapped = 180 - phi;
+    
+    // 0 to -90
+    else if (phi > -90  && phi < 0)   phi_wrapped = phi * -1;
+    
+    // -90 to -180
+    else if (phi > -180 && phi < -90) phi_wrapped = 180 - (phi * -1);
+
+    return phi_wrapped;
+}
+//***************************************************************************
+//***************************************************************************
