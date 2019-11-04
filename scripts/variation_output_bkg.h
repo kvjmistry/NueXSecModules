@@ -123,6 +123,16 @@ class variation_output_bkg {
         TH2D_hist.at(kEBkg_cosmic_Phi_wrapped)  = new TH2D("h_EBkg_cosmic_Phi_wrapped",  "EBkg_cosmic_Phi_wrapped",  7, 0, 3, 5, 0, 90);
         TH2D_hist.at(kEBkg_other_Phi_wrapped)   = new TH2D("h_EBkg_other_Phi_wrapped",   "EBkg_other_Phi_wrapped",   7, 0, 3, 5, 0, 90);
 
+        TH2D_hist.at(kThetaBkg_Phi_wrapped)         = new TH2D("h_ThetaBkg_Phi_wrapped",         "ThetaBkg_Phi_wrapped",        12, 0, 180, 5, 0, 90); 
+        TH2D_hist.at(kThetaBkg_pi0_Phi_wrapped)     = new TH2D("h_ThetaBkg_pi0_Phi_wrapped",     "ThetaBkg_pi0_Phi_wrapped",    12, 0, 180, 5, 0, 90);
+        TH2D_hist.at(kThetaBkg_cosmic_Phi_wrapped)  = new TH2D("h_ThetaBkg_cosmic_Phi_wrapped",  "ThetaBkg_cosmic_Phi_wrapped", 12, 0, 180, 5, 0, 90);
+        TH2D_hist.at(kThetaBkg_other_Phi_wrapped)   = new TH2D("h_ThetaBkg_other_Phi_wrapped",   "ThetaBkg_other_Phi_wrapped",  12, 0, 180, 5, 0, 90);
+
+        TH2D_hist.at(kThetaBkg_Phi)         = new TH2D("h_ThetaBkg_Phi",         "ThetaBkg_Phi",        12, 0, 180, 12, -180, 180); 
+        TH2D_hist.at(kThetaBkg_pi0_Phi)     = new TH2D("h_ThetaBkg_pi0_Phi",     "ThetaBkg_pi0_Phi",    12, 0, 180, 12, -180, 180);
+        TH2D_hist.at(kThetaBkg_cosmic_Phi)  = new TH2D("h_ThetaBkg_cosmic_Phi",  "ThetaBkg_cosmic_Phi", 12, 0, 180, 12, -180, 180);
+        TH2D_hist.at(kThetaBkg_other_Phi)   = new TH2D("h_ThetaBkg_other_Phi",   "ThetaBkg_other_Phi",  12, 0, 180, 12, -180, 180);
+
         TBranch *bmc_phi       = VariableTree ->Branch("mc_phi",       &mc_Phi,       "mc_Phi");
         TBranch *bmc_phi_pi0   = VariableTree ->Branch("mc_phi_pi0",   &mc_Phi_pi0,   "mc_Phi_pi0");
         TBranch *bmc_phi_other = VariableTree ->Branch("mc_phi_other", &mc_Phi_other, "mc_Phi_other");
@@ -318,10 +328,10 @@ class variation_output_bkg {
     
     // 2D Histograms -- histograms now created in the default constructor
     std::vector<TH2D*> TH2D_hist;
-    enum TH2D_names{ kEBkg_Theta,        kEBkg_Phi,       kEBkg_Phi_wrapped,
-                     kEBkg_pi0_Theta,    kEBkg_pi0_Phi,   kEBkg_pi0_Phi_wrapped,
-                     kEBkg_cosmic_Theta, kEBkg_cosmic_Phi,kEBkg_cosmic_Phi_wrapped,
-                     kEBkg_other_Theta,  kEBkg_other_Phi, kEBkg_other_Phi_wrapped,
+    enum TH2D_names{ kEBkg_Theta,        kEBkg_Phi,       kEBkg_Phi_wrapped,        kThetaBkg_Phi_wrapped,        kThetaBkg_Phi, 
+                     kEBkg_pi0_Theta,    kEBkg_pi0_Phi,   kEBkg_pi0_Phi_wrapped,    kThetaBkg_pi0_Phi_wrapped,    kThetaBkg_pi0_Phi, 
+                     kEBkg_cosmic_Theta, kEBkg_cosmic_Phi,kEBkg_cosmic_Phi_wrapped, kThetaBkg_cosmic_Phi_wrapped, kThetaBkg_cosmic_Phi, 
+                     kEBkg_other_Theta,  kEBkg_other_Phi, kEBkg_other_Phi_wrapped,  kThetaBkg_other_Phi_wrapped,  kThetaBkg_other_Phi, 
                      kTH2D_names_MAX};
 
     

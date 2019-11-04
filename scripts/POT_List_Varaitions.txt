@@ -59,7 +59,9 @@ File: filter_BNBwithDIC.root
 Total POT (Method 1): 1.96741e+20
 Total POT (Method 2): 1.96741e+20
 File: filter_BNBCV.root
-Total POT (Method 1): 7.21886e+20
+Total POT (Method 1): 1.93802e+20
+Total POT (Method 2): 1.93802e+20
+Total POT (Method 1): 7.21886e+20 # These are for the larger sample 
 Total POT (Method 2): 7.21886e+20
 File: filter_BNBdeadSaturatedChannels.root
 Total POT (Method 1): 1.94234e+20

@@ -92,10 +92,17 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     //*************************** POT Scaling *************************************
     std::cout << "=================================================\n" << std::endl;
     
-    double CV_POT =  GetPOT("/uboone/data/users/kmistry/work/NueXSection_Outputs/detector_variations/filter_BNBCV.root");
+    double CV_POT;
+    
+    if (mode == "bnb") 
+        CV_POT =  GetPOT("/uboone/data/users/kmistry/work/NueXSection_Outputs/detector_variations/bnb_det_var_cv/filter_BNBCV.root");
+    else
+        CV_POT = GetPOT("/uboone/data/users/kmistry/work/NueXSection_Outputs/detector_variations/numi_det_var/filter_NuMICV.root");
+        
     double POT_Scaling;
-    if (mode == "numi") POT_Scaling =  1.0;
-    else POT_Scaling =  CV_POT / GetPOT(_file1);
+    // if (mode == "numi") POT_Scaling =  1.0;
+    
+    POT_Scaling =  CV_POT / GetPOT(_file1);
     
     std::cout << "POT Scaling:\t" << POT_Scaling << std::endl;
     std::cout << "=================================================\n" << std::endl;
@@ -407,31 +414,37 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         // Fill the phi distribtuons for the bkgs
                         if (bkg_class == "pi0_gamma") {
                             mc_Phi_pi0 = mc_Phi;
-                            TH1D_hist.at(kshower_phi_pi0)        ->Fill(mc_Phi);
-                            TH1D_hist.at(kshower_E_pi0)          ->Fill(mc_Energy);
-                            TH1D_hist.at(kshower_phi_pi0_wrapped)->Fill(mc_phi_wrapped);
-                            TH2D_hist.at(kEBkg_pi0_Theta)        ->Fill(mc_Energy, mc_Theta);
-                            TH2D_hist.at(kEBkg_pi0_Phi)          ->Fill(mc_Energy, mc_Phi);
-                            TH2D_hist.at(kEBkg_pi0_Phi_wrapped)  ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH1D_hist.at(kshower_phi_pi0)          ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_pi0)            ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_pi0_wrapped)  ->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_pi0_Theta)          ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_pi0_Phi)            ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_pi0_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_pi0_Phi_wrapped)->Fill(mc_Theta, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_pi0_Phi)        ->Fill(mc_Theta, mc_Phi);
                         }
                         
                         if (bkg_class == "cosmic") {
-                            TH1D_hist.at(kshower_phi_bkg_cosmic)        ->Fill(mc_Phi);
-                            TH1D_hist.at(kshower_E_bkg_cosmic)          ->Fill(mc_Energy);
-                            TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped)->Fill(mc_phi_wrapped);
-                            TH2D_hist.at(kEBkg_cosmic_Theta)        ->Fill(mc_Energy, mc_Theta);
-                            TH2D_hist.at(kEBkg_cosmic_Phi)          ->Fill(mc_Energy, mc_Phi);
-                            TH2D_hist.at(kEBkg_cosmic_Phi_wrapped)  ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH1D_hist.at(kshower_phi_bkg_cosmic)         ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_bkg_cosmic)           ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped) ->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_cosmic_Theta)             ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_cosmic_Phi)               ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_cosmic_Phi_wrapped)       ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_cosmic_Phi_wrapped)   ->Fill(mc_Theta, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_cosmic_Phi)           ->Fill(mc_Theta, mc_Phi);
                         }
                         
                         if (bkg_class == "other_bkg") {
                             mc_Phi_other = mc_Phi;
-                            TH1D_hist.at(kshower_phi_other)         ->Fill(mc_Phi);
-                            TH1D_hist.at(kshower_E_other)           ->Fill(mc_Energy);
-                            TH1D_hist.at(kshower_phi_other_wrapped) ->Fill(mc_phi_wrapped);
-                            TH2D_hist.at(kEBkg_other_Theta)         ->Fill(mc_Energy, mc_Theta);
-                            TH2D_hist.at(kEBkg_other_Phi)           ->Fill(mc_Energy, mc_Phi);
-                            TH2D_hist.at(kEBkg_other_Phi_wrapped)   ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH1D_hist.at(kshower_phi_other)          ->Fill(mc_Phi);
+                            TH1D_hist.at(kshower_E_other)            ->Fill(mc_Energy);
+                            TH1D_hist.at(kshower_phi_other_wrapped)  ->Fill(mc_phi_wrapped);
+                            TH2D_hist.at(kEBkg_other_Theta)          ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_other_Phi)            ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_other_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_other_Phi_wrapped)->Fill(mc_Theta, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_other_Phi)        ->Fill(mc_Theta, mc_Phi);
                         }
 
                         // Vertex Information - require a shower so fill once  when leading shower
@@ -443,6 +456,9 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         TH2D_hist.at(kEBkg_Theta)         ->Fill(mc_Energy, mc_Theta);
                         TH2D_hist.at(kEBkg_Phi)           ->Fill(mc_Energy, mc_Phi);
                         TH2D_hist.at(kEBkg_Phi_wrapped)   ->Fill(mc_Energy, mc_phi_wrapped);
+                        
+                        TH2D_hist.at(kThetaBkg_Phi_wrapped)   ->Fill(mc_Theta, mc_phi_wrapped);
+                        TH2D_hist.at(kThetaBkg_Phi)           ->Fill(mc_Theta, mc_Phi);
 
                         VariableTree->Fill();
 
@@ -681,7 +697,11 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
         c->Print(Canvas_name);
     }
     // ************************** 2D Histograms ********************************
-    std::vector<std::string> histnames_2D = {"h_EBkg_Theta", "h_EBkg_Phi"};
+    std::vector<std::string> histnames_2D = {"h_EBkg_Theta",       "h_EBkg_Phi",       "h_EBkg_Phi_wrapped",        "h_ThetaBkg_Phi_wrapped",        "h_ThetaBkg_Phi", 
+                                             "h_EBkg_pi0_Theta",   "h_EBkg_pi0_Phi",   "h_EBkg_pi0_Phi_wrapped",    "h_ThetaBkg_pi0_Phi_wrapped",    "h_ThetaBkg_pi0_Phi", 
+                                             "h_EBkg_cosmic_Theta","h_EBkg_cosmic_Phi","h_EBkg_cosmic_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped", "h_ThetaBkg_cosmic_Phi", 
+                                             "h_EBkg_other_Theta", "h_EBkg_other_Phi", "h_EBkg_other_Phi_wrapped",  "h_ThetaBkg_other_Phi_wrapped",  "h_ThetaBkg_other_Phi"};
+    
 
     // Loop over the histograms
     for (int j=0; j < histnames_2D.size(); j++){
@@ -822,10 +842,10 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
     }
     
     // ************************** 2D Histograms ********************************
-    std::vector<std::string> histnames_2D = {"h_EBkg_Theta",       "h_EBkg_Phi",       "h_EBkg_Phi_wrapped",
-                                             "h_EBkg_pi0_Theta",   "h_EBkg_pi0_Phi",   "h_EBkg_pi0_Phi_wrapped",
-                                             "h_EBkg_cosmic_Theta","h_EBkg_cosmic_Phi","h_EBkg_cosmic_Phi_wrapped",
-                                             "h_EBkg_other_Theta", "h_EBkg_other_Phi", "h_EBkg_other_Phi_wrapped" };
+    std::vector<std::string> histnames_2D = {"h_EBkg_Theta",       "h_EBkg_Phi",       "h_EBkg_Phi_wrapped",        "h_ThetaBkg_Phi_wrapped",        "h_ThetaBkg_Phi", 
+                                             "h_EBkg_pi0_Theta",   "h_EBkg_pi0_Phi",   "h_EBkg_pi0_Phi_wrapped",    "h_ThetaBkg_pi0_Phi_wrapped",    "h_ThetaBkg_pi0_Phi", 
+                                             "h_EBkg_cosmic_Theta","h_EBkg_cosmic_Phi","h_EBkg_cosmic_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped", "h_ThetaBkg_cosmic_Phi", 
+                                             "h_EBkg_other_Theta", "h_EBkg_other_Phi", "h_EBkg_other_Phi_wrapped",  "h_ThetaBkg_other_Phi_wrapped",  "h_ThetaBkg_other_Phi"};
 
     // Loop over the histograms
     for (int j=0; j < histnames_2D.size(); j++){
@@ -1493,6 +1513,8 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
     // ----------------------
     //    Axis Specifiers
     // ----------------------
+
+    // All Bkg
     if (histname == "h_EBkg_Theta" || histname == "h_EBkg_Theta_ratio"){
         hist->SetTitle(Form("%s;Leading Shower MC Energy [GeV]; Leading Shower MC Theta [deg]", variation_name.c_str()));
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Energy [GeV]; Leading Shower MC Theta [deg]", variation_name.c_str()));
@@ -1508,7 +1530,18 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Energy [GeV]; Leading Shower MC Phi Wrapped [deg]", variation_name.c_str()));
         // hist->GetYaxis()->SetRangeUser(0,4500);
     }
-    
+    else if (histname == "h_ThetaBkg_Phi_wrapped" || histname == "h_ThetaBkg_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower MC Theta [degrees]; Leading Shower MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Theta [degrees]; Leading Shower MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_ThetaBkg_Phi" || histname == "h_ThetaBkg_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower MC Theta [degrees]; Leading Shower MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower MC Theta [degrees]; Leading Shower MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+
+    // Pi0
     else if (histname == "h_EBkg_pi0_Theta" || histname == "h_EBkg_pi0_Theta_ratio"){
         hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Theta [deg]", variation_name.c_str()));
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Theta [deg]", variation_name.c_str()));
@@ -1524,7 +1557,18 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Energy [GeV]; Leading Shower (#pi^{0}) MC Phi Wrapped [deg]", variation_name.c_str()));
         // hist->GetYaxis()->SetRangeUser(0,4500);
     }
+    else if (histname == "h_ThetaBkg_pi0_Phi_wrapped" || histname == "h_ThetaBkg_pi0_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Theta [degrees]; Leading Shower (#pi^{0}) MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Theta [degrees]; Leading Shower (#pi^{0}) MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_ThetaBkg_pi0_Phi" || histname == "h_ThetaBkg_pi0_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower (#pi^{0}) MC Theta [degrees]; Leading Shower (#pi^{0}) MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower (#pi^{0}) MC Theta [degrees]; Leading Shower (#pi^{0}) MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
    
+   // Cosmic
     else if (histname == "h_EBkg_cosmic_Theta" || histname == "h_EBkg_cosmic_Theta_ratio"){
         hist->SetTitle(Form("%s;Leading Shower Bkg cosmic MC Energy [GeV]; Leading Shower Bkg cosmic MC Theta [deg]", variation_name.c_str()));
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg cosmic MC Energy [GeV]; Leading Shower Bkg cosmic MC Theta [deg]", variation_name.c_str()));
@@ -1540,7 +1584,18 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg cosmic MC Energy [GeV]; Leading Shower Bkg cosmic MC Phi Wrapped [deg]", variation_name.c_str()));
         // hist->GetYaxis()->SetRangeUser(0,4500);
     }
+    else if (histname == "h_ThetaBkg_cosmic_Phi_wrapped" || histname == "h_ThetaBkg_cosmic_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower cosmic MC Theta [degrees]; Leading Shower cosmic MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower cosmic MC Theta [degrees]; Leading Shower cosmic MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_ThetaBkg_cosmic_Phi" || histname == "h_ThetaBkg_cosmic_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower cosmic MC Theta [degrees]; Leading Shower cosmic MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower cosmic MC Theta [degrees]; Leading Shower cosmic MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
    
+   // Other
     else if (histname == "h_EBkg_other_Theta" || histname == "h_EBkg_other_Theta_ratio"){
         hist->SetTitle(Form("%s;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Theta [deg]", variation_name.c_str()));
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Theta [deg]", variation_name.c_str()));
@@ -1556,6 +1611,17 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
         if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Bkg Other MC Energy [GeV]; Leading Shower Bkg Other MC Phi Wrapped [deg]", variation_name.c_str()));
         // hist->GetYaxis()->SetRangeUser(0,4500);
     }
+    else if (histname == "h_ThetaBkg_other_Phi_wrapped" || histname == "h_ThetaBkg_other_Phi_wrapped_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Other MC Theta [degrees]; Leading Shower Other MC Phi Wrapped [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Other MC Theta [degrees]; Leading Shower Other MC Phi Wrapped [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+    else if (histname == "h_ThetaBkg_other_Phi" || histname == "h_ThetaBkg_other_Phi_ratio"){
+        hist->SetTitle(Form("%s;Leading Shower Other MC Theta [degrees]; Leading Shower Other MC Phi [deg]", variation_name.c_str()));
+        if (bool_ratio) hist->SetTitle(Form("%s Ratio to CV;Leading Shower Other MC Theta [degrees]; Leading Shower Other MC Phi [deg]", variation_name.c_str()));
+        // hist->GetYaxis()->SetRangeUser(0,4500);
+    }
+
 
     hist->GetXaxis()->SetLabelSize(0.05);
 	hist->GetXaxis()->SetTitleSize(0.05);
