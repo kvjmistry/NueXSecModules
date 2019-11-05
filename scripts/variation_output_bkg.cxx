@@ -35,10 +35,13 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     gStyle->SetOptStat(0); // say no to stats box
 
     // Choose which file 
-    if (mode == "bnb")
+    if (mode == "bnb"){
         f_var_out = new TFile("plots/variation_out_bnb_bkg.root","UPDATE");
-    else if (mode == "numi")
+        draw_mode = "bnb";
+    }
+    else if (mode == "numi"){
         f_var_out = new TFile("plots/variation_out_numi_bkg.root","UPDATE");
+    }
     else return;
 
     //*************************** Configure the cut parameters *************************************
@@ -577,6 +580,9 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
     system("if [ ! -d \"plots/bnb/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/bnb/; fi");
     system("if [ ! -d \"plots/numi/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi/; fi");
 
+    system("if [ ! -d \"plots_png/bnb/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/bnb/; fi");
+    system("if [ ! -d \"plots_png/numi/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi/; fi");
+
     std::string mode_str;
 
     if (mode == "bnb")
@@ -633,6 +639,8 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
         char Canvas_name[500];
         snprintf(Canvas_name, 500, "plots/%s/%s.pdf", mode_str.c_str(), histnames[j].c_str() ); 
         legend->Draw();
+        c->Print(Canvas_name);
+        snprintf(Canvas_name, 500, "plots_png/%s/%s.png", mode_str.c_str(), histnames[j].c_str() );
         c->Print(Canvas_name);
 
     }
@@ -695,6 +703,10 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
         snprintf(Canvas_name, 500, "plots/%s/%s.pdf",mode_str.c_str(), histname_ratio.c_str() ); 
         legend->Draw();
         c->Print(Canvas_name);
+
+        snprintf(Canvas_name, 500, "plots_png/%s/%s.png",mode_str.c_str(), histname_ratio.c_str() ); 
+        c->Print(Canvas_name);
+
     }
     // ************************** 2D Histograms ********************************
     std::vector<std::string> histnames_2D = {"h_EBkg_Theta",       "h_EBkg_Phi",       "h_EBkg_Phi_wrapped",        "h_ThetaBkg_Phi_wrapped",        "h_ThetaBkg_Phi", 
@@ -724,6 +736,8 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
             char Canvas_name[1000];
             snprintf(Canvas_name, 1000, "plots/%s/%s_%s.pdf",mode_str.c_str(),histnames_2D[j].c_str(), variations[i].c_str() ); 
             c->Print(Canvas_name);
+            snprintf(Canvas_name, 1000, "plots_png/%s/%s_%s.png",mode_str.c_str(),histnames_2D[j].c_str(), variations[i].c_str() ); 
+            c->Print(Canvas_name);
             c->Close();
         }
     }
@@ -741,6 +755,7 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
 
     // create plots folder if it does not exist
     system("if [ ! -d \"plots/numi_bnb_comparisons\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons; fi");
+    system("if [ ! -d \"plots_png/numi_bnb_comparisons\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi_bnb_comparisons; fi");
     
     f_bnb  = new TFile("plots/variation_out_bnb_bkg.root" ,"UPDATE");
     f_numi = new TFile("plots/variation_out_numi_bkg.root","UPDATE");
@@ -833,10 +848,15 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
         legend->Draw();
         c->Print(Canvas_name);
 
+        snprintf(Canvas_name, 500, "plots_png/numi_bnb_comparisons/%s.png",histnames[j].c_str() ); 
+        c->Print(Canvas_name);
+
         if (bool_string) {
             c->Clear();
             DrawTH1D_Ratio(hist_divide,  histnames[j]);
             snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s_ratio.pdf",histnames[j].c_str() );
+            c->Print(Canvas_name);
+            snprintf(Canvas_name, 500, "plots_png/numi_bnb_comparisons/%s_ratio.png",histnames[j].c_str() );
             c->Print(Canvas_name);
         }
     }
@@ -868,6 +888,8 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
             // Print the Canvas
             char Canvas_name[1000];
             snprintf(Canvas_name, 1000, "plots/numi_bnb_comparisons/%s_%s.pdf",histnames_2D[j].c_str(), variations[i].c_str() ); 
+            c->Print(Canvas_name);
+            snprintf(Canvas_name, 1000, "plots_png/numi_bnb_comparisons/%s_%s.png",histnames_2D[j].c_str(), variations[i].c_str() ); 
             c->Print(Canvas_name);
             c->Close();
         }
@@ -994,7 +1016,7 @@ void variation_output_bkg::DrawTH2D(TH2D* h, double POT_Scaling){
 //***************************************************************************
 void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLegend* legend, std::string histname){
     
-    // ----------------------
+    // ---------------------- 
     //    Axis Specifiers
     // ----------------------
     if (histname == "h_total_hits"){
@@ -1015,7 +1037,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_dEdx_WPlane"){
         hist->SetTitle(";Leading Shower dEdx Collection Plane [MeV/cm];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,7000);
+        hist->GetYaxis()->SetRangeUser(0,135);
     }
     else if (histname == "h_ldg_shwr_HitPerLen"){
         hist->SetTitle(";Leading Shower Hits / Length [ cm^{-1} ];Entries");
@@ -1023,11 +1045,15 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_Phi"){
         hist->SetTitle(";Leading Shower #phi [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,40);
+        hist->GetYaxis()->SetRangeUser(0,250);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,50);
     }
     else if (histname == "h_ldg_shwr_Theta"){
         hist->SetTitle(";Leading Shower #theta [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,7000);
+        hist->GetYaxis()->SetRangeUser(0,200);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,60);
     }
     else if (histname == "h_ldg_shwr_Phi_ratio"){
         hist->SetTitle(";Leading Shower #phi [degrees];Ratio");
@@ -1035,7 +1061,9 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped"){
         hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,40);
+        hist->GetYaxis()->SetRangeUser(0,400);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,60);
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped_ratio"){
         hist->SetTitle(";Leading Shower #phi (wrapped) ratio [degrees];Ratio");
@@ -1047,7 +1075,9 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_ldg_shwr_CTheta"){
         hist->SetTitle(";Leading Shower cos(#theta);Entries");
-        // hist->GetYaxis()->SetRangeUser(0,7000);
+        hist->GetYaxis()->SetRangeUser(0,300);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,60);
     }
     else if (histname == "h_long_Track_ldg_shwr"){
         hist->SetTitle(";Longest Track Length / Leading Shower Length;Entries");
@@ -1091,11 +1121,15 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_track_phi"){
         hist->SetTitle("; Track #phi [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,6000);
+        hist->GetYaxis()->SetRangeUser(0,60);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,20);
     }
     else if (histname == "h_shower_phi"){
         hist->SetTitle("; Shower #phi [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,500);
+        hist->GetYaxis()->SetRangeUser(0,800);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,300);
     }			
     else if (histname == "h_largest_flash_y"){
         hist->SetTitle(";Largest Flash Y [cm];Entries");
@@ -1119,17 +1153,23 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname == "h_shower_Nu_vtx_Dist"){
         hist->SetTitle("; 3D Distance of Shower to #nu Vertex [cm];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,1200);
+        hist->GetYaxis()->SetRangeUser(0,1000);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,300);
     }
     else if (histname == "h_track_Nu_vtx_Dist"){
         hist->SetTitle("; 3D Distance of Track to #nu Vertex [cm];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,18000);
+        hist->GetYaxis()->SetRangeUser(0,150);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,50);
     }
     else if (histname == "h_selected"){
         hist->SetTitle("; Num Background Selected;Entries");
         hist->GetXaxis()->SetLabelOffset(999);
         hist->GetXaxis()->SetLabelSize(0);
-        hist->GetYaxis()->SetRangeUser(100,600);
+        hist->GetYaxis()->SetRangeUser(400,700);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,200); 
     }
     else if (histname == "h_selected_ratio"){
         hist->SetTitle("; Num Background Selected;Ratio");
@@ -1139,43 +1179,63 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     }
     else if (histname ==  "h_shower_phi_pi0"){
         hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,50);
+        // hist->GetYaxis()->SetRangeUser(0,50);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,30);
     }
     else if (histname ==  "h_shower_phi_bkg_cosmic"){
         hist->SetTitle("; Leading Shower Phi cosmic Bkg [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,10);
+        hist->GetYaxis()->SetRangeUser(0,50);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,20);
     }
     else if (histname ==  "h_shower_phi_other"){
         hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,30);
+        hist->GetYaxis()->SetRangeUser(0,50);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,10);
     }
     else if (histname ==  "h_shower_phi_pi0_wrapped"){
         hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,120);
+        hist->GetYaxis()->SetRangeUser(0,220);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,60);
     }
     else if (histname ==  "h_shower_phi_bkg_cosmic_wrapped"){
         hist->SetTitle("; Leading Shower Phi Wrapped cosmic Bkg [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,15);
+        hist->GetYaxis()->SetRangeUser(0,40);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,15);
     }
     else if (histname ==  "h_shower_phi_other_wrapped"){
         hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Entries");
-        hist->GetYaxis()->SetRangeUser(0,70);
+        hist->GetYaxis()->SetRangeUser(0,100);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,20);
     }
     else if (histname ==  "h_shower_E_pi0"){
         hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [GeV];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,50);
+        hist->GetYaxis()->SetRangeUser(0,300);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,80);
     }
     else if (histname ==  "h_shower_E_bkg_cosmic"){
         hist->SetTitle("; Leading Shower Energy cosmic Bkg [GeV];Entries");
-        hist->GetYaxis()->SetRangeUser(0,10);
+        // hist->GetYaxis()->SetRangeUser(0,10);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,10);
     }
     else if (histname ==  "h_shower_E_other"){
         hist->SetTitle("; Leading Shower Energy Other Bkg [GeV];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,30);
+        hist->GetYaxis()->SetRangeUser(0,100);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,30);
     }
     else if (histname ==  "h_shower_E"){
         hist->SetTitle("; Leading Shower Energy Bkg [GeV];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,30);
+        hist->GetYaxis()->SetRangeUser(0,300);
+
+        if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,110);
     }
     else return;
 

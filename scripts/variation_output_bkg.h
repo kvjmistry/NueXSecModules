@@ -348,7 +348,7 @@ class variation_output_bkg {
     TTree* VariableTree = new TTree("VariableTree","VariableTree");;
     double mc_Phi_pi0 = -999, mc_Phi_other = -999, mc_Phi = -999;
 
-
+    std::string draw_mode = "";
 
     private:
 
