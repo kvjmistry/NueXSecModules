@@ -754,15 +754,21 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
     TFile *f_bnb, *f_numi;
 
     // create plots folder if it does not exist
-    system("if [ ! -d \"plots/numi_bnb_comparisons\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons; fi");
-    system("if [ ! -d \"plots_png/numi_bnb_comparisons\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi_bnb_comparisons; fi");
+    system("if [ ! -d \"plots/numi_bnb_comparisons/CV/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons/CV; fi");
+    system("if [ ! -d \"plots_png/numi_bnb_comparisons/CV/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi_bnb_comparisons/CV/; fi");
+
+    system("if [ ! -d \"plots/numi_bnb_comparisons/DIC/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons/DIC; fi");
+    system("if [ ! -d \"plots_png/numi_bnb_comparisons/DIC/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi_bnb_comparisons/DIC/; fi");
+
+    system("if [ ! -d \"plots/numi_bnb_comparisons/LArG4BugFix/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/numi_bnb_comparisons/LArG4BugFix; fi");
+    system("if [ ! -d \"plots_png/numi_bnb_comparisons/LArG4BugFix/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/numi_bnb_comparisons/LArG4BugFix/; fi");
     
     f_bnb  = new TFile("plots/variation_out_bnb_bkg.root" ,"UPDATE");
     f_numi = new TFile("plots/variation_out_numi_bkg.root","UPDATE");
    
     
     // Grab the variation folders in the file
-    std::vector<std::string> variations = {"NuMICV", "BNBCV"};
+    std::vector<std::string> variations = {"NuMICV", "BNBCV", "NuMIwithDIC", "BNBwithDIC", "NuMILArG4BugFix", "BNBLArG4BugFix"};
 
      // ************************** 1D Histograms *******************************
     std::vector<std::string> histnames = {"h_total_hits",             "h_ldg_shwr_hits",             "h_ldg_shwr_hits_WPlane",
@@ -795,6 +801,10 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
         legend->SetBorderSize(0);
         legend->SetFillStyle(0);
 
+        TLegend* legend_ratio = new TLegend(0.72, 0.59, 0.94, 0.89);
+        legend_ratio->SetBorderSize(0);
+        legend_ratio->SetFillStyle(0);
+
         // Loop over variation directories and get the histograms
         for (int i=0; i < variations.size(); i++){
             char name[500];
@@ -812,8 +822,8 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
            hist_areas.at(i) = hist.at(i)->Integral(0, -1);
         }
 
-        // Now we want to normalise the histograms by area -- scale everything to first variation = numi
-        for (int i=1; i < variations.size(); i++){
+        // Now we want to normalise the histograms by area -- scale the pairs of variations to the numi
+        for (int i=1; i < variations.size(); i+=2){
            hist.at(i)->Scale(hist_areas.at(i - 1) / hist_areas.at(i));
         }
 
@@ -836,24 +846,58 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
             hist_divide->Divide(hist.at(0)); // NuMI CV
         }
 
-
-        // Now draw the histograms
-        for (int i=0; i < variations.size(); i++){
-            DrawTH1D_SAME(hist.at(i), variations[i], legend, histnames[j]);
+        TH1D *hist_divide_withDIC = (TH1D*) hist.at(3)->Clone("hist_divide_withDIC"); // BNB withDIC
+        if (bool_string) {
+            hist_divide_withDIC->Sumw2();
+            hist_divide_withDIC->Divide(hist.at(2)); // NuMI withDIC
         }
 
-        // Print the Canvas
+        TH1D *hist_divide_LArG4BugFix = (TH1D*) hist.at(5)->Clone("hist_divide_LArG4BugFix"); // BNB LArG4BugFix
+        if (bool_string) {
+            hist_divide_LArG4BugFix->Sumw2();
+            hist_divide_LArG4BugFix->Divide(hist.at(4)); // NuMI LArG4BugFix
+        }
+
+
         char Canvas_name[500];
-        snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s.pdf",histnames[j].c_str() ); 
-        legend->Draw();
-        c->Print(Canvas_name);
 
-        snprintf(Canvas_name, 500, "plots_png/numi_bnb_comparisons/%s.png",histnames[j].c_str() ); 
-        c->Print(Canvas_name);
+        // Now draw the histograms, one plot for each pair of variaions
+        for (int i=0; i < variations.size(); i+=2){
+            c->Clear();
+            c = new TCanvas();
 
+            legend->Clear();
+            legend = new TLegend(0.72, 0.59, 0.94, 0.89);
+            legend->SetBorderSize(0);
+            legend->SetFillStyle(0);
+            
+            DrawTH1D_SAME(hist.at(i),   variations[i],   legend, histnames[j]);
+            DrawTH1D_SAME(hist.at(i+1), variations[i+1], legend, histnames[j]);
+        
+            std::string var_str;
+
+            if (i == 0)      var_str = "CV";
+            else if (i == 2) var_str = "DIC";
+            else             var_str = "LArG4BugFix";
+
+            // Print the Canvas
+            snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s/%s_%s.pdf",var_str.c_str(), histnames[j].c_str(), var_str.c_str() ); 
+            legend->Draw();
+            c->Print(Canvas_name);
+
+            snprintf(Canvas_name, 500, "plots_png/numi_bnb_comparisons/%s/%s_%s.png",var_str.c_str(), histnames[j].c_str(), var_str.c_str() ); 
+            c->Print(Canvas_name);
+        
+        }
+
+        // Plot the ratios, 1 plot for all variations
         if (bool_string) {
             c->Clear();
-            DrawTH1D_Ratio(hist_divide,  histnames[j]);
+            c = new TCanvas();
+            DrawTH1D_Ratio(hist_divide,             "CV",          legend_ratio, histnames[j]);
+            DrawTH1D_Ratio(hist_divide_withDIC,     "withDIC",     legend_ratio, histnames[j]);
+            DrawTH1D_Ratio(hist_divide_LArG4BugFix, "LArG4BugFix", legend_ratio, histnames[j]);
+            legend_ratio->Draw();
             snprintf(Canvas_name, 500, "plots/numi_bnb_comparisons/%s_ratio.pdf",histnames[j].c_str() );
             c->Print(Canvas_name);
             snprintf(Canvas_name, 500, "plots_png/numi_bnb_comparisons/%s_ratio.png",histnames[j].c_str() );
@@ -885,11 +929,17 @@ void variation_output_bkg::PlotVariatonsNuMIBNB(){
 
             DrawTH2D_SAME(hist, variations[i], histnames_2D[j]);
 
+            std::string var_str;
+
+            if (i == 0)      var_str = "CV";
+            else if (i == 2) var_str = "DIC";
+            else             var_str = "LArG4BugFix";
+
             // Print the Canvas
             char Canvas_name[1000];
-            snprintf(Canvas_name, 1000, "plots/numi_bnb_comparisons/%s_%s.pdf",histnames_2D[j].c_str(), variations[i].c_str() ); 
+            snprintf(Canvas_name, 1000, "plots/numi_bnb_comparisons/%s/%s_%s.pdf",var_str.c_str(), histnames_2D[j].c_str(), variations[i].c_str() ); 
             c->Print(Canvas_name);
-            snprintf(Canvas_name, 1000, "plots_png/numi_bnb_comparisons/%s_%s.png",histnames_2D[j].c_str(), variations[i].c_str() ); 
+            snprintf(Canvas_name, 1000, "plots_png/numi_bnb_comparisons/%s/%s_%s.png",var_str.c_str(), histnames_2D[j].c_str(), variations[i].c_str() ); 
             c->Print(Canvas_name);
             c->Close();
         }
@@ -1398,7 +1448,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
 }
 //***************************************************************************
 //***************************************************************************
-void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string histname){
+void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string variation, TLegend* legend, std::string histname){
 
     TLine *line;
 
@@ -1410,76 +1460,104 @@ void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string histname){
 	gPad->SetBottomMargin(0.12);
 
     if (histname == "h_ldg_shwr_Phi"){
-        hist->SetTitle(";Leading Shower #phi [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle(";Leading Shower #phi [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,40);
         line = new TLine(-180,1,180,1); 
     }
     else if (histname == "h_ldg_shwr_Theta"){
-        hist->SetTitle(";Leading Shower #theta [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle(";Leading Shower #theta [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,7000);
         line = new TLine(0,1,180,1); 
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped"){
-        hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,40);
         line = new TLine(0,1,90,1); 
     }
     else if (histname ==  "h_shower_phi_pi0"){
-        hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,50);
         line = new TLine(-180,1,180,1); 
     }
     else if (histname ==  "h_shower_phi_bkg_cosmic"){
-        hist->SetTitle("; Leading Shower Phi cosmic Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi cosmic Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,10);
         line = new TLine(-180,1,180,1); 
     }
     else if (histname ==  "h_shower_phi_other"){
-        hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,30);
         line = new TLine(-180,1,180,1);  
     }
     else if (histname ==  "h_shower_phi_pi0_wrapped"){
-        hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,120);
         line = new TLine(0,1,90,1); 
     }
     else if (histname ==  "h_shower_phi_bkg_cosmic_wrapped"){
-        hist->SetTitle("; Leading Shower Phi Wrapped cosmic Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi Wrapped cosmic Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,15);
         line = new TLine(0,1,90,1); 
     }
     else if (histname ==  "h_shower_phi_other_wrapped"){
-        hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,70);
         line = new TLine(0,1,90,1); 
     }
     else if (histname ==  "h_shower_E_pi0"){
-        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,50);
         line = new TLine(0,1,3,1); 
     }
     else if (histname ==  "h_shower_E_bkg_cosmic"){
-        hist->SetTitle("; Leading Shower Energy cosmic Bkg [GeV];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Energy cosmic Bkg [GeV];Ratio BNB / NuMI");
         hist->GetYaxis()->SetRangeUser(0,10);
         line = new TLine(0,1,5,1);  
     }
     else if (histname ==  "h_shower_E_other"){
-        hist->SetTitle("; Leading Shower Energy Other Bkg [degrees];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Energy Other Bkg [degrees];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,30);
         line = new TLine(0,1,3,1); 
     }
     else if (histname ==  "h_shower_E"){
-        hist->SetTitle("; Leading Shower Bkg Energy[GeV];Ratio BNB / NuMI CV");
+        hist->SetTitle("; Leading Shower Bkg Energy[GeV];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,30);
         line = new TLine(0,1,3,1); 
     }
 
-    hist->SetLineColor(kBlack);
-    hist->SetLineWidth(2);
 
-    hist->SetOption("E");
-    hist->Draw();
+    // ----------------------
+    //    Draw Specifiers
+    // ----------------------
+    if (variation == "CV"){
+        hist->SetLineColor(kBlack);
+        hist->SetLineWidth(2);
+        hist->SetLineStyle(1);
+        legend->AddEntry(hist, "CV", "l");
+        
+    } 
+    else if  (variation == "withDIC"){
+        hist->SetLineColor(kMagenta+2);
+        hist->SetLineWidth(2);
+        hist->SetLineStyle(1);
+        legend->AddEntry(hist, "DIC", "l");
+
+    }
+    else if  (variation == "LArG4BugFix"){
+        hist->SetLineColor(kSpring-7);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "LArG4BugFix", "l");
+        hist->SetLineStyle(1);
+    }
+    else {
+        std::cout << "Error! Could not match varations:\t" << variation << std::endl;
+        return;
+    }
+
+    hist->GetYaxis()->SetRangeUser(-2,5);
+
+    // hist->SetOption("E");
+    hist->Draw("E, same");
 
     
     line->SetLineStyle(7);

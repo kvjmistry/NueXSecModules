@@ -157,7 +157,7 @@ class variation_output_bkg {
     std::vector<std::string> GrabDirs(TFile* f_var_out);                                                // Grabs the directories in the file
     void DrawTH1D_SAME(TH1D* hist, std::string variation, TLegend* legend, std::string histname);       // Function that draws a TH1D histogram for the same plot
     void DrawTH2D_SAME(TH2D* hist, std::string variation, std::string histname);                        // Function that draws a TH2D histogram for the same plot
-    void DrawTH1D_Ratio(TH1D* hist, std::string histname);                       // As above but for drawing the ratios
+    void DrawTH1D_Ratio(TH1D* hist,  std::string variation, TLegend* legend, std::string histname);                       // As above but for drawing the ratios
     
     void GetNumber_Track_Shower(const int n_pfp, int n_tpc_obj,                                         // Utility function to get the number of tracks and showers
                                      xsecAna::TPCObjectContainer tpc_obj, int &n_showers, int &n_tracks,
