@@ -87,3 +87,24 @@ Total POT (Method 2): 1.62737e+21
 File: filter_NuMIwithDIC.root
 Total POT (Method 1): 1.80229e+21
 Total POT (Method 2): 1.80229e+21
+File: filter_BNBDTup.root
+Total POT (Method 1): 1.96038e+20
+Total POT (Method 2): 1.96038e+20
+File: filter_BNBDTdown.root
+Total POT (Method 1): 1.98022e+20
+Total POT (Method 2): 1.98022e+20
+File: filter_BNBnoiseAmpUp.root
+Total POT (Method 1): 1.95002e+20
+Total POT (Method 2): 1.95002e+20
+File: filter_BNBnoiseAmpDown.root
+Total POT (Method 1): 1.95914e+20
+Total POT (Method 2): 1.95914e+20
+File: filter_BNBstretchResp.root
+Total POT (Method 1): 1.94601e+20
+Total POT (Method 2): 1.94601e+20
+File: filter_BNBBirksRecomb.root
+Total POT (Method 1): 1.96845e+20
+Total POT (Method 2): 1.96845e+20
+File: filter_BNBupPEnoise.root
+Total POT (Method 1): 1.95914e+20
+Total POT (Method 2): 1.95914e+20

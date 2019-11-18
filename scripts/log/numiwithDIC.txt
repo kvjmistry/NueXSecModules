@@ -1,0 +1,62 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using NuMI Params
+flash_time_start:	5.5   flash_time_end:	16
+=================================================
+
+File: filter_NuMICV.root
+Found match for POT file
+POT in File:	2.10554e+21
+File: filter_NuMIwithDIC.root
+Found match for POT file
+POT in File:	1.80229e+21
+POT Scaling:	1.16826
+=================================================
+
+Variation File opened successfully
+
+Total Events: 597825
+Total Optical Entries: 658530
+Resized Optical List Size: 597825
+Total Optical Entries: 658530
+Resized Optical List Size: 597825
+Total Events (MC): 597825
+Starting Eventloop...
+On entry 000k
+On entry 100k
+On entry 200k
+On entry 300k
+On entry 400k
+On entry 500k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 16577
+MC Nue NC Counter      --- 5704
+MC Nue CC Counter Bar  --- 3086
+MC Nue NC Counter Bar  --- 1578
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 4376
+Reco Nue                     --- 3354
+In FV                        --- 3167
+Flash Reco Vtx Dist          --- 2221
+Vtx Nu Dist                  --- 1876
+Vtx Track Nu Dist            --- 1807
+Hit Threshold                --- 1566
+Hit Threshold Collection     --- 1472
+Open Angle                   --- 1258
+dEdx                         --- 755
+Secondary Showers            --- 621
+Hit Length Ratio             --- 572
+Longest Track Leading Shower --- 566
+Contained Tracks             --- 541
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 4416
+RECO Signal       --- 541
+RECO Background   --- 500
+---------------------------------------------------
+dirname:	NuMIwithDIC
+NuMIwithDIC directory exists, overwriting...

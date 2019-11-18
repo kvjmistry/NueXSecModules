@@ -92,6 +92,10 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
         PlotVariatonsNuMIBNB(); 
         return; 
     }
+    if (plot_config == "makeweights"){
+        GenerateWeightHistograms(); // Generate the weight histograms if the BNB CV is run
+        return;
+    }
     //*************************** POT Scaling *************************************
     std::cout << "=================================================\n" << std::endl;
     
@@ -527,7 +531,6 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     // Get the variation name by stripping the input file name -- HARDCODED
     // Required format "/path to file/filter_<NAME>.root"
     std::string file_path = "/uboone/data/users/kmistry/work/NueXSection_Outputs/detector_variations/";
-
     int file_path_size = file_path.length();
 
     // Get File name with extension from file path
@@ -2652,14 +2655,19 @@ std::string variation_output_bkg::Background_Classifier(int mc_pdg, std::string 
     // if (mc_pdg == 11)
     //     classification = "bkg_e";                                // out of fv, mixed, cosmic (see two nc_pi0 ??)
     
-    if (mc_pdg == 22 && tpc_obj_classification != "cosmic") // photons from pi 0
+    if ( (mc_pdg == 22 || tpc_obj_classification == "nc_pi0" ) && tpc_obj_classification != "cosmic") // photons from pi 0
         classification = "pi0_gamma";
     
     else if (tpc_obj_classification == "cosmic"){
         classification = "cosmic";
     }
-    else
+    // else if (tpc_obj_classification == "nue_cc_out_fv" || tpc_obj_classification == "nue_cc_mixed" || tpc_obj_classification == "nc") {
+    //     classification = "e_bkg";
+    // }
+    else{
         classification = "other_bkg";
+        // std::cout << "bkg class:\t" << tpc_obj_classification << std::endl;
+    }
 
     return classification; 
 }
@@ -2681,3 +2689,62 @@ double variation_output_bkg::WrapPhi(double phi){
 }
 //***************************************************************************
 //***************************************************************************
+void variation_output_bkg::GenerateWeightHistograms(){
+
+    std::cout << "Generating the weight histograms" << std::endl;
+
+    // First open the BNB histogram file
+    TFile *fweight = new TFile("plots/variation_weights.root","UPDATE");
+
+    // Grab the variation folders in the file
+    std::vector<std::string> variations = variation_output_bkg::GrabDirs(f_var_out); 
+
+    // Loop over all folders (loop over variations)
+    std::string histname_ratio;
+    std::vector<std::string> histnames = {"h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
+                                          "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other",       "h_shower_E"};
+    
+    // Loop over the histograms
+    for (int j=0; j < histnames.size(); j++){
+        TH1D* hist;
+        TH1D* hist_CV;
+        
+        // Loop over variation directories
+        for (int i=0; i < variations.size(); i++){
+            char name[500];
+            snprintf(name, 500, "%s/%s", variations[i].c_str(), histnames[j].c_str() );
+            hist = (TH1D*)f_var_out->Get(name);
+            if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!" << std::endl;
+
+            char name_CV[500];
+            snprintf(name_CV, 500, "BNBCV/%s", histnames[j].c_str() );
+           
+            
+            hist_CV = (TH1D*)f_var_out->Get(name_CV);
+            if (hist_CV == NULL ) std::cout << "ERROR: Can't get CV Histogram!" << std::endl;
+
+            histname_ratio = histnames[j] + "_" + variations[i] + "_ratio";
+            
+            TH1D* hist_divide = (TH1D*) hist->Clone(Form("%s",histname_ratio.c_str()));
+            hist_divide->Sumw2();
+            
+            hist_divide->Divide(hist_CV);
+
+            if (variations[i] == "BNBCV"){
+                for (unsigned int k=1; k < hist_divide->GetNbinsX()+1; 	k++ ){
+                    hist_divide->SetBinContent(k, 1);
+                }
+            }
+
+            hist_divide->SetOption("E");
+
+            fweight->cd();
+            hist_divide->Write("",TObject::kOverwrite);
+            f_var_out->cd();
+        }
+
+    }
+
+    fweight->Close();
+}

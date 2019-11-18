@@ -170,7 +170,7 @@ class variation_output_bkg {
     std::pair<std::string, int> TPCO_Classifier(xsecAna::TPCObjectContainer tpc_obj, bool true_in_tpc, bool has_pi0);
     std::string Background_Classifier(int mc_pdg, std::string tpc_obj_classfication);
     double WrapPhi(double phi);                                                                         // A function to wrap phi from 360 to 90 degrees to increse statistics
-
+    void GenerateWeightHistograms(); // To generate a file with the histogram weights
     // ----------------------
     // Flash Functions
     // ----------------------

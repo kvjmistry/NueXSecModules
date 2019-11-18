@@ -1,0 +1,58 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using BNB Params
+flash_time_start:	3.19   flash_time_end:	4.87
+=================================================
+
+File: filter_BNBCV.root
+Found match for POT file
+POT in File:	1.93802e+20
+File: filter_BNBdataSCE.root
+Found match for POT file
+POT in File:	1.96761e+20
+POT Scaling:	0.984961
+=================================================
+
+Variation File opened successfully
+
+Total Events: 195350
+Total Optical Entries: 222746
+Resized Optical List Size: 195350
+Total Optical Entries: 222746
+Resized Optical List Size: 195350
+Total Events (MC): 195350
+Starting Eventloop...
+On entry 000k
+On entry 100k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 1186
+MC Nue NC Counter      --- 375
+MC Nue CC Counter Bar  --- 23
+MC Nue NC Counter Bar  --- 17
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 266
+Reco Nue                     --- 206
+In FV                        --- 196
+Flash Reco Vtx Dist          --- 140
+Vtx Nu Dist                  --- 119
+Vtx Track Nu Dist            --- 113
+Hit Threshold                --- 103
+Hit Threshold Collection     --- 94
+Open Angle                   --- 78
+dEdx                         --- 40
+Secondary Showers            --- 27
+Hit Length Ratio             --- 23
+Longest Track Leading Shower --- 22
+Contained Tracks             --- 19
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 271
+RECO Signal       --- 19
+RECO Background   --- 119
+---------------------------------------------------
+dirname:	BNBdataSCE
+BNBdataSCE directory exists, overwriting...

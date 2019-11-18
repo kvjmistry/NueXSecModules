@@ -1,0 +1,62 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using NuMI Params
+flash_time_start:	5.5   flash_time_end:	16
+=================================================
+
+File: filter_NuMICV.root
+Found match for POT file
+POT in File:	2.10554e+21
+File: filter_NuMILArG4BugFix.root
+Found match for POT file
+POT in File:	1.62737e+21
+POT Scaling:	1.29383
+=================================================
+
+Variation File opened successfully
+
+Total Events: 538425
+Total Optical Entries: 596430
+Resized Optical List Size: 538425
+Total Optical Entries: 596430
+Resized Optical List Size: 538425
+Total Events (MC): 538425
+Starting Eventloop...
+On entry 000k
+On entry 100k
+On entry 200k
+On entry 300k
+On entry 400k
+On entry 500k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 14972
+MC Nue NC Counter      --- 5109
+MC Nue CC Counter Bar  --- 2756
+MC Nue NC Counter Bar  --- 1494
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 4018
+Reco Nue                     --- 2978
+In FV                        --- 2834
+Flash Reco Vtx Dist          --- 1975
+Vtx Nu Dist                  --- 1713
+Vtx Track Nu Dist            --- 1656
+Hit Threshold                --- 1473
+Hit Threshold Collection     --- 1388
+Open Angle                   --- 1217
+dEdx                         --- 709
+Secondary Showers            --- 590
+Hit Length Ratio             --- 531
+Longest Track Leading Shower --- 521
+Contained Tracks             --- 488
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 4062
+RECO Signal       --- 488
+RECO Background   --- 414
+---------------------------------------------------
+dirname:	NuMILArG4BugFix
+NuMILArG4BugFix directory exists, overwriting...
