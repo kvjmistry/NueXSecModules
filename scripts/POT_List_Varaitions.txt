@@ -108,3 +108,12 @@ Total POT (Method 2): 1.96845e+20
 File: filter_BNBupPEnoise.root
 Total POT (Method 1): 1.95914e+20
 Total POT (Method 2): 1.95914e+20
+File: filter_BNBsqueezeResp.root
+Total POT (Method 1): 1.94033e+20
+Total POT (Method 2): 1.94033e+20
+File: filter_BNBEnhancedTPCVis.root
+Total POT (Method 1): 1.96831e+20
+Total POT (Method 2): 1.96831e+20
+File: filter_BNBaltDeadChannels.root
+Total POT (Method 1): 1.9374e+20
+Total POT (Method 2): 1.9374e+20
