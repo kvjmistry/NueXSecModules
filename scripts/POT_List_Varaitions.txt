@@ -117,3 +117,6 @@ Total POT (Method 2): 1.96831e+20
 File: filter_BNBaltDeadChannels.root
 Total POT (Method 1): 1.9374e+20
 Total POT (Method 2): 1.9374e+20
+File: filter_BNBdownPEnoise.root
+Total POT (Method 1): 1.97696e+20
+Total POT (Method 2): 1.97696e+20

@@ -1,0 +1,58 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using BNB Params
+flash_time_start:	3.19   flash_time_end:	4.87
+=================================================
+
+File: filter_BNBCV.root
+Found match for POT file
+POT in File:	1.93802e+20
+File: filter_BNBEnhancedTPCVis.root
+Found match for POT file
+POT in File:	1.96831e+20
+POT Scaling:	0.984611
+=================================================
+
+Variation File opened successfully
+
+Total Events: 195400
+Total Optical Entries: 225799
+Resized Optical List Size: 195400
+Total Optical Entries: 225799
+Resized Optical List Size: 195400
+Total Events (MC): 195400
+Starting Eventloop...
+On entry 000k
+On entry 100k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 1189
+MC Nue NC Counter      --- 375
+MC Nue CC Counter Bar  --- 23
+MC Nue NC Counter Bar  --- 17
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 273
+Reco Nue                     --- 211
+In FV                        --- 195
+Flash Reco Vtx Dist          --- 138
+Vtx Nu Dist                  --- 117
+Vtx Track Nu Dist            --- 115
+Hit Threshold                --- 106
+Hit Threshold Collection     --- 101
+Open Angle                   --- 83
+dEdx                         --- 55
+Secondary Showers            --- 44
+Hit Length Ratio             --- 43
+Longest Track Leading Shower --- 43
+Contained Tracks             --- 40
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 279
+RECO Signal       --- 40
+RECO Background   --- 126
+---------------------------------------------------
+dirname:	BNBEnhancedTPCVis
+BNBEnhancedTPCVis directory does not exist, creating...

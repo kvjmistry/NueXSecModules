@@ -9,50 +9,50 @@ flash_time_start:	3.19   flash_time_end:	4.87
 File: filter_BNBCV.root
 Found match for POT file
 POT in File:	1.93802e+20
-File: filter_BNBDLup.root
+File: filter_BNBaltDeadChannels.root
 Found match for POT file
-POT in File:	1.94914e+20
-POT Scaling:	0.994295
+POT in File:	1.9374e+20
+POT Scaling:	1.00032
 =================================================
 
 Variation File opened successfully
 
-Total Events: 193550
-Total Optical Entries: 220561
-Resized Optical List Size: 193550
-Total Optical Entries: 220561
-Resized Optical List Size: 193550
-Total Events (MC): 193550
+Total Events: 192250
+Total Optical Entries: 218896
+Resized Optical List Size: 192250
+Total Optical Entries: 218896
+Resized Optical List Size: 192250
+Total Events (MC): 192250
 Starting Eventloop...
 On entry 000k
 On entry 100k
 Finished Eventloop...
 --------------- MC Truth COUNTERS -----------------
-MC Nue CC Counter      --- 1175
-MC Nue NC Counter      --- 368
+MC Nue CC Counter      --- 1168
+MC Nue NC Counter      --- 364
 MC Nue CC Counter Bar  --- 22
-MC Nue NC Counter Bar  --- 17
+MC Nue NC Counter Bar  --- 15
 ---------------------------------------------------
 --------------- Cut COUNTERS ---------------------
-Flash in Time, Flash PE      --- 268
-Reco Nue                     --- 214
-In FV                        --- 202
+Flash in Time, Flash PE      --- 263
+Reco Nue                     --- 215
+In FV                        --- 203
 Flash Reco Vtx Dist          --- 149
-Vtx Nu Dist                  --- 133
+Vtx Nu Dist                  --- 127
 Vtx Track Nu Dist            --- 122
-Hit Threshold                --- 103
-Hit Threshold Collection     --- 96
+Hit Threshold                --- 108
+Hit Threshold Collection     --- 98
 Open Angle                   --- 80
-dEdx                         --- 45
-Secondary Showers            --- 36
+dEdx                         --- 49
+Secondary Showers            --- 37
 Hit Length Ratio             --- 32
-Longest Track Leading Shower --- 31
-Contained Tracks             --- 29
+Longest Track Leading Shower --- 32
+Contained Tracks             --- 28
 ---------------------------------------------------
 --------------- Reco COUNTERS ---------------------
-True Nue CC in FV --- 273
-RECO Signal       --- 29
-RECO Background   --- 92
+True Nue CC in FV --- 268
+RECO Signal       --- 28
+RECO Background   --- 117
 ---------------------------------------------------
-dirname:	BNBDLup
-BNBDLup directory does not exist, creating...
+dirname:	BNBaltDeadChannels
+BNBaltDeadChannels directory does not exist, creating...

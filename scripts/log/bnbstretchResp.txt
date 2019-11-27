@@ -1,0 +1,58 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using BNB Params
+flash_time_start:	3.19   flash_time_end:	4.87
+=================================================
+
+File: filter_BNBCV.root
+Found match for POT file
+POT in File:	1.93802e+20
+File: filter_BNBstretchResp.root
+Found match for POT file
+POT in File:	1.94601e+20
+POT Scaling:	0.995894
+=================================================
+
+Variation File opened successfully
+
+Total Events: 193100
+Total Optical Entries: 219888
+Resized Optical List Size: 193100
+Total Optical Entries: 219888
+Resized Optical List Size: 193100
+Total Events (MC): 193100
+Starting Eventloop...
+On entry 000k
+On entry 100k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 1171
+MC Nue NC Counter      --- 368
+MC Nue CC Counter Bar  --- 23
+MC Nue NC Counter Bar  --- 16
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 265
+Reco Nue                     --- 210
+In FV                        --- 195
+Flash Reco Vtx Dist          --- 139
+Vtx Nu Dist                  --- 116
+Vtx Track Nu Dist            --- 111
+Hit Threshold                --- 99
+Hit Threshold Collection     --- 90
+Open Angle                   --- 75
+dEdx                         --- 44
+Secondary Showers            --- 36
+Hit Length Ratio             --- 32
+Longest Track Leading Shower --- 32
+Contained Tracks             --- 27
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 271
+RECO Signal       --- 27
+RECO Background   --- 125
+---------------------------------------------------
+dirname:	BNBstretchResp
+BNBstretchResp directory does not exist, creating...

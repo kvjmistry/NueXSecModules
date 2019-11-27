@@ -96,6 +96,10 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
         GenerateWeightHistograms(); // Generate the weight histograms if the BNB CV is run
         return;
     }
+    if(plot_config == "weightednumiplots"){
+        CompareWeightedHistograms();
+        return;
+    }
     //*************************** POT Scaling *************************************
     std::cout << "=================================================\n" << std::endl;
     
@@ -114,6 +118,9 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     std::cout << "POT Scaling:\t" << POT_Scaling << std::endl;
     std::cout << "=================================================\n" << std::endl;
     
+    // Get the weighted histogram file
+    fweight = TFile::Open("plots/variation_weights.root");
+
     //*********** Open Variation File and get branches ******************************
     // Check if the outfile opened successfully
     if ( f_var_out->IsOpen() ) std::cout << "Variation File opened successfully\n" << std::endl;
@@ -335,6 +342,9 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
             if (!bool_sig) bkg_counter++;
 
             //if (!bool_sig ) std::cout << tpc_classification.first << std::endl;
+
+            // Weight the NuMI CV
+            if (plot_config == "weightnumicv") WeightNuMICV(tpc_obj, bool_sig, leading_shower_index, tpc_classification);
 
             // Loop over the Par Objects
             for (int j = 0; j < n_pfp ; j++){
@@ -571,6 +581,51 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     }
 
     VariableTree->Write();
+
+    // Fill weighted histograms
+    if (dirname == "NuMICV"){
+        f_var_out->cd();
+        dirname = "Weighted_NuMICV";
+
+        // If directory does not exist then make it
+        savedir = (TDirectory*)f_var_out->Get(dirname.c_str());
+        if (savedir == NULL ) {
+            savedir = gDirectory;
+            std::cout << dirname << " directory does not exist, creating..." << std::endl;
+            subdir = savedir->mkdir(dirname.c_str() ) ;
+        }
+        else {
+            std::cout << dirname <<" directory exists, overwriting..." << std::endl;
+            subdir = savedir;
+        }
+        
+        subdir->cd();
+
+        // Now we save the histograms
+        // Do the weighted histograms
+        for (int i=0; i < TH1D_hist_weighted.size() ; i++){
+
+            for (unsigned int k=0; k < bnbvars.size(); k++){
+
+                TCanvas* c = new TCanvas();
+                TLegend* dummy_leg = new TLegend();
+                c->cd();
+                TH1D_hist_weighted.at(i).at(k)->SetLineWidth(2);
+                TH1D_hist_weighted.at(i).at(k)->SetLineStyle(1);
+                TH1D_hist_weighted.at(i).at(k)->Scale(POT_Scaling);
+                TH1D_hist_weighted.at(i).at(k)->SetOption("hist, E");
+                DrawTH1D_SAME(TH1D_hist_weighted.at(i).at(k), bnbvars.at(i), dummy_leg, "dummy");
+
+                TH1D_hist_weighted.at(i).at(k)->Write("",TObject::kOverwrite);
+                
+
+            }
+
+           
+        } 
+
+
+    }
     
     f_var_out->Close(); 
 
@@ -2655,7 +2710,7 @@ std::string variation_output_bkg::Background_Classifier(int mc_pdg, std::string 
     // if (mc_pdg == 11)
     //     classification = "bkg_e";                                // out of fv, mixed, cosmic (see two nc_pi0 ??)
     
-    if ( (mc_pdg == 22 || tpc_obj_classification == "nc_pi0" ) && tpc_obj_classification != "cosmic") // photons from pi 0
+    if ( (mc_pdg == 22 ) && tpc_obj_classification != "cosmic") // photons from pi 0
         classification = "pi0_gamma";
     
     else if (tpc_obj_classification == "cosmic"){
@@ -2701,9 +2756,11 @@ void variation_output_bkg::GenerateWeightHistograms(){
 
     // Loop over all folders (loop over variations)
     std::string histname_ratio;
-    std::vector<std::string> histnames = {"h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
+    std::vector<std::string> histnames = {
+                                          "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",          "h_ldg_shwr_Theta",
+                                          "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
-                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other",       "h_shower_E"};
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected"};
     
     // Loop over the histograms
     for (int j=0; j < histnames.size(); j++){
@@ -2747,4 +2804,544 @@ void variation_output_bkg::GenerateWeightHistograms(){
     }
 
     fweight->Close();
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::WeightNuMICV(xsecAna::TPCObjectContainer tpc_obj ,bool bool_sig, const int leading_shower_index, std::pair<std::string, int> tpc_classification){
+
+    // Grab the variation folders in the file
+    std::vector<std::string> variations = {
+                                        "BNBwithDIC",
+                                        "BNBdataSCE",
+                                        "BNBdeadSaturatedChannels",
+                                        "BNBLArG4BugFix",
+                                        "BNBDLup",
+                                        "BNBDLdown",
+                                        "BNBDTup",
+                                        "BNBDTdown",
+                                        "BNBnoiseAmpUp",
+                                        "BNBnoiseAmpDown",
+                                        "BNBaltDeadChannels",
+                                        "BNBstretchResp",
+                                        "BNBsqueezeResp",
+                                        "BNBupPEnoise",
+                                        "BNBEnhancedTPCVis",
+                                        "BNBBirksRecomb",
+                                        "BNBdownPEnoise"};
+
+    n_pfp = tpc_obj.NumPFParticles();
+
+    // Now we loop over the particles in the tpc object and weight these
+    for (int j = 0; j < n_pfp ; j++){
+
+        auto const pfp_obj = tpc_obj.GetParticle(j);
+
+        const double mc_Theta  = pfp_obj.mcTheta();
+        mc_Phi    = pfp_obj.mcPhi();
+        const double mc_Energy = pfp_obj.mcEnergy();
+        const double mc_pdg    = pfp_obj.MCPdgCode();
+        
+        // Background events
+        if (!bool_sig) {
+
+            const double shower_phi = atan2(pfp_obj.pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
+
+            //  ------------ Leading shower ------------
+            if (j == leading_shower_index){
+
+                std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
+
+
+                double leading_shower_phi 	= atan2(pfp_obj.pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
+                const double leading_shower_theta 	= acos(pfp_obj.pfpDirZ()) * 180 / 3.1415;
+                
+                // Wrap phi from 0 to 90
+                double leading_shower_phi_wrapped   = WrapPhi(mc_Phi);
+                double mc_phi_wrapped               = WrapPhi(mc_Phi);
+               
+
+                std::string histname = "h_shower";
+
+                TH1D *hist; // temp hist for getting weighted histograms
+                char name[500];
+                int xbin{0};
+                double weight{0};
+
+                
+
+                // Here we loop over the variations
+                for (unsigned int p=0; p < variations.size();p++){
+
+                    // Fill the phi distribtuons for the bkgs
+                    if (bkg_class == "pi0_gamma") {
+                        std::string histname_phi_pi0 = histname + "_phi_pi0_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_pi0.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name<<  std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Phi); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_pi0_w).at(p)->Fill(mc_Phi, weight);
+
+                        std::string histname_phi_pi0_wrapped = histname + "_phi_pi0_wrapped_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_pi0_wrapped.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_phi_wrapped); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_pi0_wrapped_w).at(p)->Fill(mc_phi_wrapped, weight);
+
+
+                        std::string histname_E_pi0 = histname + "_E_pi0_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_E_pi0.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Energy); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_E_pi0_w).at(p)->Fill(mc_Energy, weight);
+                        
+                    }
+                    
+                    if (bkg_class == "cosmic") {
+                        std::string histname_phi_cosmic = histname + "_phi_bkg_cosmic_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_cosmic.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: "<< name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Phi); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_bkg_cosmic_w).at(p)->Fill(mc_Phi, weight);
+
+
+                        std::string histname_phi_cosmic_wrapped = histname + "_phi_bkg_cosmic_wrapped_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_cosmic_wrapped.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_phi_wrapped); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_bkg_cosmic_wrapped_w).at(p)->Fill(mc_phi_wrapped, weight);
+
+
+                        std::string histname_E_cosmic = histname + "_E_bkg_cosmic_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_E_cosmic.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Energy); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_E_bkg_cosmic_w).at(p)->Fill(mc_Energy, weight);
+
+                    }
+                    if (bkg_class == "other_bkg") {
+                        std::string histname_phi_other = histname + "_phi_other_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_other.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Phi); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_other_w).at(p)->Fill(mc_Phi, weight);
+
+
+                        std::string histname_phi_other_wrapped = histname + "_phi_other_wrapped_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_phi_other_wrapped.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_phi_wrapped); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_phi_other_wrapped_w).at(p)->Fill(mc_phi_wrapped, weight);
+
+
+                        std::string histname_E_other = histname + "_E_other_"+variations[p]+"_ratio";
+                        snprintf(name, 500, "%s", histname_E_other.c_str() );
+                        hist = (TH1D*)fweight->Get(name); 
+                        if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                        xbin = hist->GetXaxis()->FindBin(mc_Energy); // Get the bin at Phi
+                        weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                        // Here we would fill the histogram
+                        if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                        TH1D_hist_weighted.at(kshower_E_other_w).at(p)->Fill(mc_Energy, weight);
+                    } // End if background 
+
+
+                    // Phi
+                    std::string histname_phi ="h_ldg_shwr_Phi_"+variations[p]+"_ratio";
+                    snprintf(name, 500, "%s", histname_phi.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Phi); // Get the bin at Phi
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kldg_shwr_Phi_w).at(p)->Fill(mc_Phi, weight);
+
+                    // Phi Wrapped
+                    std::string histname_phi_wrapped = "h_ldg_shwr_Phi_wrapped_"+variations[p]+"_ratio";
+                    snprintf(name, 500, "%s", histname_phi_wrapped.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_phi_wrapped); // Get the bin at Phi
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kldg_shwr_Phi_wrapped_w).at(p)->Fill(mc_phi_wrapped, weight);                
+
+                    // Energy
+                    std::string histname_E = histname + "_E_"+variations[p]+"_ratio";
+                    snprintf(name, 500, "%s", histname_E.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Energy); // Get the bin at Phi
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kshower_E_w).at(p)->Fill(mc_Energy, weight);
+
+                    // Theta
+                    std::string histname_Theta = "h_ldg_shwr_Theta_"+variations[p]+"_ratio";
+                    snprintf(name, 500, "%s", histname_Theta.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Theta); // Get the bin at Phi
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kldg_shwr_Theta_w).at(p)->Fill(mc_Theta, weight);
+                    
+                    // Selected
+                    std::string histname_Selected = "h_selected_"+variations[p]+"_ratio";
+                    snprintf(name, 500, "%s", histname_Selected.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(0.5); // Get the bin at Phi
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kselected_w).at(p)->Fill(1, weight);
+                        
+                } // End loop over variations 
+                
+            }
+        }
+    }
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::CompareWeightedHistograms(){
+
+    system("if [ ! -d \"plots/weighted_numi/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots/weighted_numi/; fi");
+    system("if [ ! -d \"plots_png/weighted_numi/\" ]; then echo \"\nPlots folder does not exist... creating\"; mkdir -p plots_png/weighted_numi/; fi");
+
+    std::vector<std::string> variations= {"NuMILArG4BugFix", "NuMIwithDIC"};
+    std::vector<std::string> variations_BNB= {"BNBLArG4BugFix", "BNBwithDIC"};
+
+    std::vector<std::string> histnames = {
+                                          "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",          "h_ldg_shwr_Theta",
+                                          "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
+                                          "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected"};
+
+    char name[500];
+
+    for (unsigned int i = 0; i<variations.size(); i++){
+
+        for (unsigned int k=0; k< histnames.size(); k++){
+
+            TCanvas* c = new TCanvas();
+            TLegend* legend = new TLegend(0.72, 0.59, 0.94, 0.89);
+            legend->SetBorderSize(0);
+            legend->SetFillStyle(0);
+
+            TH1D *hist_NuMI; // Thea actual numi variation
+            std::string histname_NuMI = variations.at(i) + "/" + histnames.at(k);
+            snprintf(name, 500, "%s", histname_NuMI.c_str() );
+            hist_NuMI = (TH1D*)f_var_out->Get(name); 
+            if (hist_NuMI == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+
+            TH1D *hist_NuMI_Weighted;  // The NuMI CV weighted by the BNB
+            std::string histname_NuMI_Weighted = "Weighted_NuMICV/"+ histnames.at(k)+"_"+variations_BNB.at(i)+"_w";
+            snprintf(name, 500, "%s", histname_NuMI_Weighted.c_str() );
+            hist_NuMI_Weighted = (TH1D*)f_var_out->Get(name);
+            if (hist_NuMI_Weighted == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+
+            CompareWeightedDrawSpecs(hist_NuMI_Weighted, "Weighted_NuMICV", variations.at(i), legend, histnames.at(k));
+            CompareWeightedDrawSpecs(hist_NuMI, "", variations.at(i), legend, histnames.at(k)); 
+            
+            legend->Draw();
+
+            char Canvas_name[1000];
+            snprintf(Canvas_name, 1000, "plots/weighted_numi/%s_%s.pdf", histnames.at(k).c_str(), variations.at(i).c_str()); 
+            c->Print(Canvas_name);
+            snprintf(Canvas_name, 1000, "plots_png/weighted_numi/%s_%s.png",histnames.at(k).c_str(), variations.at(i).c_str() ); 
+            c->Print(Canvas_name);
+            c->Close();
+
+        }
+
+    }
+
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::CompareWeightedDrawSpecs(TH1D* hist, std::string weighted_str,  std::string variation, TLegend* legend, std::string histname){
+
+
+    if (histname == "h_ldg_shwr_Phi"){
+        hist->SetTitle(";Leading Shower #phi [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,250);
+    }
+    else if (histname == "h_ldg_shwr_Theta"){
+        hist->SetTitle(";Leading Shower #theta [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,200);
+
+    }
+    else if (histname == "h_ldg_shwr_Phi_wrapped"){
+        hist->SetTitle(";Leading Shower #phi (wrapped) [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,400);
+
+    }
+    else if (histname == "h_selected"){
+        hist->SetTitle("; Num Background Selected;Entries");
+        hist->GetXaxis()->SetLabelOffset(999);
+        hist->GetXaxis()->SetLabelSize(0);
+        hist->GetYaxis()->SetRangeUser(400,700);
+
+    }
+    else if (histname ==  "h_shower_phi_pi0"){
+        hist->SetTitle("; Leading Shower Phi #pi^{0} Bkg [degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,50);
+
+    }
+    else if (histname ==  "h_shower_phi_bkg_cosmic"){
+        hist->SetTitle("; Leading Shower Phi cosmic Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,50);
+    }
+    else if (histname ==  "h_shower_phi_other"){
+        hist->SetTitle("; Leading Shower Phi Other Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,70);
+
+    }
+    else if (histname ==  "h_shower_phi_pi0_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped #pi^{0} Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,220);
+
+    }
+    else if (histname ==  "h_shower_phi_bkg_cosmic_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped cosmic Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,40);
+
+    }
+    else if (histname ==  "h_shower_phi_other_wrapped"){
+        hist->SetTitle("; Leading Shower Phi Wrapped Other Bkg [degrees];Entries");
+        hist->GetYaxis()->SetRangeUser(0,100);
+
+    }
+    else if (histname ==  "h_shower_E_pi0"){
+        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [GeV];Entries");
+        hist->GetYaxis()->SetRangeUser(0,300);
+
+    }
+    else if (histname ==  "h_shower_E_bkg_cosmic"){
+        hist->SetTitle("; Leading Shower Energy cosmic Bkg [GeV];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,10);
+
+    }
+    else if (histname ==  "h_shower_E_other"){
+        hist->SetTitle("; Leading Shower Energy Other Bkg [GeV];Entries");
+        hist->GetYaxis()->SetRangeUser(0,200);
+
+    }
+    else if (histname ==  "h_shower_E"){
+        hist->SetTitle("; Leading Shower Energy Bkg [GeV];Entries");
+        hist->GetYaxis()->SetRangeUser(0,400);
+
+    }
+    else return;
+
+    std::string draw_spec = "hist,E, same";
+    hist->SetOption("hist, E");
+
+    hist->GetXaxis()->SetLabelSize(0.05);
+    hist->GetXaxis()->SetTitleSize(0.05);
+    hist->GetYaxis()->SetLabelSize(0.05);
+    hist->GetYaxis()->SetTitleSize(0.05);
+    gPad->SetLeftMargin(0.15);
+    gPad->SetBottomMargin(0.12);
+
+
+    if (variation == "BNBCV" || variation == "NuMICV"){
+        hist->SetLineColor(kBlack);
+        hist->SetLineWidth(2);
+        hist->SetLineStyle(1);
+        legend->AddEntry(hist, "BNB CV", "l");
+        hist->Draw(draw_spec.c_str());
+    } 
+    else if  (variation == "BNBwithDIC"         || variation == "NuMIwithDIC"){
+        hist->SetLineWidth(2);
+        hist->SetLineStyle(1);
+        
+        if (weighted_str == "Weighted_NuMICV"){
+            hist->SetLineColor(kMagenta+2);
+            legend->AddEntry(hist, "Weighted NuMI CV", "l");
+        } 
+        else{
+            hist->SetLineColor(kBlack);
+            legend->AddEntry(hist, "DIC", "l");
+        }
+        
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBEnhancedTPCVis"  || variation == "NuMIEnhancedTPCVis" ){ 
+        hist->SetLineColor(30);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Enhanced TPC Vis.", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBaltDeadChannels" || variation == "NuMIaltDeadChannels"){ 
+        hist->SetLineColor(38);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Alt. Dead Chan.", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBdeadSaturatedChannels" || variation == "NuMIdeadSaturatedChannels"){
+        hist->SetLineColor(28);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Dead Sat. Chan.", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+        
+    }
+    else if  (variation == "BNBstretchResp"  || variation == "NuMIstretchResp" ){
+        hist->SetLineColor(36);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Stretch Resp.", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBsqueezeResp"  || variation == "NuMIsqueezeResp"){
+        hist->SetLineColor(1001);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Squeeze Resp.", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBupPEnoise"    || variation == "NuMIupPEnoise"){
+        hist->SetLineColor(kBlue+1);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "PE Noise Up", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBnoiseAmpDown" || variation == "NuMInoiseAmpDown"){
+        hist->SetLineColor(42);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Noise Amp. Down", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBdownPEnoise"  || variation == "NuMIdownPEnoise"){
+        hist->SetLineColor(50);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "PE Noise Down", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBnoiseAmpUp"   || variation == "NuMInoiseAmpUp"){
+        hist->SetLineColor(kOrange+10);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Noise Amp. Up", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBDTdown"       || variation == "NuMIDTdown"){
+        hist->SetLineColor(kOrange+1);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "DT Down", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBDTup"         || variation == "NuMIDTup"){
+        hist->SetLineColor(kMagenta-10);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "DT Up", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBDLup"         || variation == "NuMIDLup"){
+        hist->SetLineColor(kMagenta);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "DL Up", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBDLdown"       || variation == "NuMIDLdown"){
+        hist->SetLineColor(kTeal+6);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "DL Down", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBdataSCE"      || variation == "NuMIdataSCE"){
+        hist->SetLineColor(kAzure-9);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "SCE", "l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else if  (variation == "BNBLArG4BugFix"  || variation == "NuMILArG4BugFix"){
+        
+        hist->SetLineWidth(2);
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+
+        if (weighted_str == "Weighted_NuMICV"){
+            hist->SetLineColor(kSpring-7);
+            legend->AddEntry(hist, "Weighted NuMI CV", "l");
+        } 
+        else{
+            hist->SetLineColor(kBlack);
+            legend->AddEntry(hist, "LArG4BugFix", "l");
+        }
+    }
+    else if  (variation == "BNBBirksRecomb"  || variation == "NuMIBirksRecomb"){
+        hist->SetLineColor(kRed+1);
+        hist->SetLineWidth(2);
+        legend->AddEntry(hist, "Birks Recomb.","l");
+        hist->SetLineStyle(1);
+        hist->Draw(draw_spec.c_str());
+    }
+    else {
+        std::cout << "Error! Could not match varations:\t" << variation << std::endl;
+        return;
+    }
+
+
 }

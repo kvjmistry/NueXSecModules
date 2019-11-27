@@ -104,6 +104,36 @@ class variation_output_bkg {
         TH1D_hist.at(kshower_E_other)             = new TH1D("h_shower_E_other",      "h_shower_E_other",       7 , 0, 3 ); // Shower E other
         TH1D_hist.at(kshower_E)                   = new TH1D("h_shower_E",            "h_shower_E",             7 , 0, 3 ); // Shower E
 
+
+        // Do the same but for the weighted histograms
+        TH1D_hist_weighted.resize(kTH1D_names_weighted_MAX);
+
+        // Loop over the variations an make weighted histograms for each variation
+        for (int p=0; p < TH1D_hist_weighted.size(); p++){
+            TH1D_hist_weighted.at(p).resize(bnbvars.size()); // There are 18 variations in total I think...
+        }
+
+        // A loop over the variations
+        for (unsigned int k=0; k < TH1D_hist_weighted.at(0).size(); k++){
+            // Leading shower
+            TH1D_hist_weighted.at(kldg_shwr_Phi_w).at(k)                   = new TH1D(Form("h_ldg_shwr_Phi_%s_w", bnbvars.at(k).c_str()),        Form("ldg_shwr_Phi %s", bnbvars.at(k).c_str()),                     6, -180, 180);
+            TH1D_hist_weighted.at(kldg_shwr_Phi_wrapped_w).at(k)           = new TH1D(Form("h_ldg_shwr_Phi_wrapped_%s_w", bnbvars.at(k).c_str()),Form("ldg_shwr_Phi_wrapped %s", bnbvars.at(k).c_str()),             5, 0, 90);
+            TH1D_hist_weighted.at(kldg_shwr_Theta_w).at(k)                 = new TH1D(Form("h_ldg_shwr_Theta_%s_w", bnbvars.at(k).c_str()),      Form("ldg_shwr_Theta %s", bnbvars.at(k).c_str()),                   12, 0, 180);
+            TH1D_hist_weighted.at(kselected_w).at(k)                       = new TH1D(Form("h_selected_%s_w", bnbvars.at(k).c_str()),            Form("h_selected %s", bnbvars.at(k).c_str()),                       1 , 0 , 1);
+            TH1D_hist_weighted.at(kshower_phi_pi0_w).at(k)                 = new TH1D(Form("h_shower_phi_pi0_%s_w", bnbvars.at(k).c_str()),        Form("h_shower_phi_pi0 %s", bnbvars.at(k).c_str()),        12 , -180 ,180); // Shower Phi pi0
+            TH1D_hist_weighted.at(kshower_phi_bkg_cosmic_w).at(k)          = new TH1D(Form("h_shower_phi_bkg_cosmic_%s_w", bnbvars.at(k).c_str()), Form("h_shower_phi_bkg_cosmic %s", bnbvars.at(k).c_str()), 12 , -180 ,180); // Shower Phi bkg electrons
+            TH1D_hist_weighted.at(kshower_phi_other_w).at(k)               = new TH1D(Form("h_shower_phi_other_%s_w", bnbvars.at(k).c_str()),      Form("h_shower_phi_other %s", bnbvars.at(k).c_str()),      12 , -180 ,180); // Shower Phi
+            TH1D_hist_weighted.at(kshower_phi_pi0_wrapped_w).at(k)         = new TH1D(Form("h_shower_phi_pi0_wrapped_%s_w", bnbvars.at(k).c_str()),        Form("h_shower_phi_pi0_wrapped %s", bnbvars.at(k).c_str()),        5, 0, 90); // Shower Phi pi0 wrapped
+            TH1D_hist_weighted.at(kshower_phi_bkg_cosmic_wrapped_w).at(k)  = new TH1D(Form("h_shower_phi_bkg_cosmic_wrapped_%s_w", bnbvars.at(k).c_str()), Form("h_shower_phi_bkg_cosmic_wrapped %s", bnbvars.at(k).c_str()), 5, 0, 90); // Shower Phi bkg electrons wrapped
+            TH1D_hist_weighted.at(kshower_phi_other_wrapped_w).at(k)       = new TH1D(Form("h_shower_phi_other_wrapped_%s_w", bnbvars.at(k).c_str()),      Form("h_shower_phi_other_wrapped %s", bnbvars.at(k).c_str()),      5, 0, 90); // Shower Phi wrapped
+            TH1D_hist_weighted.at(kshower_E_pi0_w).at(k)                   = new TH1D(Form("h_shower_E_pi0_%s_w", bnbvars.at(k).c_str()),        Form("h_shower_E_pi0 %s", bnbvars.at(k).c_str()),         7 , 0, 3 ); // Shower E pi0
+            TH1D_hist_weighted.at(kshower_E_bkg_cosmic_w).at(k)            = new TH1D(Form("h_shower_E_bkg_cosmic_%s_w", bnbvars.at(k).c_str()), Form("h_shower_E_bkg_cosmic %s", bnbvars.at(k).c_str()),  7 , 0, 5 ); // Shower E bkg cosmic
+            TH1D_hist_weighted.at(kshower_E_other_w).at(k)                 = new TH1D(Form("h_shower_E_other_%s_w", bnbvars.at(k).c_str()),      Form("h_shower_E_other %s", bnbvars.at(k).c_str()),       7 , 0, 3 ); // Shower E other
+            TH1D_hist_weighted.at(kshower_E_w).at(k)                       = new TH1D(Form("h_shower_E_%s_w", bnbvars.at(k).c_str()),            Form("h_shower_E %s", bnbvars.at(k).c_str()),             7 , 0, 3 ); // Shower E
+
+        }
+        
+        
         // 2D Histograms
         TH2D_hist.resize(kTH2D_names_MAX);
         TH2D_hist.at(kEBkg_Theta)       = new TH2D("h_EBkg_Theta",       "EBkg_Theta",       7, 0, 3, 12,    0, 180);
@@ -171,6 +201,10 @@ class variation_output_bkg {
     std::string Background_Classifier(int mc_pdg, std::string tpc_obj_classfication);
     double WrapPhi(double phi);                                                                         // A function to wrap phi from 360 to 90 degrees to increse statistics
     void GenerateWeightHistograms(); // To generate a file with the histogram weights
+    void WeightNuMICV(xsecAna::TPCObjectContainer tpc_obj, bool bool_sig, const int leading_shower_index, std::pair<std::string, int> tpc_classification); // Function to weight the numi CV
+    void CompareWeightedHistograms(); // Function to make the NuMI variaions and weighted NuMI CV variations
+    void CompareWeightedDrawSpecs(TH1D* hist, std::string weighted_str, std::string variation, TLegend* legend, std::string histname); // Function to draw Weighted NuMI Histograms
+
     // ----------------------
     // Flash Functions
     // ----------------------
@@ -334,11 +368,39 @@ class variation_output_bkg {
                      kEBkg_other_Theta,  kEBkg_other_Phi, kEBkg_other_Phi_wrapped,  kThetaBkg_other_Phi_wrapped,  kThetaBkg_other_Phi, 
                      kTH2D_names_MAX};
 
-    
+    std::vector<std::vector<TH1D*>> TH1D_hist_weighted;
+    enum TH1D_names_weighted{ 
+                     kldg_shwr_Phi_w,           kldg_shwr_Phi_wrapped_w,      kldg_shwr_Theta_w, 
+                     kselected_w,
+                     kshower_phi_pi0_w,         kshower_phi_bkg_cosmic_w,         kshower_phi_other_w,             kshower_E_w, 
+                     kshower_phi_pi0_wrapped_w, kshower_phi_bkg_cosmic_wrapped_w, kshower_phi_other_wrapped_w,
+                     kshower_E_pi0_w,           kshower_E_bkg_cosmic_w,           kshower_E_other_w,
+                     kTH1D_names_weighted_MAX};
+
+    std::vector<std::string> bnbvars = {
+                                        "BNBwithDIC",
+                                        "BNBdataSCE",
+                                        "BNBdeadSaturatedChannels",
+                                        "BNBLArG4BugFix",
+                                        "BNBDLup",
+                                        "BNBDLdown",
+                                        "BNBDTup",
+                                        "BNBDTdown",
+                                        "BNBnoiseAmpUp",
+                                        "BNBnoiseAmpDown",
+                                        "BNBaltDeadChannels",
+                                        "BNBstretchResp",
+                                        "BNBsqueezeResp",
+                                        "BNBupPEnoise",
+                                        "BNBEnhancedTPCVis",
+                                        "BNBBirksRecomb",
+                                        "BNBdownPEnoise"};
+
     // ----------------------
     //      Other
     // ----------------------
     TFile * f_var_out;
+    TFile *fweight;
 
     double largest_flash_y{0};
     double largest_flash_z{0};
