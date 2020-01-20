@@ -4,15 +4,16 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBwithDIC
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBwithDIC.root
 Found match for POT file
 POT in File:	1.96741e+20
-POT Scaling:	0.985062
+POT Scaling:	8.19285
 =================================================
 
 Variation File opened successfully
@@ -54,5 +55,5 @@ True Nue CC in FV --- 268
 RECO Signal       --- 30
 RECO Background   --- 171
 ---------------------------------------------------
-dirname:	BNBwithDIC
-BNBwithDIC directory does not exist, creating...
+BNBwithDIC directory exists, overwriting...
+BNBWeighted_Variations directory exists, overwriting...

@@ -1,0 +1,61 @@
+(Default) Parameter Config from header
+
+ --- Configuring Parameters --- 
+
+Using NuMI Params
+flash_time_start:	5.5   flash_time_end:	16
+dirname:	NuMIdeadSaturatedChannels
+=================================================
+
+File: filter_NuMICV.root
+Found match for POT file
+POT in File:	5.45745e+21
+File: filter_NuMIdeadSaturatedChannels.root
+Found match for POT file
+POT in File:	1.43122e+21
+POT Scaling:	3.81315
+=================================================
+
+Variation File opened successfully
+
+Total Events: 473773
+Total Optical Entries: 522058
+Resized Optical List Size: 473773
+Total Optical Entries: 522058
+Resized Optical List Size: 473773
+Total Events (MC): 473773
+Starting Eventloop...
+On entry 000k
+On entry 100k
+On entry 200k
+On entry 300k
+On entry 400k
+Finished Eventloop...
+--------------- MC Truth COUNTERS -----------------
+MC Nue CC Counter      --- 13227
+MC Nue NC Counter      --- 4425
+MC Nue CC Counter Bar  --- 2469
+MC Nue NC Counter Bar  --- 1198
+---------------------------------------------------
+--------------- Cut COUNTERS ---------------------
+Flash in Time, Flash PE      --- 3367
+Reco Nue                     --- 2531
+In FV                        --- 2407
+Flash Reco Vtx Dist          --- 1686
+Vtx Nu Dist                  --- 1419
+Vtx Track Nu Dist            --- 1348
+Hit Threshold                --- 1186
+Hit Threshold Collection     --- 1128
+Open Angle                   --- 965
+dEdx                         --- 559
+Secondary Showers            --- 464
+Hit Length Ratio             --- 425
+Longest Track Leading Shower --- 416
+Contained Tracks             --- 396
+---------------------------------------------------
+--------------- Reco COUNTERS ---------------------
+True Nue CC in FV --- 3397
+RECO Signal       --- 396
+RECO Background   --- 326
+---------------------------------------------------
+NuMIdeadSaturatedChannels directory exists, overwriting...

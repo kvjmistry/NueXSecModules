@@ -4,55 +4,69 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBCV
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 POT Scaling:	1
 =================================================
 
 Variation File opened successfully
 
-Total Events: 192250
-Total Optical Entries: 218891
-Resized Optical List Size: 192250
-Total Optical Entries: 218891
-Resized Optical List Size: 192250
-Total Events (MC): 192250
+Total Events: 1597900
+Total Optical Entries: 1756931
+Resized Optical List Size: 1597900
+Total Optical Entries: 1756931
+Resized Optical List Size: 1597900
+Total Events (MC): 1597900
 Starting Eventloop...
 On entry 000k
 On entry 100k
+On entry 200k
+On entry 300k
+On entry 400k
+On entry 500k
+On entry 600k
+On entry 700k
+On entry 800k
+On entry 900k
+On entry 1000k
+On entry 1100k
+On entry 1200k
+On entry 1300k
+On entry 1400k
+On entry 1500k
 Finished Eventloop...
 --------------- MC Truth COUNTERS -----------------
-MC Nue CC Counter      --- 1170
-MC Nue NC Counter      --- 362
-MC Nue CC Counter Bar  --- 22
-MC Nue NC Counter Bar  --- 16
+MC Nue CC Counter      --- 9783
+MC Nue NC Counter      --- 2912
+MC Nue CC Counter Bar  --- 251
+MC Nue NC Counter Bar  --- 112
 ---------------------------------------------------
 --------------- Cut COUNTERS ---------------------
-Flash in Time, Flash PE      --- 262
-Reco Nue                     --- 215
-In FV                        --- 203
-Flash Reco Vtx Dist          --- 149
-Vtx Nu Dist                  --- 129
-Vtx Track Nu Dist            --- 124
-Hit Threshold                --- 111
-Hit Threshold Collection     --- 100
-Open Angle                   --- 82
-dEdx                         --- 49
-Secondary Showers            --- 37
-Hit Length Ratio             --- 32
-Longest Track Leading Shower --- 32
-Contained Tracks             --- 28
+Flash in Time, Flash PE      --- 2203
+Reco Nue                     --- 1714
+In FV                        --- 1650
+Flash Reco Vtx Dist          --- 1169
+Vtx Nu Dist                  --- 988
+Vtx Track Nu Dist            --- 952
+Hit Threshold                --- 853
+Hit Threshold Collection     --- 796
+Open Angle                   --- 684
+dEdx                         --- 438
+Secondary Showers            --- 330
+Hit Length Ratio             --- 300
+Longest Track Leading Shower --- 291
+Contained Tracks             --- 265
 ---------------------------------------------------
 --------------- Reco COUNTERS ---------------------
-True Nue CC in FV --- 267
-RECO Signal       --- 28
-RECO Background   --- 118
+True Nue CC in FV --- 2258
+RECO Signal       --- 265
+RECO Background   --- 965
 ---------------------------------------------------
-dirname:	BNBCV
-BNBCV directory does not exist, creating...
+BNBCV directory exists, overwriting...

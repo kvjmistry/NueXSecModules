@@ -4,15 +4,16 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBsqueezeResp
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBsqueezeResp.root
 Found match for POT file
 POT in File:	1.94033e+20
-POT Scaling:	0.998809
+POT Scaling:	8.3072
 =================================================
 
 Variation File opened successfully
@@ -54,5 +55,5 @@ True Nue CC in FV --- 268
 RECO Signal       --- 17
 RECO Background   --- 133
 ---------------------------------------------------
-dirname:	BNBsqueezeResp
-BNBsqueezeResp directory does not exist, creating...
+BNBsqueezeResp directory exists, overwriting...
+BNBWeighted_Variations directory exists, overwriting...

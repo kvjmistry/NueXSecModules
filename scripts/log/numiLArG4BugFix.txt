@@ -4,15 +4,16 @@
 
 Using NuMI Params
 flash_time_start:	5.5   flash_time_end:	16
+dirname:	NuMILArG4BugFix
 =================================================
 
 File: filter_NuMICV.root
 Found match for POT file
-POT in File:	2.10554e+21
+POT in File:	5.45745e+21
 File: filter_NuMILArG4BugFix.root
 Found match for POT file
 POT in File:	1.62737e+21
-POT Scaling:	1.29383
+POT Scaling:	3.35354
 =================================================
 
 Variation File opened successfully
@@ -58,5 +59,4 @@ True Nue CC in FV --- 4062
 RECO Signal       --- 488
 RECO Background   --- 414
 ---------------------------------------------------
-dirname:	NuMILArG4BugFix
-NuMILArG4BugFix directory does not exist, creating...
+NuMILArG4BugFix directory exists, overwriting...

@@ -4,15 +4,16 @@
 
 Using NuMI Params
 flash_time_start:	5.5   flash_time_end:	16
+dirname:	NuMIwithDIC
 =================================================
 
 File: filter_NuMICV.root
 Found match for POT file
-POT in File:	2.10554e+21
+POT in File:	5.45745e+21
 File: filter_NuMIwithDIC.root
 Found match for POT file
 POT in File:	1.80229e+21
-POT Scaling:	1.16826
+POT Scaling:	3.02806
 =================================================
 
 Variation File opened successfully
@@ -58,5 +59,4 @@ True Nue CC in FV --- 4416
 RECO Signal       --- 541
 RECO Background   --- 500
 ---------------------------------------------------
-dirname:	NuMIwithDIC
-NuMIwithDIC directory does not exist, creating...
+NuMIwithDIC directory exists, overwriting...

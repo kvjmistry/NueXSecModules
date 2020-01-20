@@ -4,15 +4,16 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBBirksRecomb
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBBirksRecomb.root
 Found match for POT file
 POT in File:	1.96845e+20
-POT Scaling:	0.984541
+POT Scaling:	8.18852
 =================================================
 
 Variation File opened successfully
@@ -54,5 +55,5 @@ True Nue CC in FV --- 272
 RECO Signal       --- 36
 RECO Background   --- 122
 ---------------------------------------------------
-dirname:	BNBBirksRecomb
-BNBBirksRecomb directory does not exist, creating...
+BNBBirksRecomb directory exists, overwriting...
+BNBWeighted_Variations directory exists, overwriting...

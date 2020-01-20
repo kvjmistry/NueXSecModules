@@ -4,15 +4,16 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBupPEnoise
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBupPEnoise.root
 Found match for POT file
 POT in File:	1.95914e+20
-POT Scaling:	0.98922
+POT Scaling:	8.22744
 =================================================
 
 Variation File opened successfully
@@ -54,5 +55,5 @@ True Nue CC in FV --- 284
 RECO Signal       --- 30
 RECO Background   --- 118
 ---------------------------------------------------
-dirname:	BNBupPEnoise
-BNBupPEnoise directory does not exist, creating...
+BNBupPEnoise directory exists, overwriting...
+BNBWeighted_Variations directory exists, overwriting...

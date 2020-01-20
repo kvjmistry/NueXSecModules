@@ -4,25 +4,26 @@
 
 Using NuMI Params
 flash_time_start:	5.5   flash_time_end:	16
+dirname:	NuMICV
 =================================================
 
 File: filter_NuMICV.root
 Found match for POT file
-POT in File:	2.10554e+21
+POT in File:	5.45745e+21
 File: filter_NuMICV.root
 Found match for POT file
-POT in File:	2.10554e+21
+POT in File:	5.45745e+21
 POT Scaling:	1
 =================================================
 
 Variation File opened successfully
 
-Total Events: 697500
-Total Optical Entries: 768478
-Resized Optical List Size: 697500
-Total Optical Entries: 768478
-Resized Optical List Size: 697500
-Total Events (MC): 697500
+Total Events: 1933015
+Total Optical Entries: 2116377
+Resized Optical List Size: 1933015
+Total Optical Entries: 2116377
+Resized Optical List Size: 1933015
+Total Events (MC): 1933015
 Starting Eventloop...
 On entry 000k
 On entry 100k
@@ -31,34 +32,45 @@ On entry 300k
 On entry 400k
 On entry 500k
 On entry 600k
+On entry 700k
+On entry 800k
+On entry 900k
+On entry 1000k
+On entry 1100k
+On entry 1200k
+On entry 1300k
+On entry 1400k
+On entry 1500k
+On entry 1600k
+On entry 1700k
+On entry 1800k
+On entry 1900k
 Finished Eventloop...
 --------------- MC Truth COUNTERS -----------------
-MC Nue CC Counter      --- 19296
-MC Nue NC Counter      --- 6626
-MC Nue CC Counter Bar  --- 3612
-MC Nue NC Counter Bar  --- 1856
+MC Nue CC Counter      --- 54332
+MC Nue NC Counter      --- 17670
+MC Nue CC Counter Bar  --- 9987
+MC Nue NC Counter Bar  --- 4905
 ---------------------------------------------------
 --------------- Cut COUNTERS ---------------------
-Flash in Time, Flash PE      --- 5155
-Reco Nue                     --- 3849
-In FV                        --- 3665
-Flash Reco Vtx Dist          --- 2561
-Vtx Nu Dist                  --- 2201
-Vtx Track Nu Dist            --- 2131
-Hit Threshold                --- 1911
-Hit Threshold Collection     --- 1800
-Open Angle                   --- 1572
-dEdx                         --- 940
-Secondary Showers            --- 764
-Hit Length Ratio             --- 695
-Longest Track Leading Shower --- 686
-Contained Tracks             --- 649
+Flash in Time, Flash PE      --- 14181
+Reco Nue                     --- 10663
+In FV                        --- 10166
+Flash Reco Vtx Dist          --- 7104
+Vtx Nu Dist                  --- 6117
+Vtx Track Nu Dist            --- 5885
+Hit Threshold                --- 5240
+Hit Threshold Collection     --- 4933
+Open Angle                   --- 4266
+dEdx                         --- 2531
+Secondary Showers            --- 2077
+Hit Length Ratio             --- 1890
+Longest Track Leading Shower --- 1864
+Contained Tracks             --- 1754
 ---------------------------------------------------
 --------------- Reco COUNTERS ---------------------
-True Nue CC in FV --- 5208
-RECO Signal       --- 649
-RECO Background   --- 475
+True Nue CC in FV --- 14343
+RECO Signal       --- 1754
+RECO Background   --- 1194
 ---------------------------------------------------
-dirname:	NuMICV
-NuMICV directory does not exist, creating...
-Weighted_NuMICV directory does not exist, creating...
+NuMICV directory exists, overwriting...

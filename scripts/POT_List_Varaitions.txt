@@ -59,7 +59,9 @@ File: filter_BNBwithDIC.root
 Total POT (Method 1): 1.96741e+20
 Total POT (Method 2): 1.96741e+20
 File: filter_BNBCV.root
-Total POT (Method 1): 1.93802e+20
+Total POT (Method 1): 1.61187e+21 # This is the high stats sample
+Total POT (Method 2): 1.61187e+21
+Total POT (Method 1): 1.93802e+20 # This is the detvar sample
 Total POT (Method 2): 1.93802e+20
 Total POT (Method 1): 7.21886e+20 # These are for the larger sample 
 Total POT (Method 2): 7.21886e+20
@@ -79,7 +81,9 @@ File: filter_BNBDLdown.root
 Total POT (Method 1): 1.97698e+20
 Total POT (Method 2): 1.97698e+20
 File: filter_NuMICV.root
-Total POT (Method 1): 2.10554e+21
+Total POT (Method 1): 5.45745e+21 # This is the hight stats
+Total POT (Method 2): 5.45745e+21 
+Total POT (Method 1): 2.10554e+21 # This is the NuMI detvar
 Total POT (Method 2): 2.10554e+21
 File: filter_NuMILArG4BugFix.root
 Total POT (Method 1): 1.62737e+21
@@ -120,3 +124,6 @@ Total POT (Method 2): 1.9374e+20
 File: filter_BNBdownPEnoise.root
 Total POT (Method 1): 1.97696e+20
 Total POT (Method 2): 1.97696e+20
+File: filter_NuMIdeadSaturatedChannels.root
+Total POT (Method 1): 1.43122e+21
+Total POT (Method 2): 1.43122e+21

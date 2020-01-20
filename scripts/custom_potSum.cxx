@@ -14,7 +14,12 @@ int main(int argc, char * argv[])
 	TFile * f = new TFile(_file1);
 	if(!f->IsOpen()) {std::cout << "Could not open file!" << std::endl; return 1; }
 	TTree * mytree = (TTree*)f->Get("AnalyzeTPCO/pot_tree");
-        TTree * pot_tree2 = (TTree*)f->Get("AnalyzeTPCO/pottree");
+
+	if (mytree == NULL) mytree = (TTree*)f->Get("FlashValidate/pot_tree");
+	
+	if (mytree == NULL)std::cout << "help can't get the branch" << std::endl;
+
+        //TTree * pot_tree2 = (TTree*)f->Get("AnalyzeTPCO/pottree");
 
 	double pot_sum = 0;
 	double pot;
@@ -31,20 +36,20 @@ int main(int argc, char * argv[])
 	double pot2;
 	int run;
 	int subrun;
-	pot_tree2->SetBranchAddress("pot", &pot2);
-	pot_tree2->SetBranchAddress("run", &run);
-	pot_tree2->SetBranchAddress("subrun", &subrun);
+	//pot_tree2->SetBranchAddress("pot", &pot2);
+	//pot_tree2->SetBranchAddress("run", &run);
+	//pot_tree2->SetBranchAddress("subrun", &subrun);
 
 	std::ofstream run_subrun_file;
 	run_subrun_file.open("custom_run_subrun_list_data.txt");
 
 
-	for(int i = 0; i < pot_tree2->GetEntries(); i++)
-	{
-		pot_tree2->GetEntry(i);
-		pot_sum2 += pot2;
-		run_subrun_file << run << " " << subrun << '\n';
-	}
+	//for(int i = 0; i < pot_tree2->GetEntries(); i++)
+	//{
+	//	pot_tree2->GetEntry(i);
+	//	pot_sum2 += pot2;
+	//	run_subrun_file << run << " " << subrun << '\n';
+	//}
 	run_subrun_file.close();
 
 	std::cout << "Total POT (Method 1): " << pot_sum  << std::endl;

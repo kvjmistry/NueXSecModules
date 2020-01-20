@@ -4,15 +4,16 @@
 
 Using BNB Params
 flash_time_start:	3.19   flash_time_end:	4.87
+dirname:	BNBDLdown
 =================================================
 
 File: filter_BNBCV.root
 Found match for POT file
-POT in File:	1.93802e+20
+POT in File:	1.61187e+21
 File: filter_BNBDLdown.root
 Found match for POT file
 POT in File:	1.97698e+20
-POT Scaling:	0.980293
+POT Scaling:	8.15319
 =================================================
 
 Variation File opened successfully
@@ -54,5 +55,5 @@ True Nue CC in FV --- 279
 RECO Signal       --- 35
 RECO Background   --- 103
 ---------------------------------------------------
-dirname:	BNBDLdown
-BNBDLdown directory does not exist, creating...
+BNBDLdown directory exists, overwriting...
+BNBWeighted_Variations directory exists, overwriting...
