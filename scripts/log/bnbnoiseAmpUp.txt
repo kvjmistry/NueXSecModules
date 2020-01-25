@@ -54,6 +54,8 @@ Contained Tracks             --- 31
 True Nue CC in FV --- 281
 RECO Signal       --- 31
 RECO Background   --- 123
+RECO Bkg W All    --- 146.971
+RECO Bkg W Indiv  --- 154.963
 ---------------------------------------------------
 BNBnoiseAmpUp directory exists, overwriting...
 BNBWeighted_Variations directory exists, overwriting...

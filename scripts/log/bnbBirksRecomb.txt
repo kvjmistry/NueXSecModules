@@ -54,6 +54,8 @@ Contained Tracks             --- 36
 True Nue CC in FV --- 272
 RECO Signal       --- 36
 RECO Background   --- 122
+RECO Bkg W All    --- 153.074
+RECO Bkg W Indiv  --- 147.152
 ---------------------------------------------------
 BNBBirksRecomb directory exists, overwriting...
 BNBWeighted_Variations directory exists, overwriting...

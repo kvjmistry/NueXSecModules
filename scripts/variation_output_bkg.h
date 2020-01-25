@@ -108,6 +108,10 @@ class variation_output_bkg {
         TH1D_hist.at(kshower_E_other)             = new TH1D("h_shower_E_other",      "h_shower_E_other",       7 , 0, 3 ); // Shower E other
         TH1D_hist.at(kshower_E)                   = new TH1D("h_shower_E",            "h_shower_E",             7 , 0, 3 ); // Shower E
 
+        TH1D_hist.at(kshower_Theta_pi0)               = new TH1D("h_shower_Theta_pi0",        "h_shower_Theta_pi0",         12, 0, 180 ); // Shower Theta pi0
+        TH1D_hist.at(kshower_Theta_bkg_cosmic)        = new TH1D("h_shower_Theta_bkg_cosmic", "h_shower_Theta_bkg_cosmic",  12, 0, 180 ); // Shower Theta bkg cosmic
+        TH1D_hist.at(kshower_Theta_other)             = new TH1D("h_shower_Theta_other",      "h_shower_Theta_other",       12, 0, 180 ); // Shower Theta other
+
 
         // Do the same but for the weighted histograms
         TH1D_hist_weighted.resize(kTH1D_names_weighted_MAX);
@@ -134,6 +138,9 @@ class variation_output_bkg {
             TH1D_hist_weighted.at(kshower_E_bkg_cosmic_w).at(k)            = new TH1D(Form("h_shower_E_bkg_cosmic_%s_w", bnbvars.at(k).c_str()),           Form("h_shower_E_bkg_cosmic %s", bnbvars.at(k).c_str()),          7 , 0, 5 ); // Shower E bkg cosmic
             TH1D_hist_weighted.at(kshower_E_other_w).at(k)                 = new TH1D(Form("h_shower_E_other_%s_w", bnbvars.at(k).c_str()),                Form("h_shower_E_other %s", bnbvars.at(k).c_str()),               7 , 0, 3 ); // Shower E other
             TH1D_hist_weighted.at(kshower_E_w).at(k)                       = new TH1D(Form("h_shower_E_%s_w", bnbvars.at(k).c_str()),                      Form("h_shower_E %s", bnbvars.at(k).c_str()),                     7 , 0, 3 ); // Shower E
+            TH1D_hist_weighted.at(kshower_Theta_pi0_w).at(k)               = new TH1D(Form("h_shower_Theta_pi0_%s_w", bnbvars.at(k).c_str()),              Form("h_shower_Theta_pi0 %s", bnbvars.at(k).c_str()),             12, 0, 180 ); // Shower Theta pi0
+            TH1D_hist_weighted.at(kshower_Theta_bkg_cosmic_w).at(k)        = new TH1D(Form("h_shower_Theta_bkg_cosmic_%s_w", bnbvars.at(k).c_str()),       Form("h_shower_Theta_bkg_cosmic %s", bnbvars.at(k).c_str()),      12, 0, 180 ); // Shower Theta bkg cosmic
+            TH1D_hist_weighted.at(kshower_Theta_other_w).at(k)             = new TH1D(Form("h_shower_Theta_other_%s_w", bnbvars.at(k).c_str()),            Form("h_shower_Theta_other %s", bnbvars.at(k).c_str()),           12, 0, 180 ); // Shower Theta other
 
         }
         
@@ -208,6 +215,7 @@ class variation_output_bkg {
     void WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj, bool bool_sig, const int leading_shower_index, std::pair<std::string, int> tpc_classification, std::string dirname); // Function to weight the numi CV
     void CompareWeightedHistograms(); // Function to make the NuMI variaions and weighted NuMI CV variations
     void CompareWeightedDrawSpecs(TH1D* hist, std::string weighted_str, std::string variation, TLegend* legend, std::string histname); // Function to draw Weighted NuMI Histograms
+    void GetBNBBkgWeight(double theta, double phi, double phi_wrapped, std::string bkg_class, double &weight_all, double &weight_indiv, std::string dirname ); // Reweight the backgrounds based on a 2D histogram in theta and phi
 
     // ----------------------
     // Flash Functions
@@ -338,6 +346,9 @@ class variation_output_bkg {
     int mc_nu_num_particles = 0;
     int mc_nu_num_charged_particles = 0;
 
+    // Weighted backgrounds
+    double weight_all{0.0}, weight_indiv{0.0};
+
     // ----------------------
     //     Other Variables
     // ----------------------
@@ -360,7 +371,7 @@ class variation_output_bkg {
                      kshower_phi_pi0,         kshower_phi_bkg_cosmic,         kshower_phi_other,             kshower_E, 
                      kshower_phi_pi0_wrapped, kshower_phi_bkg_cosmic_wrapped, kshower_phi_other_wrapped,
                      kshower_E_pi0,           kshower_E_bkg_cosmic,           kshower_E_other,
-                     kshower_Theta_pi0,           kshower_Theta_bkg_cosmic,           kshower_Theta_other,
+                     kshower_Theta_pi0,       kshower_Theta_bkg_cosmic,       kshower_Theta_other,
                      kTH1D_names_MAX};
 
     
@@ -380,6 +391,7 @@ class variation_output_bkg {
                      kshower_phi_pi0_w,         kshower_phi_bkg_cosmic_w,         kshower_phi_other_w,             kshower_E_w, 
                      kshower_phi_pi0_wrapped_w, kshower_phi_bkg_cosmic_wrapped_w, kshower_phi_other_wrapped_w,
                      kshower_E_pi0_w,           kshower_E_bkg_cosmic_w,           kshower_E_other_w,
+                     kshower_Theta_pi0_w,       kshower_Theta_bkg_cosmic_w,       kshower_Theta_other_w,
                      kTH1D_names_weighted_MAX};
 
     std::vector<std::string> bnbvars = {

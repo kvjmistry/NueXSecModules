@@ -353,7 +353,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
             //if (!bool_sig ) std::cout << tpc_classification.first << std::endl;
 
-            // Weight the NuMI CV
+            // Weight the BNB Variations
             WeightBNBVar(tpc_obj, bool_sig, leading_shower_index, tpc_classification, dirname);
 
             // Loop over the Par Objects
@@ -438,12 +438,17 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         TH1D_hist.at(kldg_shwr_Phi_wrapped) ->Fill(mc_phi_wrapped);
                         TH1D_hist.at(kshower_E)             ->Fill(mc_Energy);
 
+                        // Weight the backgrounds
+                        GetBNBBkgWeight(mc_Theta, mc_Phi, mc_phi_wrapped, bkg_class, weight_all, weight_indiv, dirname );
+                        // std::cout << "weight all:  " << weight_all << "  weight_indiv:   " << weight_indiv << "  bkg CV: " << bkg_counter << std::endl;
+
                         // Fill the phi distribtuons for the bkgs
                         if (bkg_class == "pi0_gamma") {
                             mc_Phi_pi0 = mc_Phi;
                             TH1D_hist.at(kshower_phi_pi0)          ->Fill(mc_Phi);
                             TH1D_hist.at(kshower_E_pi0)            ->Fill(mc_Energy);
                             TH1D_hist.at(kshower_phi_pi0_wrapped)  ->Fill(mc_phi_wrapped);
+                            TH1D_hist.at(kshower_Theta_pi0)        ->Fill(mc_Theta);
                             TH2D_hist.at(kEBkg_pi0_Theta)          ->Fill(mc_Energy, mc_Theta);
                             TH2D_hist.at(kEBkg_pi0_Phi)            ->Fill(mc_Energy, mc_Phi);
                             TH2D_hist.at(kEBkg_pi0_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
@@ -455,6 +460,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                             TH1D_hist.at(kshower_phi_bkg_cosmic)         ->Fill(mc_Phi);
                             TH1D_hist.at(kshower_E_bkg_cosmic)           ->Fill(mc_Energy);
                             TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped) ->Fill(mc_phi_wrapped);
+                            TH1D_hist.at(kshower_Theta_bkg_cosmic)        ->Fill(mc_Theta);
                             TH2D_hist.at(kEBkg_cosmic_Theta)             ->Fill(mc_Energy, mc_Theta);
                             TH2D_hist.at(kEBkg_cosmic_Phi)               ->Fill(mc_Energy, mc_Phi);
                             TH2D_hist.at(kEBkg_cosmic_Phi_wrapped)       ->Fill(mc_Energy, mc_phi_wrapped);
@@ -467,6 +473,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                             TH1D_hist.at(kshower_phi_other)          ->Fill(mc_Phi);
                             TH1D_hist.at(kshower_E_other)            ->Fill(mc_Energy);
                             TH1D_hist.at(kshower_phi_other_wrapped)  ->Fill(mc_phi_wrapped);
+                            TH1D_hist.at(kshower_Theta_other)        ->Fill(mc_Theta);
                             TH2D_hist.at(kEBkg_other_Theta)          ->Fill(mc_Energy, mc_Theta);
                             TH2D_hist.at(kEBkg_other_Phi)            ->Fill(mc_Energy, mc_Phi);
                             TH2D_hist.at(kEBkg_other_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
@@ -537,6 +544,8 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     std::cout << "True Nue CC in FV --- " << nue_cc_counter << std::endl;
     std::cout << "RECO Signal       --- " << sig_counter << std::endl;
     std::cout << "RECO Background   --- " << bkg_counter << std::endl;
+    std::cout << "RECO Bkg W All    --- " << weight_all << std::endl;
+    std::cout << "RECO Bkg W Indiv  --- " << weight_indiv << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
     
     // ----------------------
@@ -678,7 +687,8 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
                                           "h_shower_Nu_vtx_Dist",     "h_track_Nu_vtx_Dist",         "h_selected",
                                           "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
-                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other",       "h_shower_E" };
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other",       "h_shower_E",
+                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other", };
 
     // Loop over the histograms
     for (int j=0; j < histnames.size(); j++){
@@ -1361,6 +1371,24 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
 
         if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,110);
     }
+    else if (histname ==  "h_shower_Theta_pi0"){
+        hist->SetTitle("; Leading Shower Theta #pi^{0} Bkg [Degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,300);
+
+        // if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,80);
+    }
+    else if (histname ==  "h_shower_Theta_bkg_cosmic"){
+        hist->SetTitle("; Leading Shower Theta cosmic Bkg [Degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,10);
+
+        // if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,10);
+    }
+    else if (histname ==  "h_shower_Theta_other"){
+        hist->SetTitle("; Leading Shower Theta Other Bkg [Degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,100);
+
+        // if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,30);
+    }
     else return;
 
     std::string draw_spec = "hist,E, same";
@@ -1579,7 +1607,7 @@ void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string variation, TLe
         line = new TLine(0,1,90,1); 
     }
     else if (histname ==  "h_shower_E_pi0"){
-        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [degrees];Ratio BNB / NuMI");
+        hist->SetTitle("; Leading Shower Energy #pi^{0} Bkg [GeV];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,50);
         line = new TLine(0,1,3,1); 
     }
@@ -1589,15 +1617,31 @@ void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string variation, TLe
         line = new TLine(0,1,5,1);  
     }
     else if (histname ==  "h_shower_E_other"){
-        hist->SetTitle("; Leading Shower Energy Other Bkg [degrees];Ratio BNB / NuMI");
+        hist->SetTitle("; Leading Shower Energy Other Bkg [GeV];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,30);
         line = new TLine(0,1,3,1); 
     }
     else if (histname ==  "h_shower_E"){
-        hist->SetTitle("; Leading Shower Bkg Energy[GeV];Ratio BNB / NuMI");
+        hist->SetTitle("; Leading Shower Bkg Energy [GeV];Ratio BNB / NuMI");
         // hist->GetYaxis()->SetRangeUser(0,30);
         line = new TLine(0,1,3,1); 
     }
+    else if (histname ==  "h_shower_Theta_pi0"){
+        hist->SetTitle("; Leading Shower Theta #pi^{0} Bkg [degrees];Ratio BNB / NuMI");
+        // hist->GetYaxis()->SetRangeUser(0,50);
+        line = new TLine(0,1,3,1); 
+    }
+    else if (histname ==  "h_shower_Theta_bkg_cosmic"){
+        hist->SetTitle("; Leading Shower Theta cosmic Bkg [degrees];Ratio BNB / NuMI");
+        hist->GetYaxis()->SetRangeUser(0,10);
+        line = new TLine(0,1,5,1);  
+    }
+    else if (histname ==  "h_shower_Theta_other"){
+        hist->SetTitle("; Leading Shower Theta Other Bkg [degrees];Ratio BNB / NuMI");
+        // hist->GetYaxis()->SetRangeUser(0,30);
+        line = new TLine(0,1,3,1); 
+    }
+    
 
 
     // ----------------------
@@ -2777,7 +2821,8 @@ void variation_output_bkg::GenerateWeightHistograms(){
                                           "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",          "h_ldg_shwr_Theta",
                                           "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
-                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected"};
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected",
+                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other"};
     
     // Loop over the histograms
     for (int j=0; j < histnames.size(); j++){
@@ -2803,6 +2848,40 @@ void variation_output_bkg::GenerateWeightHistograms(){
         
         hist_divide->Divide(hist_BNB);
         hist_divide->SetOption("E");
+
+        fweight->cd();
+        hist_divide->Write("",TObject::kOverwrite);
+        f_var_out->cd();
+
+    }
+
+    // Now lets save the 2D histograms for weighting
+    histnames.clear();
+    histnames = { "h_ThetaBkg_Phi_wrapped", "h_ThetaBkg_pi0_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped", "h_ThetaBkg_other_Phi_wrapped", "h_ThetaBkg_Phi", "h_ThetaBkg_pi0_Phi", "h_ThetaBkg_cosmic_Phi", "h_ThetaBkg_other_Phi" };
+
+    for (int j=0; j < histnames.size(); j++){
+        TH2D* hist_NuMI;
+        TH2D* hist_BNB;
+
+        fnumi->cd();
+        
+        char name_NuMI[500];
+        snprintf(name_NuMI, 500, "NuMICV/%s", histnames[j].c_str() );
+        hist_NuMI = (TH2D*)fnumi->Get(name_NuMI);
+        if (hist_NuMI == NULL ) std::cout << "ERROR: Can't get Histogram!   " << name_NuMI <<  std::endl;
+
+        char name_BNB[500];
+        snprintf(name_BNB, 500, "BNBCV/%s", histnames[j].c_str() );
+        hist_BNB = (TH2D*)f_var_out->Get(name_BNB);
+        if (hist_BNB == NULL ) std::cout << "ERROR: Can't get CV Histogram!    " << name_BNB << std::endl;
+
+        histname_ratio = histnames[j] + "_ratio";
+        
+        TH2D* hist_divide = (TH2D*) hist_NuMI->Clone(Form("%s",histname_ratio.c_str()));
+        hist_divide->Sumw2();
+        
+        hist_divide->Divide(hist_BNB);
+        hist_divide->SetOption("colz");
 
         fweight->cd();
         hist_divide->Write("",TObject::kOverwrite);
@@ -2913,6 +2992,17 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
                     // Here we would fill the histogram
                     if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
                     TH1D_hist_weighted.at(kshower_E_pi0_w).at(p)->Fill(mc_Energy, weight);
+
+                    std::string histname_Theta_pi0 = histname + "_Theta_pi0_ratio";
+                    snprintf(name, 500, "%s", histname_Theta_pi0.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name<<  std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Theta); // Get the bin at Theta
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kshower_Theta_pi0_w).at(p)->Fill(mc_Theta, weight);
                     
                 }
                 
@@ -2952,6 +3042,17 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
                     if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
                     TH1D_hist_weighted.at(kshower_E_bkg_cosmic_w).at(p)->Fill(mc_Energy, weight);
 
+                    std::string histname_Theta_cosmic = histname + "_Theta_bkg_cosmic_ratio";
+                    snprintf(name, 500, "%s", histname_Theta_cosmic.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: "<< name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Theta); // Get the bin at Theta
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kshower_Theta_bkg_cosmic_w).at(p)->Fill(mc_Theta, weight);
+
                 }
                 if (bkg_class == "other_bkg") {
                     std::string histname_phi_other = histname + "_phi_other_ratio";
@@ -2977,7 +3078,6 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
                     if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
                     TH1D_hist_weighted.at(kshower_phi_other_wrapped_w).at(p)->Fill(mc_phi_wrapped, weight);
 
-
                     std::string histname_E_other = histname + "_E_other_ratio";
                     snprintf(name, 500, "%s", histname_E_other.c_str() );
                     hist = (TH1D*)fweight->Get(name); 
@@ -2988,6 +3088,18 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
                     // Here we would fill the histogram
                     if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
                     TH1D_hist_weighted.at(kshower_E_other_w).at(p)->Fill(mc_Energy, weight);
+
+                    std::string histname_Theta_other = histname + "_Theta_other_ratio";
+                    snprintf(name, 500, "%s", histname_Theta_other.c_str() );
+                    hist = (TH1D*)fweight->Get(name); 
+                    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+                    xbin = hist->GetXaxis()->FindBin(mc_Theta); // Get the bin at Theta
+                    weight = hist->GetBinContent(xbin); // Get the weight at that bin
+
+                    // Here we would fill the histogram
+                    if (weight == 0) weight = 1; // We shouldt fill with empty weights because of lack of stats
+                    TH1D_hist_weighted.at(kshower_Theta_other_w).at(p)->Fill(mc_Theta, weight);
+
                 } // End if background 
 
 
@@ -3069,7 +3181,8 @@ void variation_output_bkg::CompareWeightedHistograms(){
                                           "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",          "h_ldg_shwr_Theta",
                                           "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
-                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected"};
+                                          "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected",
+                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other",};
 
     char name[500];
 
@@ -3184,6 +3297,21 @@ void variation_output_bkg::CompareWeightedDrawSpecs(TH1D* hist, std::string weig
     else if (histname ==  "h_shower_E"){
         hist->SetTitle("; Leading Shower Energy Bkg [GeV];Entries");
         hist->GetYaxis()->SetRangeUser(0,1000);
+
+    }
+    else if (histname ==  "h_shower_Theta_pi0"){
+        hist->SetTitle("; Leading Shower Theta #pi^{0} Bkg [degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,600);
+
+    }
+    else if (histname ==  "h_shower_Theta_bkg_cosmic"){
+        hist->SetTitle("; Leading Shower Theta cosmic Bkg [degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,40);
+
+    }
+    else if (histname ==  "h_shower_Theta_other"){
+        hist->SetTitle("; Leading Shower Theta Other Bkg [degrees];Entries");
+        // hist->GetYaxis()->SetRangeUser(0,250);
 
     }
     else return;
@@ -3355,5 +3483,89 @@ void variation_output_bkg::CompareWeightedDrawSpecs(TH1D* hist, std::string weig
         return;
     }
 
+
+}
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::GetBNBBkgWeight(double theta, double phi, double phi_wrapped, std::string bkg_class, double &weight_all, double &weight_indiv, std::string dirname ){
+    
+    // Grab the variation folders in the file
+    std::vector<std::string> variations = {
+                                        "BNBCV",
+                                        "BNBwithDIC",
+                                        "BNBdataSCE",
+                                        "BNBdeadSaturatedChannels",
+                                        "BNBLArG4BugFix",
+                                        "BNBDLup",
+                                        "BNBDLdown",
+                                        "BNBDTup",
+                                        "BNBDTdown",
+                                        "BNBnoiseAmpUp",
+                                        "BNBnoiseAmpDown",
+                                        "BNBaltDeadChannels",
+                                        "BNBstretchResp",
+                                        "BNBsqueezeResp",
+                                        "BNBupPEnoise",
+                                        "BNBEnhancedTPCVis",
+                                        "BNBBirksRecomb",
+                                        "BNBdownPEnoise"};
+
+    int p = -1; // Index of variation
+
+    // Get the index of variation to weight
+    for (unsigned int j=0; j< variations.size(); j++){
+        if (dirname == variations.at(j)) p = j;
+    }
+
+    // No variation was matched so we just return
+    if (p == -1) return;
+
+    double xbin{1.0}, ybin{1.0};
+    TH2D* hist;
+    double weight{0.0};
+
+    char name[500];
+
+    // First weight by the total histograms
+    std::string histname_theta_phi = "h_ThetaBkg_Phi_wrapped_ratio";
+    snprintf(name, 500, "%s", histname_theta_phi.c_str() );
+    hist = (TH2D*)fweight->Get(name);
+    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+    xbin = hist->GetXaxis()->FindBin(theta);
+    ybin = hist->GetYaxis()->FindBin(phi_wrapped);
+    weight = hist->GetBinContent(xbin, ybin);
+
+    if (weight == 0) weight_all+=1.0;
+    else weight_all+=weight;
+
+
+    // Now try to weight split using background categories
+    if (bkg_class == "pi0_gamma") histname_theta_phi = "h_ThetaBkg_pi0_Phi_wrapped_ratio";
+    if (bkg_class == "cosmic")    histname_theta_phi = "h_ThetaBkg_cosmic_Phi_ratio";
+    if (bkg_class == "other_bkg") histname_theta_phi = "h_ThetaBkg_other_Phi_wrapped_ratio";
+
+    snprintf(name, 500, "%s", histname_theta_phi.c_str() );
+    hist = (TH2D*)fweight->Get(name);
+    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+    xbin = hist->GetXaxis()->FindBin(theta);
+    if (bkg_class != "cosmic") ybin = hist->GetYaxis()->FindBin(phi_wrapped);
+    else ybin = hist->GetYaxis()->FindBin(phi);
+    weight = hist->GetBinContent(xbin, ybin);
+
+    
+    if (bkg_class != "cosmic"){
+         std::cout << "Weight: " << hist->Interpolate(theta, phi_wrapped) << "   Weight: " << weight <<  std::endl;
+         weight = hist->Interpolate(theta, phi_wrapped);
+    } 
+   
+    else {
+        std::cout << "Weight: " << hist->Interpolate(theta, phi)  << "   Weight: " << weight << std::endl;
+        weight = hist->Interpolate(theta, phi);
+    }
+
+    if (weight == 0) weight_indiv+=1.0;
+    else weight_indiv+=weight;
+
+    // std::cout << "Weight: " << weight << std::endl;
 
 }
