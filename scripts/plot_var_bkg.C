@@ -71,7 +71,7 @@ void plot_var_bkg(){
     const double dirt_scale_factor = 0.16411;
 
     const double n_dirt{30};
-    double n_bkg{1.16*356};
+    double n_bkg{1.04*356};
 
     const double efficiency{642.0/7103.0};
 

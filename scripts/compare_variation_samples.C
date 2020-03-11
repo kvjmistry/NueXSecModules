@@ -90,4 +90,21 @@ void compare_variation_samples(){
     hist_divide_dsc->Draw("same,E");
 
 
+    
+    const char* plot2 = "h_ldg_shwr_dEdx_WPlane_precut";
+    // const char* plot2 = "h_shwr_hit_threshold_precut";
+    // const char* plot2 = "h_shwr_hit_threshold_collection_precut";
+
+    TH1D *h_dedx_numi, *h_dedx_bnb; 
+    boolhist = GetHist(f_bnb, h_dedx_bnb,     Form("BNBCV/%s", plot2)); if (boolhist == false) gSystem->Exit(0);
+    boolhist = GetHist(f_numi, h_dedx_numi,   Form("NuMICV/%s", plot2)); if (boolhist == false) gSystem->Exit(0);
+
+    TCanvas* c2 = new TCanvas();
+    TH1D* hist_divide2 = (TH1D*) h_dedx_numi->Clone("h_dedx_numi_clone");
+    hist_divide2->Sumw2();
+    hist_divide2->Divide(h_dedx_bnb);
+    hist_divide2->SetOption("E");
+    hist_divide2->Draw();
+
+
 }

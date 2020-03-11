@@ -261,6 +261,94 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
 
             if (bool_sig) nue_cc_counter++;
 
+            // Fill the unselected histograms
+            if (!bool_sig && (dirname == "BNBCV" || dirname == "NuMICV")) {
+
+                    // Loop over the Par Objects
+                for (int j = 0; j < n_pfp ; j++){
+
+                    auto const pfp_obj = tpc_obj.GetParticle(j);
+      
+                    const double mc_Theta  = pfp_obj.mcTheta();
+                    mc_Phi    = pfp_obj.mcPhi();
+                    const double mc_Energy = pfp_obj.mcEnergy();
+                    const double mc_pdg    = pfp_obj.MCPdgCode();
+                    const double mc_pdg_parent = pfp_obj.MCParentPdg();
+                    
+                    // Background events
+                    if (!bool_sig) {
+
+                        //  ------------ Leading shower ------------
+                        if (j == leading_shower_index){
+
+                            std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
+
+                            TH1D_hist.at(kldg_shwr_Phi_unselected)			 ->Fill(mc_Phi);
+                            TH1D_hist.at(kldg_shwr_Theta_unselected)		 ->Fill(mc_Theta);
+                           
+                            // Wrap phi from 0 to 90
+                            double leading_shower_phi_wrapped   = WrapPhi(mc_Phi);
+                            double mc_phi_wrapped               = WrapPhi(mc_Phi);
+                            TH1D_hist.at(kldg_shwr_Phi_wrapped_unselected) ->Fill(mc_phi_wrapped);
+                            TH1D_hist.at(kshower_E_unselected)             ->Fill(mc_Energy);
+
+                            // Fill the phi distribtuons for the bkgs
+                            if (bkg_class == "pi0_gamma") {
+                                mc_Phi_pi0 = mc_Phi;
+                                TH1D_hist.at(kshower_phi_pi0_unselected)          ->Fill(mc_Phi);
+                                TH1D_hist.at(kshower_E_pi0_unselected)            ->Fill(mc_Energy);
+                                TH1D_hist.at(kshower_phi_pi0_wrapped_unselected)  ->Fill(mc_phi_wrapped);
+                                TH1D_hist.at(kshower_Theta_pi0_unselected)        ->Fill(mc_Theta);
+                                TH2D_hist.at(kEBkg_pi0_Theta_unselected)          ->Fill(mc_Energy, mc_Theta);
+                                TH2D_hist.at(kEBkg_pi0_Phi_unselected)            ->Fill(mc_Energy, mc_Phi);
+                                TH2D_hist.at(kEBkg_pi0_Phi_wrapped_unselected)    ->Fill(mc_Energy, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_pi0_Phi_wrapped_unselected)->Fill(mc_Theta, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_pi0_Phi_unselected)        ->Fill(mc_Theta, mc_Phi);
+                            }
+                            
+                            if (bkg_class == "cosmic") {
+                                TH1D_hist.at(kshower_phi_bkg_cosmic_unselected)         ->Fill(mc_Phi);
+                                TH1D_hist.at(kshower_E_bkg_cosmic_unselected)           ->Fill(mc_Energy);
+                                TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped_unselected) ->Fill(mc_phi_wrapped);
+                                TH1D_hist.at(kshower_Theta_bkg_cosmic_unselected)        ->Fill(mc_Theta);
+                                TH2D_hist.at(kEBkg_cosmic_Theta_unselected)             ->Fill(mc_Energy, mc_Theta);
+                                TH2D_hist.at(kEBkg_cosmic_Phi_unselected)               ->Fill(mc_Energy, mc_Phi);
+                                TH2D_hist.at(kEBkg_cosmic_Phi_wrapped_unselected)       ->Fill(mc_Energy, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_cosmic_Phi_wrapped_unselected)   ->Fill(mc_Theta, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_cosmic_Phi_unselected)           ->Fill(mc_Theta, mc_Phi);
+                            }
+                            
+                            if (bkg_class == "other_bkg") {
+                                mc_Phi_other = mc_Phi;
+                                TH1D_hist.at(kshower_phi_other_unselected)          ->Fill(mc_Phi);
+                                TH1D_hist.at(kshower_E_other_unselected)            ->Fill(mc_Energy);
+                                TH1D_hist.at(kshower_phi_other_wrapped_unselected)  ->Fill(mc_phi_wrapped);
+                                TH1D_hist.at(kshower_Theta_other_unselected)        ->Fill(mc_Theta);
+                                TH2D_hist.at(kEBkg_other_Theta_unselected)          ->Fill(mc_Energy, mc_Theta);
+                                TH2D_hist.at(kEBkg_other_Phi_unselected)            ->Fill(mc_Energy, mc_Phi);
+                                TH2D_hist.at(kEBkg_other_Phi_wrapped_unselected)    ->Fill(mc_Energy, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_other_Phi_wrapped_unselected)->Fill(mc_Theta, mc_phi_wrapped);
+                                TH2D_hist.at(kThetaBkg_other_Phi_unselected)        ->Fill(mc_Theta, mc_Phi);
+                            }
+                        
+                            // 2D histos of the energy of the background particle vs angle
+                            TH2D_hist.at(kEBkg_Theta_unselected)         ->Fill(mc_Energy, mc_Theta);
+                            TH2D_hist.at(kEBkg_Phi_unselected)           ->Fill(mc_Energy, mc_Phi);
+                            TH2D_hist.at(kEBkg_Phi_wrapped_unselected)   ->Fill(mc_Energy, mc_phi_wrapped);
+                            
+                            TH2D_hist.at(kThetaBkg_Phi_wrapped_unselected)   ->Fill(mc_Theta, mc_phi_wrapped);
+                            TH2D_hist.at(kThetaBkg_Phi_unselected)           ->Fill(mc_Theta, mc_Phi);
+
+
+                        }
+                    
+                    }
+                
+
+                } // END LOOP PAR OBJ
+
+            }
+
             //************************ Apply Flash in time and Flash PE cut *************************************
             if (flash_cuts_pass_vec.at(event) == false) continue;
             if (bool_sig) counter_FlashinTime_FlashPE++;
@@ -295,31 +383,34 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
             if ( bool_trackvtxnudist == false ) continue;
             if (bool_sig) counter_VtxTrackNuDist++;
             //***************************************************************************************************
-
+            std::string hist_fill_name = "kpre_hit_threshold_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
             //****************************** Apply Hit threshold cut**** cut ************************************
             bool bool_hitTh = HitThreshold(tpc_obj, shwr_hit_threshold, false);
             if ( bool_hitTh == false ) continue;
             if (bool_sig) counter_HitThresh++;
             //***************************************************************************************************
-
+            hist_fill_name = "kpost_hit_threshold_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
+            hist_fill_name = "kpre_hit_threshold_collection_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
             //****************************** Apply Hit threshold collection cut *********************************
             bool bool_hitThW = HitThreshold(tpc_obj, shwr_hit_threshold_collection, true);
             if ( bool_hitThW == false ) continue;
             if (bool_sig) counter_HitThreshW++;
             //***************************************************************************************************
-
+            hist_fill_name = "kpost_hit_threshold_collection_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
+            hist_fill_name = "kpre_open_angle_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
             //****************************** Apply Open Angle cut ***********************************************
             bool bool_OpenAngle = OpenAngleCut(tpc_obj, tolerance_open_angle);
             if ( bool_OpenAngle == false ) continue;
             if (bool_sig) counter_OpenAngle++;
             //***************************************************************************************************
-
+            hist_fill_name = "kpost_open_angle_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
+            hist_fill_name = "kpre_dedx_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
             //****************************** Apply dEdx cut *****************************************************
             bool bool_dEdx = dEdxCut(tpc_obj, tolerance_dedx_min, tolerance_dedx_max);
             if ( bool_dEdx == false ) continue;
             if (bool_sig) counter_dEdx++;
             //***************************************************************************************************
-
+            hist_fill_name = "kpost_dedx_cut"; FillHistogramCuts( tpc_obj, hist_fill_name, bool_sig);
             //************************* Apply Secondary shower dist cut *****************************************
             bool bool_sshwrcut = SecondaryShowersDistCut(tpc_obj, dist_tolerance);
             if ( bool_sshwrcut == false ) continue;
@@ -2817,12 +2908,24 @@ void variation_output_bkg::GenerateWeightHistograms(){
 
     // Loop over all folders (loop over variations)
     std::string histname_ratio;
-    std::vector<std::string> histnames = {
+    std::vector<std::string> histnames = { "h_total_hits",             "h_ldg_shwr_hits",             "h_ldg_shwr_hits_WPlane",
+                                          "h_ldg_shwr_Open_Angle",    "h_ldg_shwr_dEdx_WPlane",      "h_ldg_shwr_HitPerLen",
+                                          "h_ldg_shwr_CTheta",
+                                          "h_long_Track_ldg_shwr",    "h_tpc_obj_vtx_x",             "h_tpc_obj_vtx_y",        "h_tpc_obj_vtx_z",
+                                          "h_n_pfp",                  "h_n_pfp_50Hits",              "h_n_tracks",             "h_n_tracks_50Hits",  "h_n_showers",
+                                          "h_n_showers_50Hits",       "h_track_phi",                 "h_shower_phi",           "h_largest_flash_y",  "h_largest_flash_z",
+                                          "h_largest_flash_time",     "h_largest_flash_pe",          "h_Flash_TPCObj_Dist",
+                                          "h_shower_Nu_vtx_Dist",     "h_track_Nu_vtx_Dist",
                                           "h_ldg_shwr_Phi",           "h_ldg_shwr_Phi_wrapped",          "h_ldg_shwr_Theta",
                                           "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
                                           "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected",
-                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other"};
+                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other",
+                                          "h_ldg_shwr_Phi_unselected",           "h_ldg_shwr_Phi_wrapped_unselected",          "h_ldg_shwr_Theta_unselected",
+                                          "h_shower_phi_pi0_unselected",         "h_shower_phi_bkg_cosmic_unselected",         "h_shower_phi_other_unselected",
+                                          "h_shower_phi_pi0_wrapped_unselected", "h_shower_phi_bkg_cosmic_wrapped_unselected", "h_shower_phi_other_wrapped_unselected",
+                                          "h_shower_E_pi0_unselected",           "h_shower_E_bkg_cosmic_unselected",           "h_shower_E_other_unselected", "h_shower_E_unselected",
+                                          "h_shower_Theta_pi0_unselected",       "h_shower_Theta_bkg_cosmic_unselected",       "h_shower_Theta_other_unselected"};
     
     // Loop over the histograms
     for (int j=0; j < histnames.size(); j++){
@@ -2857,7 +2960,10 @@ void variation_output_bkg::GenerateWeightHistograms(){
 
     // Now lets save the 2D histograms for weighting
     histnames.clear();
-    histnames = { "h_ThetaBkg_Phi_wrapped", "h_ThetaBkg_pi0_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped", "h_ThetaBkg_other_Phi_wrapped", "h_ThetaBkg_Phi", "h_ThetaBkg_pi0_Phi", "h_ThetaBkg_cosmic_Phi", "h_ThetaBkg_other_Phi" };
+    histnames = { "h_ThetaBkg_Phi_wrapped", "h_ThetaBkg_pi0_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped",
+                  "h_ThetaBkg_other_Phi_wrapped", "h_ThetaBkg_Phi", "h_ThetaBkg_pi0_Phi", "h_ThetaBkg_cosmic_Phi", "h_ThetaBkg_other_Phi",
+                  "h_ThetaBkg_Phi_wrapped_unselected", "h_ThetaBkg_pi0_Phi_wrapped_unselected", "h_ThetaBkg_cosmic_Phi_wrapped_unselected",
+                  "h_ThetaBkg_other_Phi_wrapped_unselected", "h_ThetaBkg_Phi_unselected", "h_ThetaBkg_pi0_Phi_unselected", "h_ThetaBkg_cosmic_Phi_unselected", "h_ThetaBkg_other_Phi_unselected" };
 
     for (int j=0; j < histnames.size(); j++){
         TH2D* hist_NuMI;
@@ -3527,12 +3633,12 @@ void variation_output_bkg::GetBNBBkgWeight(double theta, double phi, double phi_
     char name[500];
 
     // First weight by the total histograms
-    std::string histname_theta_phi = "h_ThetaBkg_Phi_wrapped_ratio";
+    std::string histname_theta_phi = "h_ThetaBkg_Phi_unselected_ratio";
     snprintf(name, 500, "%s", histname_theta_phi.c_str() );
     hist = (TH2D*)fweight->Get(name);
     if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
     xbin = hist->GetXaxis()->FindBin(theta);
-    ybin = hist->GetYaxis()->FindBin(phi_wrapped);
+    ybin = hist->GetYaxis()->FindBin(phi);
     weight = hist->GetBinContent(xbin, ybin);
 
     if (weight == 0) weight_all+=1.0;
@@ -3540,28 +3646,28 @@ void variation_output_bkg::GetBNBBkgWeight(double theta, double phi, double phi_
 
 
     // Now try to weight split using background categories
-    if (bkg_class == "pi0_gamma") histname_theta_phi = "h_ThetaBkg_pi0_Phi_wrapped_ratio";
-    if (bkg_class == "cosmic")    histname_theta_phi = "h_ThetaBkg_cosmic_Phi_ratio";
-    if (bkg_class == "other_bkg") histname_theta_phi = "h_ThetaBkg_other_Phi_wrapped_ratio";
+    if (bkg_class == "pi0_gamma") histname_theta_phi = "h_ThetaBkg_pi0_Phi_unselected_ratio";
+    if (bkg_class == "cosmic")    histname_theta_phi = "h_ThetaBkg_cosmic_Phi_unselected_ratio";
+    if (bkg_class == "other_bkg") histname_theta_phi = "h_ThetaBkg_other_Phi_unselected_ratio";
 
     snprintf(name, 500, "%s", histname_theta_phi.c_str() );
     hist = (TH2D*)fweight->Get(name);
     if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
     xbin = hist->GetXaxis()->FindBin(theta);
-    if (bkg_class != "cosmic") ybin = hist->GetYaxis()->FindBin(phi_wrapped);
+    if (bkg_class != "cosmic") ybin = hist->GetYaxis()->FindBin(phi);
     else ybin = hist->GetYaxis()->FindBin(phi);
     weight = hist->GetBinContent(xbin, ybin);
 
     
-    if (bkg_class != "cosmic"){
-         std::cout << "Weight: " << hist->Interpolate(theta, phi_wrapped) << "   Weight: " << weight <<  std::endl;
-         weight = hist->Interpolate(theta, phi_wrapped);
-    } 
+    // if (bkg_class != "cosmic"){
+    //      std::cout << "Weight: " << hist->Interpolate(theta, phi_wrapped) << "   Weight: " << weight <<  std::endl;
+    //      weight = hist->Interpolate(theta, phi_wrapped);
+    // } 
    
-    else {
-        std::cout << "Weight: " << hist->Interpolate(theta, phi)  << "   Weight: " << weight << std::endl;
-        weight = hist->Interpolate(theta, phi);
-    }
+    // else {
+    //     std::cout << "Weight: " << hist->Interpolate(theta, phi)  << "   Weight: " << weight << std::endl;
+    //     weight = hist->Interpolate(theta, phi);
+    // }
 
     if (weight == 0) weight_indiv+=1.0;
     else weight_indiv+=weight;
@@ -3569,3 +3675,45 @@ void variation_output_bkg::GetBNBBkgWeight(double theta, double phi, double phi_
     // std::cout << "Weight: " << weight << std::endl;
 
 }
+
+//***************************************************************************
+//***************************************************************************
+void variation_output_bkg::FillHistogramCuts( xsecAna::TPCObjectContainer tpc_obj, std::string histname, bool bool_sig){
+
+    n_pfp = tpc_obj.NumPFParticles();
+
+    const int leading_shower_index = GetLeadingShowerIndex(n_pfp, 0, tpc_obj);
+
+    for (int j = 0; j < n_pfp ; j++){
+
+        auto const pfp_obj = tpc_obj.GetParticle(j);
+
+        // PFP vars                
+        const int  num_pfp_hits       = pfp_obj.NumPFPHits();
+        const int  num_pfp_hits_w     = pfp_obj.NumPFPHitsW(); // Collection plane hits
+        
+        const double mc_open_angle  = pfp_obj.mcOpenAngle();
+        const double leading_dedx   = pfp_obj.PfpdEdx().at(2);//just the collection plane!
+
+        // Background events
+        if (!bool_sig) {
+
+            if (j == leading_shower_index){
+
+                if (histname == "kpre_hit_threshold_cut")             TH1D_hist.at(kpre_hit_threshold_cut)            ->Fill(num_pfp_hits);
+                if (histname == "kpost_hit_threshold_cut")            TH1D_hist.at(kpost_hit_threshold_cut)           ->Fill(num_pfp_hits);
+                if (histname == "kpre_hit_threshold_collection_cut")  TH1D_hist.at(kpre_hit_threshold_collection_cut) ->Fill(num_pfp_hits_w);
+                if (histname == "kpost_hit_threshold_collection_cut") TH1D_hist.at(kpost_hit_threshold_collection_cut)->Fill(num_pfp_hits_w);
+                if (histname == "kpre_open_angle_cut")                TH1D_hist.at(kpre_open_angle_cut)               ->Fill(mc_open_angle * 180/3.14159);
+                if (histname == "kpost_open_angle_cut")               TH1D_hist.at(kpost_open_angle_cut)              ->Fill(mc_open_angle * 180/3.14159);
+                if (histname == "kpre_dedx_cut")                      TH1D_hist.at(kpre_dedx_cut)                     ->Fill(leading_dedx);
+                if (histname == "kpost_dedx_cut")                     TH1D_hist.at(kpost_dedx_cut)                    ->Fill(leading_dedx);
+            }
+
+        }
+
+    }
+
+}
+//***************************************************************************
+//***************************************************************************

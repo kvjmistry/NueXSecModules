@@ -112,6 +112,37 @@ class variation_output_bkg {
         TH1D_hist.at(kshower_Theta_bkg_cosmic)        = new TH1D("h_shower_Theta_bkg_cosmic", "h_shower_Theta_bkg_cosmic",  12, 0, 180 ); // Shower Theta bkg cosmic
         TH1D_hist.at(kshower_Theta_other)             = new TH1D("h_shower_Theta_other",      "h_shower_Theta_other",       12, 0, 180 ); // Shower Theta other
 
+        // The unselected histograms
+        TH1D_hist.at(kshower_phi_pi0_unselected)           = new TH1D("h_shower_phi_pi0_unselected",        "h_shower_phi_pi0_unselected",        12 , -180 ,180); // Shower Phi pi0
+        TH1D_hist.at(kshower_phi_bkg_cosmic_unselected)    = new TH1D("h_shower_phi_bkg_cosmic_unselected", "h_shower_phi_bkg_cosmic_unselected", 12 , -180 ,180); // Shower Phi bkg electrons
+        TH1D_hist.at(kshower_phi_other_unselected)         = new TH1D("h_shower_phi_other_unselected",      "h_shower_phi_other_unselected",      12 , -180 ,180); // Shower Phi
+        
+        TH1D_hist.at(kshower_phi_pi0_wrapped_unselected)         = new TH1D("h_shower_phi_pi0_wrapped_unselected",        "h_shower_phi_pi0_wrapped_unselected",        n_bins, bins_phi_wrapped); // Shower Phi pi0 wrapped
+        TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped_unselected)  = new TH1D("h_shower_phi_bkg_cosmic_wrapped_unselected", "h_shower_phi_bkg_cosmic_wrapped_unselected", n_bins, bins_phi_wrapped); // Shower Phi bkg electrons wrapped
+        TH1D_hist.at(kshower_phi_other_wrapped_unselected)       = new TH1D("h_shower_phi_other_wrapped_unselected",      "h_shower_phi_other_wrapped_unselected",      n_bins, bins_phi_wrapped); // Shower Phi wrapped
+
+        TH1D_hist.at(kshower_E_pi0_unselected)               = new TH1D("h_shower_E_pi0_unselected",        "h_shower_E_pi0_unselected",         7 , 0, 3 ); // Shower E pi0
+        TH1D_hist.at(kshower_E_bkg_cosmic_unselected)        = new TH1D("h_shower_E_bkg_cosmic_unselected", "h_shower_E_bkg_cosmic_unselected",  7 , 0, 5 ); // Shower E bkg cosmic
+        TH1D_hist.at(kshower_E_other_unselected)             = new TH1D("h_shower_E_other_unselected",      "h_shower_E_other_unselected",       7 , 0, 3 ); // Shower E other
+        TH1D_hist.at(kshower_E_unselected)                   = new TH1D("h_shower_E_unselected",            "h_shower_E_unselected",             7 , 0, 3 ); // Shower E
+
+        TH1D_hist.at(kshower_Theta_pi0_unselected)           = new TH1D("h_shower_Theta_pi0_unselected",        "h_shower_Theta_pi0_unselected",         12, 0, 180 ); // Shower Theta pi0
+        TH1D_hist.at(kshower_Theta_bkg_cosmic_unselected)    = new TH1D("h_shower_Theta_bkg_cosmic_unselected", "h_shower_Theta_bkg_cosmic_unselected",  12, 0, 180 ); // Shower Theta bkg cosmic
+        TH1D_hist.at(kshower_Theta_other_unselected)         = new TH1D("h_shower_Theta_other_unselected",      "h_shower_Theta_other_unselected",       12, 0, 180 ); // Shower Theta other
+
+        TH1D_hist.at(kldg_shwr_Phi_unselected)               = new TH1D("h_ldg_shwr_Phi_unselected","ldg_shwr_Phi_unselected",                  12, -180, 180);
+        TH1D_hist.at(kldg_shwr_Phi_wrapped_unselected)       = new TH1D("h_ldg_shwr_Phi_wrapped_unselected","ldg_shwr_Phi_wrapped_unselected",  n_bins, bins_phi_wrapped);
+        TH1D_hist.at(kldg_shwr_Theta_unselected)             = new TH1D("h_ldg_shwr_Theta_unselected","ldg_shwr_Theta_unselected",              12, 0, 180);
+
+        TH1D_hist.at(kpre_hit_threshold_cut)                = new TH1D("h_shwr_hit_threshold_precut",            "h_shwr_hit_threshold_precut;Num MC Hits; Entries", 100, 0, 500);
+        TH1D_hist.at(kpre_hit_threshold_collection_cut)     = new TH1D("h_shwr_hit_threshold_collection_precut", "h_shwr_hit_threshold_collection_precut;Num MC Hits Collection Plane; Entries", 100, 0, 500);
+        TH1D_hist.at(kpre_open_angle_cut)                   = new TH1D("h_ldg_shwr_Open_Angle_precut",           "ldg_shwr_Open_Angle_precut;Open Angle [degrees]; Entries", 	 25, 0, 50);
+        TH1D_hist.at(kpre_dedx_cut)                         = new TH1D("h_ldg_shwr_dEdx_WPlane_precut",          "ldg_shwr_dEdx_WPlane_precut;dEdx [MeV/cm]; Entries",  40, 0, 10);
+        TH1D_hist.at(kpost_hit_threshold_cut)               = new TH1D("h_shwr_hit_threshold_postcut",           "h_shwr_hit_threshold_postcut;Num MC Hits; Entries", 100, 0 ,500);
+        TH1D_hist.at(kpost_hit_threshold_collection_cut)    = new TH1D("h_shwr_hit_threshold_collection_postcut","h_shwr_hit_threshold_collection_postcut;Num MC Hits Collection Plane; Entries", 100, 0 ,500);
+        TH1D_hist.at(kpost_open_angle_cut)                  = new TH1D("h_ldg_shwr_Open_Angle_postcut",          "ldg_shwr_Open_Angle_postcut;Open Angle [degrees]; Entries", 	 25, 0, 50);
+        TH1D_hist.at(kpost_dedx_cut)                        = new TH1D("h_ldg_shwr_dEdx_WPlane_postcut",         "ldg_shwr_dEdx_WPlane_postcut;dEdx [MeV/cm]; Entries",  40, 0, 10);
+
 
         // Do the same but for the weighted histograms
         TH1D_hist_weighted.resize(kTH1D_names_weighted_MAX);
@@ -174,6 +205,34 @@ class variation_output_bkg {
         TH2D_hist.at(kThetaBkg_cosmic_Phi)  = new TH2D("h_ThetaBkg_cosmic_Phi",  "ThetaBkg_cosmic_Phi", 12, 0, 180, 12, -180, 180);
         TH2D_hist.at(kThetaBkg_other_Phi)   = new TH2D("h_ThetaBkg_other_Phi",   "ThetaBkg_other_Phi",  12, 0, 180, 12, -180, 180);
 
+        // unselected histograms
+        TH2D_hist.at(kEBkg_Theta_unselected)       = new TH2D("h_EBkg_Theta_unselected",       "EBkg_Theta_unselected",       7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_Phi_unselected)         = new TH2D("h_EBkg_Phi_unselected",         "EBkg_Phi_unselected",         7, 0, 3, 12, -180, 180); 
+    
+        TH2D_hist.at(kEBkg_pi0_Theta_unselected)   = new TH2D("h_EBkg_pi0_Theta_unselected",   "EBkg_pi0_Theta_unselected",   7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_pi0_Phi_unselected)     = new TH2D("h_EBkg_pi0_Phi_unselected",     "EBkg_pi0_Phi_unselected",     7, 0, 3, 12, -180, 180);
+        
+        TH2D_hist.at(kEBkg_cosmic_Theta_unselected)= new TH2D("h_EBkg_cosmic_Theta_unselected","EBkg_cosmic_Theta_unselected",7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_cosmic_Phi_unselected)  = new TH2D("h_EBkg_cosmic_Phi_unselected",  "EBkg_cosmic_Phi_unselected",  7, 0, 3, 12, -180, 180);
+        
+        TH2D_hist.at(kEBkg_other_Theta_unselected) = new TH2D("h_EBkg_other_Theta_unselected", "EBkg_other_Theta_unselected", 7, 0, 3, 12,    0, 180);
+        TH2D_hist.at(kEBkg_other_Phi_unselected)   = new TH2D("h_EBkg_other_Phi_unselected",   "EBkg_other_Phi_unselected",   7, 0, 3, 12, -180, 180);
+
+        TH2D_hist.at(kEBkg_Phi_wrapped_unselected)         = new TH2D("h_EBkg_Phi_wrapped_unselected",         "EBkg_Phi_wrapped_unselected",         7, 0, 3, 5, 0, 90); 
+        TH2D_hist.at(kEBkg_pi0_Phi_wrapped_unselected)     = new TH2D("h_EBkg_pi0_Phi_wrapped_unselected",     "EBkg_pi0_Phi_wrapped_unselected",     7, 0, 3, 5, 0, 90);
+        TH2D_hist.at(kEBkg_cosmic_Phi_wrapped_unselected)  = new TH2D("h_EBkg_cosmic_Phi_wrapped_unselected",  "EBkg_cosmic_Phi_wrapped_unselected",  7, 0, 3, 5, 0, 90);
+        TH2D_hist.at(kEBkg_other_Phi_wrapped_unselected)   = new TH2D("h_EBkg_other_Phi_wrapped_unselected",   "EBkg_other_Phi_wrapped_unselected",   7, 0, 3, 5, 0, 90);
+
+        TH2D_hist.at(kThetaBkg_Phi_wrapped_unselected)         = new TH2D("h_ThetaBkg_Phi_wrapped_unselected",         "ThetaBkg_Phi_wrapped_unselected",        12, 0, 180, n_bins, bins_phi_wrapped); 
+        TH2D_hist.at(kThetaBkg_pi0_Phi_wrapped_unselected)     = new TH2D("h_ThetaBkg_pi0_Phi_wrapped_unselected",     "ThetaBkg_pi0_Phi_wrapped_unselected",    12, 0, 180, n_bins, bins_phi_wrapped);
+        TH2D_hist.at(kThetaBkg_cosmic_Phi_wrapped_unselected)  = new TH2D("h_ThetaBkg_cosmic_Phi_wrapped_unselected",  "ThetaBkg_cosmic_Phi_wrapped_unselected", 12, 0, 180, n_bins, bins_phi_wrapped);
+        TH2D_hist.at(kThetaBkg_other_Phi_wrapped_unselected)   = new TH2D("h_ThetaBkg_other_Phi_wrapped_unselected",   "ThetaBkg_other_Phi_wrapped_unselected",  12, 0, 180, n_bins, bins_phi_wrapped);
+
+        TH2D_hist.at(kThetaBkg_Phi_unselected)         = new TH2D("h_ThetaBkg_Phi_unselected",         "ThetaBkg_Phi_unselected",        12, 0, 180, 12, -180, 180); 
+        TH2D_hist.at(kThetaBkg_pi0_Phi_unselected)     = new TH2D("h_ThetaBkg_pi0_Phi_unselected",     "ThetaBkg_pi0_Phi_unselected",    12, 0, 180, 12, -180, 180);
+        TH2D_hist.at(kThetaBkg_cosmic_Phi_unselected)  = new TH2D("h_ThetaBkg_cosmic_Phi_unselected",  "ThetaBkg_cosmic_Phi_unselected", 12, 0, 180, 12, -180, 180);
+        TH2D_hist.at(kThetaBkg_other_Phi_unselected)   = new TH2D("h_ThetaBkg_other_Phi_unselected",   "ThetaBkg_other_Phi_unselected",  12, 0, 180, 12, -180, 180);
+
         TBranch *bmc_phi       = VariableTree ->Branch("mc_phi",       &mc_Phi,       "mc_Phi");
         TBranch *bmc_phi_pi0   = VariableTree ->Branch("mc_phi_pi0",   &mc_Phi_pi0,   "mc_Phi_pi0");
         TBranch *bmc_phi_other = VariableTree ->Branch("mc_phi_other", &mc_Phi_other, "mc_Phi_other");
@@ -216,6 +275,7 @@ class variation_output_bkg {
     void CompareWeightedHistograms(); // Function to make the NuMI variaions and weighted NuMI CV variations
     void CompareWeightedDrawSpecs(TH1D* hist, std::string weighted_str, std::string variation, TLegend* legend, std::string histname); // Function to draw Weighted NuMI Histograms
     void GetBNBBkgWeight(double theta, double phi, double phi_wrapped, std::string bkg_class, double &weight_all, double &weight_indiv, std::string dirname ); // Reweight the backgrounds based on a 2D histogram in theta and phi
+    void FillHistogramCuts( xsecAna::TPCObjectContainer tpc_obj, std::string histname, bool bool_sig); // Function to fill histograms before and after selection cuts
 
     // ----------------------
     // Flash Functions
@@ -372,6 +432,13 @@ class variation_output_bkg {
                      kshower_phi_pi0_wrapped, kshower_phi_bkg_cosmic_wrapped, kshower_phi_other_wrapped,
                      kshower_E_pi0,           kshower_E_bkg_cosmic,           kshower_E_other,
                      kshower_Theta_pi0,       kshower_Theta_bkg_cosmic,       kshower_Theta_other,
+                     kshower_phi_pi0_unselected,         kshower_phi_bkg_cosmic_unselected,         kshower_phi_other_unselected,             kshower_E_unselected, 
+                     kshower_phi_pi0_wrapped_unselected, kshower_phi_bkg_cosmic_wrapped_unselected, kshower_phi_other_wrapped_unselected,
+                     kshower_E_pi0_unselected,           kshower_E_bkg_cosmic_unselected,           kshower_E_other_unselected,
+                     kshower_Theta_pi0_unselected,       kshower_Theta_bkg_cosmic_unselected,       kshower_Theta_other_unselected,
+                     kldg_shwr_Phi_unselected, kldg_shwr_Phi_wrapped_unselected, kldg_shwr_Theta_unselected,
+                     kpre_hit_threshold_cut, kpre_hit_threshold_collection_cut,kpre_open_angle_cut, kpre_dedx_cut,
+                     kpost_hit_threshold_cut, kpost_hit_threshold_collection_cut, kpost_open_angle_cut, kpost_dedx_cut,
                      kTH1D_names_MAX};
 
     
@@ -382,6 +449,10 @@ class variation_output_bkg {
                      kEBkg_pi0_Theta,    kEBkg_pi0_Phi,   kEBkg_pi0_Phi_wrapped,    kThetaBkg_pi0_Phi_wrapped,    kThetaBkg_pi0_Phi, 
                      kEBkg_cosmic_Theta, kEBkg_cosmic_Phi,kEBkg_cosmic_Phi_wrapped, kThetaBkg_cosmic_Phi_wrapped, kThetaBkg_cosmic_Phi, 
                      kEBkg_other_Theta,  kEBkg_other_Phi, kEBkg_other_Phi_wrapped,  kThetaBkg_other_Phi_wrapped,  kThetaBkg_other_Phi, 
+                     kEBkg_Theta_unselected,        kEBkg_Phi_unselected,       kEBkg_Phi_wrapped_unselected,        kThetaBkg_Phi_wrapped_unselected,        kThetaBkg_Phi_unselected, 
+                     kEBkg_pi0_Theta_unselected,    kEBkg_pi0_Phi_unselected,   kEBkg_pi0_Phi_wrapped_unselected,    kThetaBkg_pi0_Phi_wrapped_unselected,    kThetaBkg_pi0_Phi_unselected, 
+                     kEBkg_cosmic_Theta_unselected, kEBkg_cosmic_Phi_unselected,kEBkg_cosmic_Phi_wrapped_unselected, kThetaBkg_cosmic_Phi_wrapped_unselected, kThetaBkg_cosmic_Phi_unselected, 
+                     kEBkg_other_Theta_unselected,  kEBkg_other_Phi_unselected, kEBkg_other_Phi_wrapped_unselected,  kThetaBkg_other_Phi_wrapped_unselected,  kThetaBkg_other_Phi_unselected, 
                      kTH2D_names_MAX};
 
     std::vector<std::vector<TH1D*>> TH1D_hist_weighted;
