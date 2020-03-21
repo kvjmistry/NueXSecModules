@@ -57,47 +57,47 @@ class variation_output_bkg {
 
         TH1D_hist.resize(kTH1D_names_MAX);
         // Leading shower
-        TH1D_hist.at(kldg_shwr_hits) 			= new TH1D("h_ldg_shwr_hits","ldg_shwr_hits", 				 50, 0, 600); 
-        TH1D_hist.at(kldg_shwr_hits_WPlane) 	= new TH1D("h_ldg_shwr_hits_WPlane","ldg_shwr_hits_WPlane",  30, 0, 1000);
-        TH1D_hist.at(kldg_shwr_Open_Angle)		= new TH1D("h_ldg_shwr_Open_Angle","ldg_shwr_Open_Angle", 	 25, 0, 50);
-        TH1D_hist.at(kldg_shwr_dEdx_WPlane) 	= new TH1D("h_ldg_shwr_dEdx_WPlane","ldg_shwr_dEdx_WPlane",  40, 0, 10);
-        TH1D_hist.at(kldg_shwr_HitPerLen) 		= new TH1D("h_ldg_shwr_HitPerLen","ldg_shwr_HitPerLen", 	 20, 0, 20);
-        TH1D_hist.at(kldg_shwr_Phi) 			= new TH1D("h_ldg_shwr_Phi","ldg_shwr_Phi", 				 12, -180, 180);
-        TH1D_hist.at(kldg_shwr_Phi_wrapped)		= new TH1D("h_ldg_shwr_Phi_wrapped","ldg_shwr_Phi_wrapped",  n_bins, bins_phi_wrapped);
-        TH1D_hist.at(kldg_shwr_Theta) 			= new TH1D("h_ldg_shwr_Theta","ldg_shwr_Theta", 			 12, 0, 180);
-        TH1D_hist.at(kldg_shwr_CTheta) 			= new TH1D("h_ldg_shwr_CTheta","ldg_shwr_CTheta", 			 16, -1, 1);
-        TH1D_hist.at(klong_Track_ldg_shwr) 		= new TH1D("h_long_Track_ldg_shwr","long_Track_ldg_shwr",	 20, 0, 3);
+        TH1D_hist.at(kldg_shwr_hits)             = new TH1D("h_ldg_shwr_hits","ldg_shwr_hits",                  50, 0, 600); 
+        TH1D_hist.at(kldg_shwr_hits_WPlane)     = new TH1D("h_ldg_shwr_hits_WPlane","ldg_shwr_hits_WPlane",  30, 0, 1000);
+        TH1D_hist.at(kldg_shwr_Open_Angle)        = new TH1D("h_ldg_shwr_Open_Angle","ldg_shwr_Open_Angle",      25, 0, 50);
+        TH1D_hist.at(kldg_shwr_dEdx_WPlane)     = new TH1D("h_ldg_shwr_dEdx_WPlane","ldg_shwr_dEdx_WPlane",  40, 0, 10);
+        TH1D_hist.at(kldg_shwr_HitPerLen)         = new TH1D("h_ldg_shwr_HitPerLen","ldg_shwr_HitPerLen",      20, 0, 20);
+        TH1D_hist.at(kldg_shwr_Phi)             = new TH1D("h_ldg_shwr_Phi","ldg_shwr_Phi",                  12, -180, 180);
+        TH1D_hist.at(kldg_shwr_Phi_wrapped)        = new TH1D("h_ldg_shwr_Phi_wrapped","ldg_shwr_Phi_wrapped",  n_bins, bins_phi_wrapped);
+        TH1D_hist.at(kldg_shwr_Theta)             = new TH1D("h_ldg_shwr_Theta","ldg_shwr_Theta",              12, 0, 180);
+        TH1D_hist.at(kldg_shwr_CTheta)             = new TH1D("h_ldg_shwr_CTheta","ldg_shwr_CTheta",              16, -1, 1);
+        TH1D_hist.at(klong_Track_ldg_shwr)         = new TH1D("h_long_Track_ldg_shwr","long_Track_ldg_shwr",     20, 0, 3);
         
         // TPC
-        TH1D_hist.at(ktpc_obj_vtx_x) 			= new TH1D("h_tpc_obj_vtx_x","tpc_obj_vtx_x", 				 20, 0, 260);
-        TH1D_hist.at(ktpc_obj_vtx_y) 			= new TH1D("h_tpc_obj_vtx_y","tpc_obj_vtx_y", 				 20, -117, 117);
-        TH1D_hist.at(ktpc_obj_vtx_z) 			= new TH1D("h_tpc_obj_vtx_z","tpc_obj_vtx_z", 				 40, 0, 1040);
+        TH1D_hist.at(ktpc_obj_vtx_x)             = new TH1D("h_tpc_obj_vtx_x","tpc_obj_vtx_x",                  20, 0, 260);
+        TH1D_hist.at(ktpc_obj_vtx_y)             = new TH1D("h_tpc_obj_vtx_y","tpc_obj_vtx_y",                  20, -117, 117);
+        TH1D_hist.at(ktpc_obj_vtx_z)             = new TH1D("h_tpc_obj_vtx_z","tpc_obj_vtx_z",                  40, 0, 1040);
         
         // Other
-        TH1D_hist.at(ktotal_hits) 				= new TH1D("h_total_hits", "h_total_hits",	 				 50, 0, 600);
-        TH1D_hist.at(kn_pfp) 					= new TH1D("h_n_pfp", "h_n_pfp", 							 8, 0, 8);
-        TH1D_hist.at(kn_pfp_50Hits) 			= new TH1D("h_n_pfp_50Hits", "h_n_pfp_50Hits", 				 8, 0, 8);
-        TH1D_hist.at(kn_tracks) 				= new TH1D("h_n_tracks", "h_n_tracks", 						 8, 0, 8);
-        TH1D_hist.at(kn_tracks_50Hits) 			= new TH1D("h_n_tracks_50Hits", "h_n_tracks_50Hits", 		 8, 0, 8);
-        TH1D_hist.at(kn_showers) 				= new TH1D("h_n_showers", "h_n_showers", 					 8, 0, 8);
-        TH1D_hist.at(kn_showers_50Hits) 		= new TH1D("h_n_showers_50Hits", "h_n_showers_50Hits", 		 8, 0, 8);
-        TH1D_hist.at(ktrack_phi) 				= new TH1D("h_track_phi", "h_track_phi",					 12 , -180 ,180);
-        TH1D_hist.at(kshower_phi) 				= new TH1D("h_shower_phi", "h_shower_phi",					 12 , -180 ,180); // Shower Phi
-        TH1D_hist.at(kselected) 				= new TH1D("h_selected", "h_selected",					     1 , 0 , 1);
+        TH1D_hist.at(ktotal_hits)                 = new TH1D("h_total_hits", "h_total_hits",                      50, 0, 600);
+        TH1D_hist.at(kn_pfp)                     = new TH1D("h_n_pfp", "h_n_pfp",                              8, 0, 8);
+        TH1D_hist.at(kn_pfp_50Hits)             = new TH1D("h_n_pfp_50Hits", "h_n_pfp_50Hits",                  8, 0, 8);
+        TH1D_hist.at(kn_tracks)                 = new TH1D("h_n_tracks", "h_n_tracks",                          8, 0, 8);
+        TH1D_hist.at(kn_tracks_50Hits)             = new TH1D("h_n_tracks_50Hits", "h_n_tracks_50Hits",          8, 0, 8);
+        TH1D_hist.at(kn_showers)                 = new TH1D("h_n_showers", "h_n_showers",                      8, 0, 8);
+        TH1D_hist.at(kn_showers_50Hits)         = new TH1D("h_n_showers_50Hits", "h_n_showers_50Hits",          8, 0, 8);
+        TH1D_hist.at(ktrack_phi)                 = new TH1D("h_track_phi", "h_track_phi",                     12 , -180 ,180);
+        TH1D_hist.at(kshower_phi)                 = new TH1D("h_shower_phi", "h_shower_phi",                     12 , -180 ,180); // Shower Phi
+        TH1D_hist.at(kselected)                 = new TH1D("h_selected", "h_selected",                         1 , 0 , 1);
 
-        TH1D_hist.at(kshower_Nu_vtx_Dist)		= new TH1D("h_shower_Nu_vtx_Dist","h_shower_Nu_vtx_Dist",	 20, 0, 20);
-        TH1D_hist.at(ktrack_Nu_vtx_Dist)		= new TH1D("h_track_Nu_vtx_Dist","h_track_Nu_vtx_Dist",	 	 20, 0, 20);
+        TH1D_hist.at(kshower_Nu_vtx_Dist)        = new TH1D("h_shower_Nu_vtx_Dist","h_shower_Nu_vtx_Dist",     20, 0, 20);
+        TH1D_hist.at(ktrack_Nu_vtx_Dist)        = new TH1D("h_track_Nu_vtx_Dist","h_track_Nu_vtx_Dist",          20, 0, 20);
 
         // Largest Flash
-        TH1D_hist.at(klargest_flash_y)			= new TH1D("h_largest_flash_y", "h_largest_flash_y", 		60, -40, 40);
-        TH1D_hist.at(klargest_flash_z)			= new TH1D("h_largest_flash_z", "h_largest_flash_z", 		125, 0, 1000);
-        TH1D_hist.at(klargest_flash_time)		= new TH1D("h_largest_flash_time", "h_largest_flash_time",	50, 0, 20);
-        TH1D_hist.at(klargest_flash_pe)			= new TH1D("h_largest_flash_pe", "h_largest_flash_pe", 		30, 0, 6000);
-        TH1D_hist.at(kFlash_TPCObj_Dist)		= new TH1D("h_Flash_TPCObj_Dist", "h_Flash_TPCObj_Dist", 	50, 0, 200);     // Largest flash to TPC OBj Vtx Dist
+        TH1D_hist.at(klargest_flash_y)            = new TH1D("h_largest_flash_y", "h_largest_flash_y",         60, -40, 40);
+        TH1D_hist.at(klargest_flash_z)            = new TH1D("h_largest_flash_z", "h_largest_flash_z",         125, 0, 1000);
+        TH1D_hist.at(klargest_flash_time)        = new TH1D("h_largest_flash_time", "h_largest_flash_time",    50, 0, 20);
+        TH1D_hist.at(klargest_flash_pe)            = new TH1D("h_largest_flash_pe", "h_largest_flash_pe",         30, 0, 6000);
+        TH1D_hist.at(kFlash_TPCObj_Dist)        = new TH1D("h_Flash_TPCObj_Dist", "h_Flash_TPCObj_Dist",     50, 0, 200);     // Largest flash to TPC OBj Vtx Dist
 
-        TH1D_hist.at(kshower_phi_pi0) 			= new TH1D("h_shower_phi_pi0",        "h_shower_phi_pi0",        12 , -180 ,180); // Shower Phi pi0
-        TH1D_hist.at(kshower_phi_bkg_cosmic) 	= new TH1D("h_shower_phi_bkg_cosmic", "h_shower_phi_bkg_cosmic", 12 , -180 ,180); // Shower Phi bkg electrons
-        TH1D_hist.at(kshower_phi_other) 		= new TH1D("h_shower_phi_other",      "h_shower_phi_other",      12 , -180 ,180); // Shower Phi
+        TH1D_hist.at(kshower_phi_pi0)             = new TH1D("h_shower_phi_pi0",        "h_shower_phi_pi0",        12 , -180 ,180); // Shower Phi pi0
+        TH1D_hist.at(kshower_phi_bkg_cosmic)     = new TH1D("h_shower_phi_bkg_cosmic", "h_shower_phi_bkg_cosmic", 12 , -180 ,180); // Shower Phi bkg electrons
+        TH1D_hist.at(kshower_phi_other)         = new TH1D("h_shower_phi_other",      "h_shower_phi_other",      12 , -180 ,180); // Shower Phi
         
         TH1D_hist.at(kshower_phi_pi0_wrapped)         = new TH1D("h_shower_phi_pi0_wrapped",        "h_shower_phi_pi0_wrapped",        n_bins, bins_phi_wrapped); // Shower Phi pi0 wrapped
         TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped)  = new TH1D("h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_bkg_cosmic_wrapped", n_bins, bins_phi_wrapped); // Shower Phi bkg electrons wrapped
@@ -136,11 +136,11 @@ class variation_output_bkg {
 
         TH1D_hist.at(kpre_hit_threshold_cut)                = new TH1D("h_shwr_hit_threshold_precut",            "h_shwr_hit_threshold_precut;Num MC Hits; Entries", 100, 0, 500);
         TH1D_hist.at(kpre_hit_threshold_collection_cut)     = new TH1D("h_shwr_hit_threshold_collection_precut", "h_shwr_hit_threshold_collection_precut;Num MC Hits Collection Plane; Entries", 100, 0, 500);
-        TH1D_hist.at(kpre_open_angle_cut)                   = new TH1D("h_ldg_shwr_Open_Angle_precut",           "ldg_shwr_Open_Angle_precut;Open Angle [degrees]; Entries", 	 25, 0, 50);
+        TH1D_hist.at(kpre_open_angle_cut)                   = new TH1D("h_ldg_shwr_Open_Angle_precut",           "ldg_shwr_Open_Angle_precut;Open Angle [degrees]; Entries",      25, 0, 50);
         TH1D_hist.at(kpre_dedx_cut)                         = new TH1D("h_ldg_shwr_dEdx_WPlane_precut",          "ldg_shwr_dEdx_WPlane_precut;dEdx [MeV/cm]; Entries",  40, 0, 10);
         TH1D_hist.at(kpost_hit_threshold_cut)               = new TH1D("h_shwr_hit_threshold_postcut",           "h_shwr_hit_threshold_postcut;Num MC Hits; Entries", 100, 0 ,500);
         TH1D_hist.at(kpost_hit_threshold_collection_cut)    = new TH1D("h_shwr_hit_threshold_collection_postcut","h_shwr_hit_threshold_collection_postcut;Num MC Hits Collection Plane; Entries", 100, 0 ,500);
-        TH1D_hist.at(kpost_open_angle_cut)                  = new TH1D("h_ldg_shwr_Open_Angle_postcut",          "ldg_shwr_Open_Angle_postcut;Open Angle [degrees]; Entries", 	 25, 0, 50);
+        TH1D_hist.at(kpost_open_angle_cut)                  = new TH1D("h_ldg_shwr_Open_Angle_postcut",          "ldg_shwr_Open_Angle_postcut;Open Angle [degrees]; Entries",      25, 0, 50);
         TH1D_hist.at(kpost_dedx_cut)                        = new TH1D("h_ldg_shwr_dEdx_WPlane_postcut",         "ldg_shwr_dEdx_WPlane_postcut;dEdx [MeV/cm]; Entries",  40, 0, 10);
 
 
@@ -251,7 +251,7 @@ class variation_output_bkg {
     double GetLongestTrackLength(const int n_pfp, int n_tpc_obj, xsecAna::TPCObjectContainer tpc_obj);  // Returns the length of the longest track
     void DrawTH1D(TH1D* h, double POT_Scaling);                                                         // Function that draws a TH1D histogram
     void DrawTH2D(TH2D* h, double POT_Scaling);                                                         // Function that draws a TH2D histogram
-    double GetPOT(const char * _file1); 		                                                        // Gets the POT stored in an external file
+    double GetPOT(const char * _file1);                                                                 // Gets the POT stored in an external file
     void PlotVariatons(TFile* f_var_out, TString mode);                                             // Plots the variation files on the same plot
     void PlotVariatonsNuMIBNB();                                                                        // Plotting function to compare the NuMI and BNB CV variations
     std::vector<std::string> GrabDirs(TFile* f_var_out);                                                // Grabs the directories in the file
@@ -281,8 +281,8 @@ class variation_output_bkg {
     // Flash Functions
     // ----------------------
     std::vector<std::vector<double>> GetLargestFlashVector(TFile* f, double flash_time_start, double flash_time_end); // Function to resize opical entries to same size of events and get largest flash vector
-    bool flash_in_time(double flash_time, double flash_start, double flash_end); 	                                  // Decides whether flash is in time or not
-    bool flash_pe(int flash_pe, int flash_pe_threshold); 							                                  // Decides whether flash has sufficient PE
+    bool flash_in_time(double flash_time, double flash_start, double flash_end);                                       // Decides whether flash is in time or not
+    bool flash_pe(int flash_pe, int flash_pe_threshold);                                                               // Decides whether flash has sufficient PE
     double Flash_TPCObj_vtx_Dist(double tpc_vtx_y, double tpc_vtx_z, double flash_vtx_y, double flash_vtx_z);         // Returns the 2D distance of the flash to TPC OBj Vertex
  
     // ----------------------
@@ -305,27 +305,31 @@ class variation_output_bkg {
     // ----------------------
     //     Reco Variables
     // ----------------------
-    double ldg_shwr_hits{0}; 			// Leading shower hits (all planes)
-    double ldg_shwr_hits_WPlane{0}; 	// Leading Shower Collection plane hits
-    double lldg_shwr_Open_Angle{0}; 	// Leading Shower Opening angle of shower
-    double ldg_shwr_dEdx_WPlane{0};		// Leading shower dE/dx at Collection Plane
-    double ldg_shwr_HitPerLen{0};		// Leading shower hits per length
-    double ldg_shwr_Phi{0};				// Leading shower phi
-    double ldg_shwr_Theta{0};			// Leading shower theta
-    double ldg_shwr_CTheta{0};			// Leading shower cos theta
-    double long_Track_ldg_shwr{0};		// Longest track / leading shower length
+    double ldg_shwr_hits{0};             // Leading shower hits (all planes)
+    double ldg_shwr_hits_WPlane{0};      // Leading Shower Collection plane hits
+    double lldg_shwr_Open_Angle{0};      // Leading Shower Opening angle of shower
+    double ldg_shwr_dEdx_WPlane{0};      // Leading shower dE/dx at Collection Plane
+    double ldg_shwr_HitPerLen{0};        // Leading shower hits per length
+    double ldg_shwr_Phi{0};              // Leading shower phi
+    double ldg_shwr_Theta{0};            // Leading shower theta
+    double ldg_shwr_CTheta{0};           // Leading shower cos theta
+    double long_Track_ldg_shwr{0};       // Longest track / leading shower length
+    
     // Leading shower momentum
-    int n_pfp{0};					    // Number of pfp in TPC Obj
-    int n_pfp_50Hits{0};			    // Number of pfp in TPC Obj with > 50 Hits
-    int n_tracks{0};				    // Number of Tracks in TPC Obj
-    int n_tracks_50Hits{0};			    // Number of Tracks in TPC Obj with > 50 Hits
-    int n_showers{0};				    // Number of Showers in TPC Obj
-    int n_showers_50Hits{0};		    // Number of showers in TPC Obj with > 50 Hits
-    double track_phi{0};			    // Track Phi
-    int nue_cc_counter{0};			    // Number of reco nue + nuebar
-    int other_counter{0};			    // Counter for not numu/nue
-    int sig_counter{0};				    // Number reco signal events
-    int bkg_counter{0};				    // Number reco background events
+    int n_pfp{0};                       // Number of pfp in TPC Obj
+    int n_pfp_50Hits{0};                // Number of pfp in TPC Obj with > 50 Hits
+    int n_tracks{0};                    // Number of Tracks in TPC Obj
+    int n_tracks_50Hits{0};             // Number of Tracks in TPC Obj with > 50 Hits
+    int n_showers{0};                   // Number of Showers in TPC Obj
+    int n_showers_50Hits{0};            // Number of showers in TPC Obj with > 50 Hits
+    double track_phi{0};                // Track Phi
+    int nue_cc_counter{0};              // Number of reco nue + nuebar
+    int other_counter{0};               // Counter for not numu/nue
+    int sig_counter{0};                 // Number reco signal events
+    int bkg_counter{0};                 // Number reco background events
+    int pi0_counter{0};                 // Number of pi0 background events that are selected
+    int cosmic_counter{0};              // Number of cosmic background events that are selected
+    int other_bkg_counter{0};           // Number of other background events that are selected
     
     
     double tpc_obj_vtx_x{0}, tpc_obj_vtx_y{0}, tpc_obj_vtx_z{0}; // TPCObj Vertex X, Y, Z
@@ -494,11 +498,15 @@ class variation_output_bkg {
     double largest_flash_z{0};
     double largest_flash_time{0};
     double largest_flash_pe{0};
-
-    TTree* VariableTree = new TTree("VariableTree","VariableTree");;
-    double mc_Phi_pi0 = -999, mc_Phi_other = -999, mc_Phi = -999;
+    
+    TTree* VariableTree = new TTree("VariableTree","VariableTree");
+    double mc_Phi_pi0 = -999, mc_Phi_other = -999, mc_Phi = -999, mc_Theta = -999;
+    double mc_Energy = -999;
+    std::string bkg_class;
 
     std::string draw_mode = "";
+
+    TTree *selected_tree = new TTree("selected_tree","selected_tree");
 
     private:
 

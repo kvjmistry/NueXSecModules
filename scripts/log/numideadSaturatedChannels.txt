@@ -59,5 +59,8 @@ RECO Signal       --- 396
 RECO Background   --- 326
 RECO Bkg W All    --- 0
 RECO Bkg W Indiv  --- 0
+Pi0 Counter       --- 196
+Cosmic Counter    --- 46
+Other Counter     --- 84
 ---------------------------------------------------
 NuMIdeadSaturatedChannels directory exists, overwriting...

@@ -3,7 +3,7 @@
  --- Configuring Parameters --- 
 
 Using BNB Params
-flash_time_start:	3.19   flash_time_end:	4.87
+flash_time_start:	3.125   flash_time_end:	4.725
 dirname:	BNBnoiseAmpUp
 =================================================
 
@@ -26,7 +26,127 @@ Resized Optical List Size: 193600
 Total Events (MC): 193600
 Starting Eventloop...
 On entry 000k
+Weight: 1.73469  1.73469  56.6957  33.4406  pi0_gamma
+Weight: 0.425  2.15969  41.954  11.8469  pi0_gamma
+Weight: 0.697674  2.85737  66.9564  22.1475  pi0_gamma
+Weight: 0.482759  3.34013  7.95073  54.6243  pi0_gamma
+Weight: 1.04545  4.38558  81.5103  26.9851  pi0_gamma
+Weight: 1.05405  5.43964  81.7382  28.8681  pi0_gamma
+Weight: 1.04545  6.48509  69.2482  38.1493  pi0_gamma
+Weight: 0.425  6.91009  30.2298  39.5388  pi0_gamma
+Weight: 1.48276  8.39285  54.544  48.2279  cosmic
+Weight: 0.44  8.83285  29.7685  117.686  pi0_gamma
+Weight: 1.27778  10.1106  71.3725  43.7635  pi0_gamma
+Weight: 1.73469  11.8453  41.8643  26.5265  pi0_gamma
+Weight: 1.73469  13.58  32.9376  40.6556  pi0_gamma
+Weight: 1.67347  15.2535  33.3348  66.5218  pi0_gamma
+Weight: 0.777778  16.0313  55.4895  59.5797  cosmic
+Weight: 0.425  16.4563  31.0467  54.7821  pi0_gamma
+Weight: 1.3125  17.7688  72.9529  54.0002  other_bkg
+Weight: 1.04545  18.8142  79.5934  52.6426  pi0_gamma
+Weight: 2.60784  21.4221  23.9172  46.6392  pi0_gamma
+Weight: 1.27778  22.6998  67.0214  131.111  pi0_gamma
+Weight: 3.05882  25.7587  5.78886  130.558  pi0_gamma
+Weight: 0.697674  26.4563  64.322  12.5828  pi0_gamma
+Weight: 1.67347  28.1298  41.659  40.7232  pi0_gamma
+Weight: 2.60784  30.7376  11.4197  71.7202  pi0_gamma
+Weight: 3  33.7376  -999  -999  cosmic
+Weight: 0.482759  34.2204  21.5546  32.8858  pi0_gamma
+Weight: 1.48276  35.7032  54.5308  132.217  cosmic
+Weight: 0.777778  36.4809  41.037  74.5869  cosmic
+Weight: 1.73333  38.2143  55.9642  21.8419  other_bkg
+Weight: 1.67347  39.8877  48.4269  39.2005  pi0_gamma
+Weight: 1.21739  41.1051  83.1037  103.499  cosmic
+Weight: 0.44  41.5451  1.96206  18.5536  pi0_gamma
+Weight: 3.05882  44.604  13.0452  48.8933  pi0_gamma
+Weight: 1.27778  45.8817  84.4773  26.7443  pi0_gamma
+Weight: 0.5  46.3817  31.1646  13.0022  pi0_gamma
+Weight: 0.697674  47.0794  64.6807  23.9616  pi0_gamma
+Weight: 0.425  47.5044  46.2235  52.9408  pi0_gamma
+Weight: 0.44  47.9444  15.5462  32.4384  pi0_gamma
+Weight: 1.67347  49.6179  35.517  36.1709  pi0_gamma
+Weight: 0.482759  50.1006  20.5945  23.5446  pi0_gamma
+Weight: 0.425  50.5256  39.7394  38.7539  pi0_gamma
+Weight: 1.48276  52.0084  59.3646  65.209  cosmic
+Weight: 1.21739  53.2258  83.6529  58.0721  cosmic
+Weight: 1.05405  54.2798  83.4051  23.9429  pi0_gamma
+Weight: 0.482759  54.7626  10.9141  25.6013  pi0_gamma
+Weight: 1.05405  55.8167  60.0095  17.3085  pi0_gamma
+Weight: 1.09524  56.9119  73.3623  119.853  other_bkg
+Weight: 0.425  57.3369  38.8078  121.172  pi0_gamma
+Weight: 1.27778  58.6147  86.9401  15.21  pi0_gamma
+Weight: 1.27778  59.8925  67.2577  33.4777  pi0_gamma
+Weight: 1.21739  61.1098  73.1727  100.709  cosmic
+Weight: 1.3125  62.4223  68.7217  38.5749  other_bkg
+Weight: 1.67347  64.0958  33.5568  46.7984  pi0_gamma
+Weight: 1.3125  65.4083  60.4774  20.8813  other_bkg
+Weight: 0.44  65.8483  11.0152  68.5574  pi0_gamma
 On entry 100k
+Weight: 0.44  66.2883  12.3322  142.642  pi0_gamma
+Weight: 1.67347  67.9618  55.6693  142.613  pi0_gamma
+Weight: 1.21739  69.1792  66.3801  68.6127  cosmic
+Weight: 1.27778  70.4569  66.6348  52.0067  pi0_gamma
+Weight: 0.482759  70.9397  3.44327  40.067  pi0_gamma
+Weight: 0.425  71.3647  56.6596  24.2298  pi0_gamma
+Weight: 1.73469  73.0994  31.1484  62.6374  pi0_gamma
+Weight: 1.21739  74.3168  71.672  77.7523  cosmic
+Weight: 0.636364  74.9532  72.3925  17.5729  other_bkg
+Weight: 3.05882  78.012  0.81435  162.625  pi0_gamma
+Weight: 0.425  78.437  37.6052  50.8209  pi0_gamma
+Weight: 1.67347  80.1104  40.8376  43.5518  pi0_gamma
+Weight: 3.05882  83.1693  20.2929  154.339  pi0_gamma
+Weight: 1.67347  84.8427  42.6172  22.2133  pi0_gamma
+Weight: 0.44  85.2827  0.443289  44.8294  pi0_gamma
+Weight: 0.642857  85.9256  15.2081  19.6572  other_bkg
+Weight: 0.636364  86.562  68.355  12.5103  other_bkg
+Weight: 2.5  89.062  22.8804  120.273  cosmic
+Weight: 0.636364  89.6983  47.2601  47.8322  other_bkg
+Weight: 3.26316  92.9615  29.2428  58.8806  other_bkg
+Weight: 1.21739  94.1789  75.9894  130.858  cosmic
+Weight: 0.697674  94.8766  60.1187  37.9589  pi0_gamma
+Weight: 0.926829  95.8034  86.0247  71.6786  cosmic
+Weight: 0.425  96.2284  53.2085  41.5309  pi0_gamma
+Weight: 2.60784  98.8362  6.77751  68.0079  pi0_gamma
+Weight: 2.60784  101.444  1.11796  28.041  pi0_gamma
+Weight: 0.926829  102.371  85.735  73.2186  cosmic
+Weight: 0.425  102.796  48.0563  50.8741  pi0_gamma
+Weight: 0.777778  103.574  41.5092  42.4615  cosmic
+Weight: 1.66667  105.24  61.234  27.0674  other_bkg
+Weight: 0.482759  105.723  10.0143  44.4359  pi0_gamma
+Weight: 1.09524  106.818  83.7092  18.4934  other_bkg
+Weight: 1.04545  107.864  77.1347  18.4926  pi0_gamma
+Weight: 1.3125  109.176  88.2408  50.3819  other_bkg
+Weight: 0.636364  109.813  62.852  168.7  other_bkg
+Weight: 3.05882  112.871  15.8681  13.8843  pi0_gamma
+Weight: 1.48276  114.354  36.1184  39.7918  cosmic
+Weight: 1.67347  116.028  55.842  24.8702  pi0_gamma
+Weight: 0.44  116.468  20.3796  23.0219  pi0_gamma
+Weight: 0.425  116.893  43.49  54.0268  pi0_gamma
+Weight: 1.67347  118.566  52.0372  13.808  pi0_gamma
+Weight: 0.636364  119.203  83.138  36.5394  other_bkg
+Weight: 0.636364  119.839  75.382  26.5378  other_bkg
+Weight: 0.5  120.339  56.0189  88.4245  pi0_gamma
+Weight: 0.425  120.764  47.762  57.7078  pi0_gamma
+Weight: 1.73469  122.499  38.4877  10.1042  pi0_gamma
+Weight: 1.73469  124.233  58.7157  38.9833  pi0_gamma
+Weight: 0.425  124.658  32.6715  22.6538  pi0_gamma
+Weight: 1.21739  125.876  74.8446  61.804  cosmic
+Weight: 1.73469  127.61  34.9175  36.2997  pi0_gamma
+Weight: 0.425  128.035  59.2243  6.15249  pi0_gamma
+Weight: 1.04545  129.081  66.627  25.5006  pi0_gamma
+Weight: 1.67347  130.754  35.8992  21.0172  pi0_gamma
+Weight: 3.05882  133.813  20.657  50.2039  pi0_gamma
+Weight: 0.482759  134.296  8.14905  15.4674  pi0_gamma
+Weight: 0.5  134.796  35.4851  22.3646  pi0_gamma
+Weight: 1.21739  136.013  68.6915  117.676  cosmic
+Weight: 0.926829  136.94  67.4157  70.2781  cosmic
+Weight: 0.44  137.38  8.39096  63.8779  pi0_gamma
+Weight: 0.636364  138.016  83.138  36.5394  other_bkg
+Weight: 2.60784  140.624  12.6407  53.0345  pi0_gamma
+Weight: 1.73469  142.359  55.7313  13.9905  pi0_gamma
+Weight: 0.5  142.859  32.0565  29.6614  pi0_gamma
+Weight: 1.3125  144.172  81.9283  21.3731  other_bkg
+Weight: 1.48276  145.654  56.2908  71.4573  cosmic
 Finished Eventloop...
 --------------- MC Truth COUNTERS -----------------
 MC Nue CC Counter      --- 1174
@@ -35,27 +155,30 @@ MC Nue CC Counter Bar  --- 24
 MC Nue NC Counter Bar  --- 16
 ---------------------------------------------------
 --------------- Cut COUNTERS ---------------------
-Flash in Time, Flash PE      --- 275
-Reco Nue                     --- 219
-In FV                        --- 207
-Flash Reco Vtx Dist          --- 147
-Vtx Nu Dist                  --- 123
-Vtx Track Nu Dist            --- 118
-Hit Threshold                --- 105
-Hit Threshold Collection     --- 99
-Open Angle                   --- 81
-dEdx                         --- 54
-Secondary Showers            --- 41
-Hit Length Ratio             --- 36
-Longest Track Leading Shower --- 35
-Contained Tracks             --- 31
+Flash in Time, Flash PE      --- 270
+Reco Nue                     --- 215
+In FV                        --- 203
+Flash Reco Vtx Dist          --- 145
+Vtx Nu Dist                  --- 121
+Vtx Track Nu Dist            --- 116
+Hit Threshold                --- 103
+Hit Threshold Collection     --- 97
+Open Angle                   --- 79
+dEdx                         --- 53
+Secondary Showers            --- 40
+Hit Length Ratio             --- 35
+Longest Track Leading Shower --- 34
+Contained Tracks             --- 30
 ---------------------------------------------------
 --------------- Reco COUNTERS ---------------------
 True Nue CC in FV --- 281
-RECO Signal       --- 31
-RECO Background   --- 123
-RECO Bkg W All    --- 146.971
-RECO Bkg W Indiv  --- 154.963
+RECO Signal       --- 30
+RECO Background   --- 120
+RECO Bkg W All    --- 150.569
+RECO Bkg W Indiv  --- 145.654
+Pi0 Counter       --- 81
+Cosmic Counter    --- 21
+Other Counter     --- 18
 ---------------------------------------------------
-BNBnoiseAmpUp directory exists, overwriting...
+BNBnoiseAmpUp directory does not exist, creating...
 BNBWeighted_Variations directory exists, overwriting...

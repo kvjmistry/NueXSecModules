@@ -60,5 +60,8 @@ RECO Signal       --- 541
 RECO Background   --- 500
 RECO Bkg W All    --- 0
 RECO Bkg W Indiv  --- 0
+Pi0 Counter       --- 314
+Cosmic Counter    --- 63
+Other Counter     --- 123
 ---------------------------------------------------
 NuMIwithDIC directory exists, overwriting...

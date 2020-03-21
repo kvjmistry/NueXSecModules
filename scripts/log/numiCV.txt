@@ -74,5 +74,8 @@ RECO Signal       --- 1754
 RECO Background   --- 1194
 RECO Bkg W All    --- 0
 RECO Bkg W Indiv  --- 0
+Pi0 Counter       --- 714
+Cosmic Counter    --- 181
+Other Counter     --- 299
 ---------------------------------------------------
 NuMICV directory exists, overwriting...

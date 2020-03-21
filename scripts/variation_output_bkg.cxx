@@ -7,15 +7,15 @@
  * Get File Name from a Path with or without extension
  */
 std::string getFileName(std::string filePath, bool withExtension = true, char seperator = '/') {
-	// Get last dot position
-	std::size_t dotPos = filePath.rfind('.');
-	std::size_t sepPos = filePath.rfind(seperator);
+    // Get last dot position
+    std::size_t dotPos = filePath.rfind('.');
+    std::size_t sepPos = filePath.rfind(seperator);
  
-	if(sepPos != std::string::npos)
-	{
-		return filePath.substr(sepPos + 1, filePath.size() - (withExtension || dotPos != std::string::npos ? 1 : dotPos) );
-	}
-	return "";
+    if(sepPos != std::string::npos)
+    {
+        return filePath.substr(sepPos + 1, filePath.size() - (withExtension || dotPos != std::string::npos ? 1 : dotPos) );
+    }
+    return "";
 }
 //***************************************************************************
 //***************************************************************************
@@ -26,7 +26,7 @@ std::string getFileName(std::string filePath, bool withExtension = true, char se
 void variation_output_bkg::run_var(const char * _file1, TString mode, const std::vector<double> _config, TString plot_config) {
     // std::cout << "=================================================\n" << std::endl;
     // std::cout << "Warning, there are hardcoded values" << 
-    // 	"in this script, grep for  \"HARDCODED\" for places\n" << std::endl;
+    //     "in this script, grep for  \"HARDCODED\" for places\n" << std::endl;
     // std::cout << "=================================================\n" << std::endl;
     
     // create plots folder if it does not exist
@@ -56,8 +56,11 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     
     if (mode == "bnb"){
         std::cout << "Using BNB Params" << std::endl;
-        flash_time_start = 3.19; // Manually Override for BNB [us]
-        flash_time_end   = 4.87; // Manually Override for BNB [us]
+        // flash_time_start = 3.19; // Manually Override for BNB [us]
+        // flash_time_end   = 4.87; // Manually Override for BNB [us]
+        flash_time_start = 3.125; // Manually Override for BNB [us]
+        flash_time_end   = 4.725; // Manually Override for BNB [us]
+
     }
     else if (mode == "numi") {
         std::cout << "Using NuMI Params" << std::endl;
@@ -82,7 +85,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     detector_variations           = _config[21];
     const std::vector<double> tolerance_open_angle {tolerance_open_angle_min, tolerance_open_angle_max};
 
-    // Get the directory for the file	
+    // Get the directory for the file    
     std::string dirname;
     // Get File name with extension from file path
     dirname = getFileName(_file1, false);
@@ -139,7 +142,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     TFile* inFile = new TFile(_file1);
     
     // Get TPC Obj Information from file
-    TTree* TPCObjTree = (TTree*) inFile->Get("AnalyzeTPCO/tree");	
+    TTree* TPCObjTree = (TTree*) inFile->Get("AnalyzeTPCO/tree");    
     std::vector<xsecAna::TPCObjectContainer> * tpc_object_container_v = nullptr;
     TPCObjTree->SetBranchAddress("TpcObjectContainerV", &tpc_object_container_v);
 
@@ -147,7 +150,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     const int tree_total_entries = TPCObjTree->GetEntries();
     std::cout << "Total Events: " << tree_total_entries << std::endl;
 
-    // Get the largest Flash Vector of Vector	
+    // Get the largest Flash Vector of Vector    
     std::vector<std::vector<double>> largest_flash_v_v = GetLargestFlashVector(inFile, flash_time_start, flash_time_end);
 
     //************* Get list of flashes that pass flash in time and flash pe cut ************************
@@ -174,6 +177,13 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     mctruth_counter_tree->SetBranchAddress("fMCEleMomentum", &mc_ele_momentum);
     mctruth_counter_tree->SetBranchAddress("has_pi0", &has_pi0);
     mctruth_counter_tree->SetBranchAddress("fMCNuTime", &mc_nu_time);
+
+    // Make branches for the selected tree
+    selected_tree->Branch("mc_Phi",    &mc_Phi,   "mc_Phi/D");
+    selected_tree->Branch("mc_Theta",  &mc_Theta, "mc_Theta/D");
+    selected_tree->Branch("mc_Energy", &mc_Energy,"mc_Energy/D");
+    selected_tree->Branch("bkg_class", &bkg_class);
+
 
     // Define the FV
     std::vector<double> fv_boundary_v = {_x1, _x2, _y1, _y2, _z1, _z2};
@@ -203,18 +213,18 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
         // if (mc_nu_id == 2 || mc_nu_id == 4 || mc_nu_id == 6 || mc_nu_id == 8) continue;
 
         // --------------- Flash Information ---------------
-        std::vector<double> largest_flash_v 	= largest_flash_v_v.at(event); // Vec with the largest flash
-        largest_flash_y 	= largest_flash_v.at(0);
-        largest_flash_z 	= largest_flash_v.at(1);
-        largest_flash_time 	= largest_flash_v.at(2);
-        largest_flash_pe 	= largest_flash_v.at(3);
+        std::vector<double> largest_flash_v     = largest_flash_v_v.at(event); // Vec with the largest flash
+        largest_flash_y     = largest_flash_v.at(0);
+        largest_flash_z     = largest_flash_v.at(1);
+        largest_flash_time     = largest_flash_v.at(2);
+        largest_flash_pe     = largest_flash_v.at(3);
 
         // Only fill for matched events (where each entry is non-zero)
         if (largest_flash_y != 0 && largest_flash_z !=0 && largest_flash_time != 0 && largest_flash_pe != 0){
-            TH1D_hist.at(klargest_flash_y)	  ->Fill(largest_flash_y);
-            TH1D_hist.at(klargest_flash_z)	  ->Fill(largest_flash_z);
+            TH1D_hist.at(klargest_flash_y)      ->Fill(largest_flash_y);
+            TH1D_hist.at(klargest_flash_z)      ->Fill(largest_flash_z);
             TH1D_hist.at(klargest_flash_time) ->Fill(largest_flash_time);
-            TH1D_hist.at(klargest_flash_pe)	  ->Fill(largest_flash_pe);
+            TH1D_hist.at(klargest_flash_pe)      ->Fill(largest_flash_pe);
         }
         
         // -------------------------------------------------
@@ -271,7 +281,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
       
                     const double mc_Theta  = pfp_obj.mcTheta();
                     mc_Phi    = pfp_obj.mcPhi();
-                    const double mc_Energy = pfp_obj.mcEnergy();
+                    mc_Energy = pfp_obj.mcEnergy();
                     const double mc_pdg    = pfp_obj.MCPdgCode();
                     const double mc_pdg_parent = pfp_obj.MCParentPdg();
                     
@@ -281,10 +291,10 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         //  ------------ Leading shower ------------
                         if (j == leading_shower_index){
 
-                            std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
+                            bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
 
-                            TH1D_hist.at(kldg_shwr_Phi_unselected)			 ->Fill(mc_Phi);
-                            TH1D_hist.at(kldg_shwr_Theta_unselected)		 ->Fill(mc_Theta);
+                            TH1D_hist.at(kldg_shwr_Phi_unselected)             ->Fill(mc_Phi);
+                            TH1D_hist.at(kldg_shwr_Theta_unselected)         ->Fill(mc_Theta);
                            
                             // Wrap phi from 0 to 90
                             double leading_shower_phi_wrapped   = WrapPhi(mc_Phi);
@@ -370,7 +380,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
             bool bool_flashvtx = flashRecoVtxDist(largest_flash_v, tolerance, tpc_obj_vtx_x, tpc_obj_vtx_y,  tpc_obj_vtx_z);
             if ( bool_flashvtx == false ) continue;
             if (bool_sig) counter_FlashRecoVtxDist++;
-            //***************************************************************************************************	 
+            //***************************************************************************************************     
 
             //****************************** Apply vtx nu distance cut ******************************************
             bool bool_vtxnudist = VtxNuDistance( tpc_obj, 11, shwr_nue_tolerance);
@@ -471,9 +481,9 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                 const double pfp_dir_y = pfp_obj.pfpDirY();
                 const double pfp_dir_z = pfp_obj.pfpDirZ();
 
-                const double mc_Theta  = pfp_obj.mcTheta();
+                mc_Theta  = pfp_obj.mcTheta();
                 mc_Phi    = pfp_obj.mcPhi();
-                const double mc_Energy = pfp_obj.mcEnergy();
+                mc_Energy = pfp_obj.mcEnergy();
                 const double mc_pdg    = pfp_obj.MCPdgCode();
                 const double mc_pdg_parent = pfp_obj.MCParentPdg();
 
@@ -501,27 +511,27 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                     //  ------------ Leading shower ------------
                     if (j == leading_shower_index){
 
-                        std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
+                        bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
 
                         // std::cout << "mc_pdg: " << mc_pdg << " parent pdg:  " << mc_parent_pdg <<"  Classifier: " << tpc_classification.first << "  bkg class:  " << bkg_class << std::endl;
 
                         TH1D_hist.at(kselected) ->Fill(0);
 
-                        double leading_shower_phi 	= atan2(pfp_obj.pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
-                        const double leading_shower_theta 	= acos(pfp_obj.pfpDirZ()) * 180 / 3.1415;
+                        double leading_shower_phi     = atan2(pfp_obj.pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
+                        const double leading_shower_theta     = acos(pfp_obj.pfpDirZ()) * 180 / 3.1415;
                         
-                        const double leading_shower_length 	= pfp_obj.pfpLength();
-                        const double longest_track_length 	= GetLongestTrackLength(n_pfp, n_tpc_obj, tpc_obj);
+                        const double leading_shower_length     = pfp_obj.pfpLength();
+                        const double longest_track_length      = GetLongestTrackLength(n_pfp, n_tpc_obj, tpc_obj);
 
-                        TH1D_hist.at(kldg_shwr_hits)         ->Fill(num_pfp_hits);
-                        TH1D_hist.at(kldg_shwr_hits_WPlane)	 ->Fill(pfp_obj.NumPFPHitsW()); 		// W Plane
-                        TH1D_hist.at(kldg_shwr_Open_Angle)	 ->Fill(pfp_obj.pfpOpenAngle() * (180 / 3.1415) );
-                        TH1D_hist.at(kldg_shwr_dEdx_WPlane)	 ->Fill(pfp_obj.PfpdEdx().at(2) ); 	// W Plane
-                        TH1D_hist.at(kldg_shwr_HitPerLen)	 ->Fill(num_pfp_hits / pfp_obj.pfpLength() );
-                        TH1D_hist.at(kldg_shwr_Phi)			 ->Fill(mc_Phi);
-                        TH1D_hist.at(kldg_shwr_Theta)		 ->Fill(mc_Theta);
-                        TH1D_hist.at(kldg_shwr_CTheta)		 ->Fill(cos(leading_shower_theta * 3.1414 / 180.));
-                        TH1D_hist.at(klong_Track_ldg_shwr)	 ->Fill(longest_track_length / leading_shower_length);
+                        TH1D_hist.at(kldg_shwr_hits)          ->Fill(num_pfp_hits);
+                        TH1D_hist.at(kldg_shwr_hits_WPlane)   ->Fill(pfp_obj.NumPFPHitsW());         // W Plane
+                        TH1D_hist.at(kldg_shwr_Open_Angle)    ->Fill(pfp_obj.pfpOpenAngle() * (180 / 3.1415) );
+                        TH1D_hist.at(kldg_shwr_dEdx_WPlane)   ->Fill(pfp_obj.PfpdEdx().at(2) );     // W Plane
+                        TH1D_hist.at(kldg_shwr_HitPerLen)     ->Fill(num_pfp_hits / pfp_obj.pfpLength() );
+                        TH1D_hist.at(kldg_shwr_Phi)           ->Fill(mc_Phi);
+                        TH1D_hist.at(kldg_shwr_Theta)         ->Fill(mc_Theta);
+                        TH1D_hist.at(kldg_shwr_CTheta)        ->Fill(cos(leading_shower_theta * 3.1414 / 180.));
+                        TH1D_hist.at(klong_Track_ldg_shwr)    ->Fill(longest_track_length / leading_shower_length);
 
                         // Wrap phi from 0 to 90
                         double leading_shower_phi_wrapped   = WrapPhi(mc_Phi);
@@ -545,18 +555,20 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                             TH2D_hist.at(kEBkg_pi0_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_pi0_Phi_wrapped)->Fill(mc_Theta, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_pi0_Phi)        ->Fill(mc_Theta, mc_Phi);
+                            pi0_counter++;
                         }
                         
                         if (bkg_class == "cosmic") {
                             TH1D_hist.at(kshower_phi_bkg_cosmic)         ->Fill(mc_Phi);
                             TH1D_hist.at(kshower_E_bkg_cosmic)           ->Fill(mc_Energy);
                             TH1D_hist.at(kshower_phi_bkg_cosmic_wrapped) ->Fill(mc_phi_wrapped);
-                            TH1D_hist.at(kshower_Theta_bkg_cosmic)        ->Fill(mc_Theta);
+                            TH1D_hist.at(kshower_Theta_bkg_cosmic)       ->Fill(mc_Theta);
                             TH2D_hist.at(kEBkg_cosmic_Theta)             ->Fill(mc_Energy, mc_Theta);
                             TH2D_hist.at(kEBkg_cosmic_Phi)               ->Fill(mc_Energy, mc_Phi);
                             TH2D_hist.at(kEBkg_cosmic_Phi_wrapped)       ->Fill(mc_Energy, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_cosmic_Phi_wrapped)   ->Fill(mc_Theta, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_cosmic_Phi)           ->Fill(mc_Theta, mc_Phi);
+                            cosmic_counter++;
                         }
                         
                         if (bkg_class == "other_bkg") {
@@ -570,6 +582,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                             TH2D_hist.at(kEBkg_other_Phi_wrapped)    ->Fill(mc_Energy, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_other_Phi_wrapped)->Fill(mc_Theta, mc_phi_wrapped);
                             TH2D_hist.at(kThetaBkg_other_Phi)        ->Fill(mc_Theta, mc_Phi);
+                            other_bkg_counter++;
                         }
 
                         // Vertex Information - require a shower so fill once  when leading shower
@@ -586,6 +599,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                         TH2D_hist.at(kThetaBkg_Phi)           ->Fill(mc_Theta, mc_Phi);
 
                         VariableTree->Fill();
+                        selected_tree->Fill();
 
                     }
                 
@@ -596,7 +610,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
                 if ( pfp_pdg == 13) {
                     // Background events
                     if (!bool_sig) {
-                        const double track_phi 	= atan2(pfp_obj.	pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
+                        const double track_phi     = atan2(pfp_obj.    pfpDirY(), pfp_obj.pfpDirX()) * 180 / 3.1415;
                         TH1D_hist.at(ktrack_phi) ->Fill(track_phi);
                         TH1D_hist.at(ktrack_Nu_vtx_Dist) ->Fill(pfp_Nu_vtx_Dist);
                     }
@@ -637,6 +651,9 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     std::cout << "RECO Background   --- " << bkg_counter << std::endl;
     std::cout << "RECO Bkg W All    --- " << weight_all << std::endl;
     std::cout << "RECO Bkg W Indiv  --- " << weight_indiv << std::endl;
+    std::cout << "Pi0 Counter       --- " << pi0_counter << std::endl;
+    std::cout << "Cosmic Counter    --- " << cosmic_counter << std::endl;
+    std::cout << "Other Counter     --- " << other_bkg_counter << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
     
     // ----------------------
@@ -675,6 +692,7 @@ void variation_output_bkg::run_var(const char * _file1, TString mode, const std:
     }
 
     VariableTree->Write("",TObject::kOverwrite);
+    selected_tree->Write("",TObject::kOverwrite);
     f_var_out->Close();
 
     // -------------------------------------------------------------------------
@@ -864,7 +882,7 @@ void variation_output_bkg::PlotVariatons(TFile* f_var_out, TString mode){
             hist_divide->Divide(hist_CV);
 
             if (variations[i] == "BNBCV" || variations[i] == "NuMICV"){
-                for (unsigned int k=1; k < hist_divide->GetNbinsX()+1; 	k++ ){
+                for (unsigned int k=1; k < hist_divide->GetNbinsX()+1;     k++ ){
                     hist_divide->SetBinContent(k, 1);
                 }
             }
@@ -1190,14 +1208,14 @@ void variation_output_bkg::GetNumber_Track_Shower(const int n_pfp, int n_tpc_obj
                 // For > 50 hits
                 n_pfp_50Hits++; // Add one to n_pfp > 50 hits counter
                 
-                if (pfp_pdg == 11) 		n_showers_50Hits++; // Add to shower counter
+                if (pfp_pdg == 11)         n_showers_50Hits++; // Add to shower counter
                 else if (pfp_pdg == 13) n_tracks_50Hits++;  // Add to track counter
                 else std::cout << "Unknown pandora classification:\t" << pfp_pdg << std::endl;
                     
             }
 
             // All PFP
-            if (pfp_pdg == 11) 		n_showers++; // Add to shower counter
+            if (pfp_pdg == 11)         n_showers++; // Add to shower counter
             else if (pfp_pdg == 13) n_tracks++;  // Add to track counter
             else return;
         }
@@ -1355,7 +1373,7 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
         hist->GetYaxis()->SetRangeUser(0,800);
 
         if (draw_mode == "bnb") hist->GetYaxis()->SetRangeUser(0,300);
-    }			
+    }            
     else if (histname == "h_largest_flash_y"){
         hist->SetTitle(";Largest Flash Y [cm];Entries");
         // hist->GetYaxis()->SetRangeUser(0,1200);
@@ -1486,11 +1504,11 @@ void variation_output_bkg::DrawTH1D_SAME(TH1D* hist, std::string variation, TLeg
     hist->SetOption("hist, E");
 
     hist->GetXaxis()->SetLabelSize(0.05);
-	hist->GetXaxis()->SetTitleSize(0.05);
-	hist->GetYaxis()->SetLabelSize(0.05);
-	hist->GetYaxis()->SetTitleSize(0.05);
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.12);
+    hist->GetXaxis()->SetTitleSize(0.05);
+    hist->GetYaxis()->SetLabelSize(0.05);
+    hist->GetYaxis()->SetTitleSize(0.05);
+    gPad->SetLeftMargin(0.15);
+    gPad->SetBottomMargin(0.12);
 
     if ((histname == "h_ldg_shwr_Theta_ratio" || histname == "h_ldg_shwr_Phi_ratio" || histname == "h_ldg_shwr_Phi_wrapped_ratio") && variation != "BNBCV"  )
         draw_spec = "E, same";
@@ -1646,11 +1664,11 @@ void variation_output_bkg::DrawTH1D_Ratio(TH1D* hist, std::string variation, TLe
     TLine *line;
 
     hist->GetXaxis()->SetLabelSize(0.05);
-	hist->GetXaxis()->SetTitleSize(0.05);
-	hist->GetYaxis()->SetLabelSize(0.05);
-	hist->GetYaxis()->SetTitleSize(0.05);
-	gPad->SetLeftMargin(0.15);
-	gPad->SetBottomMargin(0.12);
+    hist->GetXaxis()->SetTitleSize(0.05);
+    hist->GetYaxis()->SetLabelSize(0.05);
+    hist->GetYaxis()->SetTitleSize(0.05);
+    gPad->SetLeftMargin(0.15);
+    gPad->SetBottomMargin(0.12);
 
     if (histname == "h_ldg_shwr_Phi"){
         hist->SetTitle(";Leading Shower #phi [degrees];Ratio BNB / NuMI");
@@ -1971,15 +1989,15 @@ void variation_output_bkg::DrawTH2D_SAME(TH2D* hist, std::string variation, std:
 
 
     hist->GetXaxis()->SetLabelSize(0.05);
-	hist->GetXaxis()->SetTitleSize(0.05);
-	hist->GetYaxis()->SetLabelSize(0.05);
-	hist->GetYaxis()->SetTitleSize(0.05);
-	hist->GetZaxis()->SetLabelSize(0.05);
-	hist->GetZaxis()->SetTitleSize(0.05);
-	gPad->SetLeftMargin(0.15);
-	gPad->SetRightMargin(0.2);
-	gPad->SetBottomMargin(0.13);
-	hist->SetMarkerSize(1.8);
+    hist->GetXaxis()->SetTitleSize(0.05);
+    hist->GetYaxis()->SetLabelSize(0.05);
+    hist->GetYaxis()->SetTitleSize(0.05);
+    hist->GetZaxis()->SetLabelSize(0.05);
+    hist->GetZaxis()->SetTitleSize(0.05);
+    gPad->SetLeftMargin(0.15);
+    gPad->SetRightMargin(0.2);
+    gPad->SetBottomMargin(0.13);
+    hist->SetMarkerSize(1.8);
    
     
     // gPad->SetLogz();
@@ -2041,8 +2059,8 @@ std::vector<std::string> variation_output_bkg::GrabDirs(TFile* f_var_out) {
 
     TString same_plots = "SAME_Plots";
 
-    std::cout << "\n=================================================" << std::endl;	
-    std::cout << "Getting variation modes:" << std::endl;	
+    std::cout << "\n=================================================" << std::endl;    
+    std::cout << "Getting variation modes:" << std::endl;    
       while ( ( key =  (TKey*)nextkey()) ) { // Extra brackets to omit a warning 
         if (key->IsFolder()) {
             std::cout << key->GetName() << std::endl; // Print the variations
@@ -2094,17 +2112,17 @@ std::vector<std::vector<double>> variation_output_bkg::GetLargestFlashVector(TFi
     int last_run = 0;
 
     // Contains the entry number for a given OpFlash per event
-    std::vector<int>					optical_list_pe;
-    std::vector<std::vector<int> >		optical_list_pe_v;
+    std::vector<int>                    optical_list_pe;
+    std::vector<std::vector<int> >        optical_list_pe_v;
     
-    std::vector<double>					optical_list_flash_center_y; 
-    std::vector<std::vector<double> >	optical_list_flash_center_y_v;
+    std::vector<double>                    optical_list_flash_center_y; 
+    std::vector<std::vector<double> >    optical_list_flash_center_y_v;
     
-    std::vector<double>					optical_list_flash_center_z; 
-    std::vector<std::vector<double> >	optical_list_flash_center_z_v;
+    std::vector<double>                    optical_list_flash_center_z; 
+    std::vector<std::vector<double> >    optical_list_flash_center_z_v;
     
-    std::vector<double>					optical_list_flash_time;
-    std::vector<std::vector<double> >	optical_list_flash_time_v;
+    std::vector<double>                    optical_list_flash_time;
+    std::vector<std::vector<double> >    optical_list_flash_time_v;
     
     // Loop over the optical entries to get the largest flash vector
     
@@ -2117,8 +2135,8 @@ std::vector<std::vector<double>> variation_output_bkg::GetLargestFlashVector(TFi
         // Get the Optical entry
         optical_tree->GetEntry(i);
 
-        current_run		= fRun;
-        current_event 	= fEvent;
+        current_run        = fRun;
+        current_event     = fEvent;
 
         // New event
         if(current_event != last_event) {
@@ -2168,10 +2186,10 @@ std::vector<std::vector<double>> variation_output_bkg::GetLargestFlashVector(TFi
     // ----------------------
     for(int i = 0; i < optical_list_pe_v.size(); i++) {
         
-        bool in_time 				= false;
-        bool got_in_time 			= false;
-        bool sufficient_flash 		= false;
-        bool got_sufficient_flash 	= false;
+        bool in_time                 = false;
+        bool got_in_time             = false;
+        bool sufficient_flash         = false;
+        bool got_sufficient_flash     = false;
         
         double largest_flash = 0.;
         double largest_center_y = 0;
@@ -2402,17 +2420,17 @@ void variation_output_bkg::FlashinTime_FlashPE(TFile* f, double flash_start_time
     int last_run = 0;
 
     // Contains the entry number for a given OpFlash per event
-    std::vector<int>					optical_list_pe;
-    std::vector<std::vector<int> >		optical_list_pe_v;
+    std::vector<int>                    optical_list_pe;
+    std::vector<std::vector<int> >        optical_list_pe_v;
     
-    std::vector<double>					optical_list_flash_center_y; 
-    std::vector<std::vector<double> >	optical_list_flash_center_y_v;
+    std::vector<double>                    optical_list_flash_center_y; 
+    std::vector<std::vector<double> >    optical_list_flash_center_y_v;
     
-    std::vector<double>					optical_list_flash_center_z; 
-    std::vector<std::vector<double> >	optical_list_flash_center_z_v;
+    std::vector<double>                    optical_list_flash_center_z; 
+    std::vector<std::vector<double> >    optical_list_flash_center_z_v;
     
-    std::vector<double>					optical_list_flash_time;
-    std::vector<std::vector<double> >	optical_list_flash_time_v;
+    std::vector<double>                    optical_list_flash_time;
+    std::vector<std::vector<double> >    optical_list_flash_time_v;
     
     // Loop over the optical entries to get the largest flash vector
     
@@ -2425,8 +2443,8 @@ void variation_output_bkg::FlashinTime_FlashPE(TFile* f, double flash_start_time
         // Get the Optical entry
         optical_tree->GetEntry(i);
 
-        current_run		= fRun;
-        current_event 	= fEvent;
+        current_run        = fRun;
+        current_event     = fEvent;
 
         // New event
         if(current_event != last_event) {
@@ -2850,7 +2868,7 @@ bool variation_output_bkg::ContainedTracksCut(std::vector<double> fv_boundary_v,
         } // end is track
     
     } // end loop pfprticles
-    return true;	
+    return true;    
 }
 //***************************************************************************
 //***************************************************************************
@@ -2920,12 +2938,13 @@ void variation_output_bkg::GenerateWeightHistograms(){
                                           "h_shower_phi_pi0",         "h_shower_phi_bkg_cosmic",         "h_shower_phi_other",
                                           "h_shower_phi_pi0_wrapped", "h_shower_phi_bkg_cosmic_wrapped", "h_shower_phi_other_wrapped",
                                           "h_shower_E_pi0",           "h_shower_E_bkg_cosmic",           "h_shower_E_other", "h_shower_E", "h_selected",
-                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other",
-                                          "h_ldg_shwr_Phi_unselected",           "h_ldg_shwr_Phi_wrapped_unselected",          "h_ldg_shwr_Theta_unselected",
-                                          "h_shower_phi_pi0_unselected",         "h_shower_phi_bkg_cosmic_unselected",         "h_shower_phi_other_unselected",
-                                          "h_shower_phi_pi0_wrapped_unselected", "h_shower_phi_bkg_cosmic_wrapped_unselected", "h_shower_phi_other_wrapped_unselected",
-                                          "h_shower_E_pi0_unselected",           "h_shower_E_bkg_cosmic_unselected",           "h_shower_E_other_unselected", "h_shower_E_unselected",
-                                          "h_shower_Theta_pi0_unselected",       "h_shower_Theta_bkg_cosmic_unselected",       "h_shower_Theta_other_unselected"};
+                                          "h_shower_Theta_pi0",       "h_shower_Theta_bkg_cosmic",       "h_shower_Theta_other"
+                                        //   "h_ldg_shwr_Phi_unselected",           "h_ldg_shwr_Phi_wrapped_unselected",          "h_ldg_shwr_Theta_unselected",
+                                        //   "h_shower_phi_pi0_unselected",         "h_shower_phi_bkg_cosmic_unselected",         "h_shower_phi_other_unselected",
+                                        //   "h_shower_phi_pi0_wrapped_unselected", "h_shower_phi_bkg_cosmic_wrapped_unselected", "h_shower_phi_other_wrapped_unselected",
+                                        //   "h_shower_E_pi0_unselected",           "h_shower_E_bkg_cosmic_unselected",           "h_shower_E_other_unselected", "h_shower_E_unselected",
+                                        //   "h_shower_Theta_pi0_unselected",       "h_shower_Theta_bkg_cosmic_unselected",       "h_shower_Theta_other_unselected"
+                                          };
     
     // Loop over the histograms
     for (int j=0; j < histnames.size(); j++){
@@ -2961,9 +2980,10 @@ void variation_output_bkg::GenerateWeightHistograms(){
     // Now lets save the 2D histograms for weighting
     histnames.clear();
     histnames = { "h_ThetaBkg_Phi_wrapped", "h_ThetaBkg_pi0_Phi_wrapped", "h_ThetaBkg_cosmic_Phi_wrapped",
-                  "h_ThetaBkg_other_Phi_wrapped", "h_ThetaBkg_Phi", "h_ThetaBkg_pi0_Phi", "h_ThetaBkg_cosmic_Phi", "h_ThetaBkg_other_Phi",
-                  "h_ThetaBkg_Phi_wrapped_unselected", "h_ThetaBkg_pi0_Phi_wrapped_unselected", "h_ThetaBkg_cosmic_Phi_wrapped_unselected",
-                  "h_ThetaBkg_other_Phi_wrapped_unselected", "h_ThetaBkg_Phi_unselected", "h_ThetaBkg_pi0_Phi_unselected", "h_ThetaBkg_cosmic_Phi_unselected", "h_ThetaBkg_other_Phi_unselected" };
+                  "h_ThetaBkg_other_Phi_wrapped", "h_ThetaBkg_Phi", "h_ThetaBkg_pi0_Phi", "h_ThetaBkg_cosmic_Phi", "h_ThetaBkg_other_Phi"
+                //   "h_ThetaBkg_Phi_wrapped_unselected", "h_ThetaBkg_pi0_Phi_wrapped_unselected", "h_ThetaBkg_cosmic_Phi_wrapped_unselected",
+                //   "h_ThetaBkg_other_Phi_wrapped_unselected", "h_ThetaBkg_Phi_unselected", "h_ThetaBkg_pi0_Phi_unselected", "h_ThetaBkg_cosmic_Phi_unselected", "h_ThetaBkg_other_Phi_unselected"
+                   };
 
     for (int j=0; j < histnames.size(); j++){
         TH2D* hist_NuMI;
@@ -3041,7 +3061,7 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
 
         const double mc_Theta  = pfp_obj.mcTheta();
         mc_Phi    = pfp_obj.mcPhi();
-        const double mc_Energy = pfp_obj.mcEnergy();
+        mc_Energy = pfp_obj.mcEnergy();
         const double mc_pdg    = pfp_obj.MCPdgCode();
         
         // Background events
@@ -3052,7 +3072,7 @@ void variation_output_bkg::WeightBNBVar(xsecAna::TPCObjectContainer tpc_obj ,boo
             //  ------------ Leading shower ------------
             if (j == leading_shower_index){
 
-                std::string bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
+                bkg_class = Background_Classifier(mc_pdg, tpc_classification.first);
 
                 double mc_phi_wrapped = WrapPhi(mc_Phi);
             
@@ -3630,52 +3650,77 @@ void variation_output_bkg::GetBNBBkgWeight(double theta, double phi, double phi_
     TH2D* hist;
     double weight{0.0};
 
+    double mc_phi_wrapped = WrapPhi(phi);
+
     char name[500];
 
     // First weight by the total histograms
-    std::string histname_theta_phi = "h_ThetaBkg_Phi_unselected_ratio";
+    std::string histname_theta_phi = "h_ThetaBkg_Phi_wrapped_ratio";
     snprintf(name, 500, "%s", histname_theta_phi.c_str() );
     hist = (TH2D*)fweight->Get(name);
     if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
     xbin = hist->GetXaxis()->FindBin(theta);
-    ybin = hist->GetYaxis()->FindBin(phi);
+    ybin = hist->GetYaxis()->FindBin(mc_phi_wrapped);
     weight = hist->GetBinContent(xbin, ybin);
 
     if (weight == 0) weight_all+=1.0;
     else weight_all+=weight;
 
 
-    // Now try to weight split using background categories
-    if (bkg_class == "pi0_gamma") histname_theta_phi = "h_ThetaBkg_pi0_Phi_unselected_ratio";
-    if (bkg_class == "cosmic")    histname_theta_phi = "h_ThetaBkg_cosmic_Phi_unselected_ratio";
-    if (bkg_class == "other_bkg") histname_theta_phi = "h_ThetaBkg_other_Phi_unselected_ratio";
+    double cosmic_sf = 181.0/153.0; // Ratio of cosmic events to bnb events selected
 
-    snprintf(name, 500, "%s", histname_theta_phi.c_str() );
-    hist = (TH2D*)fweight->Get(name);
-    if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
-    xbin = hist->GetXaxis()->FindBin(theta);
-    if (bkg_class != "cosmic") ybin = hist->GetYaxis()->FindBin(phi);
-    else ybin = hist->GetYaxis()->FindBin(phi);
-    weight = hist->GetBinContent(xbin, ybin);
+    // // Now try to weight split using background categories
+    // if (bkg_class == "pi0_gamma") histname_theta_phi = "h_ThetaBkg_pi0_Phi_ratio";
+    // if (bkg_class == "cosmic")    histname_theta_phi = "h_ThetaBkg_cosmic_Phi_ratio";
+    // if (bkg_class == "other_bkg") histname_theta_phi = "h_ThetaBkg_other_Phi_ratio";
 
+    // snprintf(name, 500, "%s", histname_theta_phi.c_str() );
+    // hist = (TH2D*)fweight->Get(name);
+    // if (hist == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+    // xbin = hist->GetXaxis()->FindBin(theta);
     
-    // if (bkg_class != "cosmic"){
-    //      std::cout << "Weight: " << hist->Interpolate(theta, phi_wrapped) << "   Weight: " << weight <<  std::endl;
-    //      weight = hist->Interpolate(theta, phi_wrapped);
-    // } 
-   
-    // else {
-    //     std::cout << "Weight: " << hist->Interpolate(theta, phi)  << "   Weight: " << weight << std::endl;
-    //     weight = hist->Interpolate(theta, phi);
-    // }
+    // if (bkg_class != "cosmic") ybin = hist->GetYaxis()->FindBin(phi); // not cosmic
+    // else ybin = hist->GetYaxis()->FindBin(phi); //cosmic
+    
+    // weight = hist->GetBinContent(xbin, ybin);
 
-    if (weight == 0) weight_indiv+=1.0;
-    else weight_indiv+=weight;
+    // // if (bkg_class == "cosmic") weight = cosmic_sf;
 
-    // std::cout << "Weight: " << weight << std::endl;
+    // if (weight == 0) weight=1.0;
+
+    // // if (weight > 9) weight = 1.0;
+    
+    // weight_indiv+=weight;
+
+
+    // Here we weight in only phi
+    TH1D* hist_1D;
+    std::string histname_phi;
+    
+    if (bkg_class == "pi0_gamma") histname_phi = "h_shower_phi_pi0_ratio";
+    if (bkg_class == "cosmic")    histname_phi = "h_shower_phi_bkg_cosmic_ratio";
+    if (bkg_class == "other_bkg") histname_phi = "h_shower_phi_other_ratio";
+
+    snprintf(name, 500, "%s", histname_phi.c_str() );
+    hist_1D = (TH1D*)fweight->Get(name);
+    
+    if (hist_1D == NULL ) std::cout << "ERROR: Can't get Histogram!: " << name << std::endl;
+    
+    xbin = hist_1D->GetXaxis()->FindBin(phi);
+    
+    weight = hist_1D->GetBinContent(xbin);
+
+    // if (bkg_class == "cosmic") weight = cosmic_sf;
+
+    if (weight == 0) weight=1.0;
+
+    // if (weight > 9) weight = 1.0;
+    
+    weight_indiv+=weight;
+
+    std::cout << "Weight: " << weight << "  " << weight_indiv <<"  " << mc_phi_wrapped<< "  " << theta << "  " <<bkg_class <<   std::endl;
 
 }
-
 //***************************************************************************
 //***************************************************************************
 void variation_output_bkg::FillHistogramCuts( xsecAna::TPCObjectContainer tpc_obj, std::string histname, bool bool_sig){
