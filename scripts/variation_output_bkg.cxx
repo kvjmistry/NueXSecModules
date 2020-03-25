@@ -2879,8 +2879,10 @@ std::string variation_output_bkg::Background_Classifier(int mc_pdg, std::string 
     // if (mc_pdg == 11)
     //     classification = "bkg_e";                                // out of fv, mixed, cosmic (see two nc_pi0 ??)
     
-    if ( (mc_pdg == 22 ) && tpc_obj_classification != "cosmic") // photons from pi 0
+    if ( (mc_pdg == 22 ) && tpc_obj_classification != "cosmic"){ // photons from pi 0
         classification = "pi0_gamma";
+        classification = "other_bkg"; // put this here to absorb these backgrounds into this category
+    }
     
     else if (tpc_obj_classification == "cosmic"){
         classification = "cosmic";
@@ -2890,6 +2892,7 @@ std::string variation_output_bkg::Background_Classifier(int mc_pdg, std::string 
     // }
     else{
         classification = "other_bkg";
+        
         // std::cout << "bkg class:\t" << tpc_obj_classification << std::endl;
     }
 

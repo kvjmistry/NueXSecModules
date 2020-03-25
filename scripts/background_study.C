@@ -108,7 +108,7 @@ double weight_2D( TFile *fweight, double value_x, double value_y, std::string bk
     
     if (bkg_class == "pi0_gamma") histname = "h_ThetaBkg_pi0_Phi_"    + wrap_phi + "ratio";
     if (bkg_class == "cosmic")    histname = "h_ThetaBkg_cosmic_Phi_" + wrap_phi + "ratio";
-    if (bkg_class == "other_bkg") histname = "h_ThetaBkg_pi0_Phi_"  + wrap_phi + "ratio";
+    if (bkg_class == "other_bkg") histname = "h_ThetaBkg_other_Phi_"  + wrap_phi + "ratio";
 
     snprintf(name, 500, "%s", histname.c_str() );
     
@@ -120,6 +120,8 @@ double weight_2D( TFile *fweight, double value_x, double value_y, std::string bk
     ybin   = hist->GetYaxis()->FindBin(value_y);
     
     weight = hist->GetBinContent(xbin, ybin);
+
+    // std::cout << weight << std::endl;
 
     if (weight == 0) weight = 1.0;
     
@@ -137,7 +139,9 @@ void CompareWeightedDrawSpecs(TH1D* hist, std::string weighted_str, std::string 
     }
     else if (histname == "h_ldg_shwr_Theta"|| histname == "h_shower_Theta"){
         hist->SetTitle(";Leading Shower #theta [degrees];Entries");
-        // hist->GetYaxis()->SetRangeUser(0,200);
+        hist->GetYaxis()->SetRangeUser(0,405);
+
+        if (variation == "BNBwithDIC"|| variation == "NuMIwithDIC") hist->GetYaxis()->SetRangeUser(0,550);
 
     }
     else if (histname == "h_ldg_shwr_Phi_wrapped" || histname == "h_shower_phi_wrapped"){
@@ -327,12 +331,17 @@ void CompareWeightedHistograms(TFile *fnumi, std::vector<std::vector<TH1D*>> TH1
             CompareWeightedDrawSpecs(TH1D_hist_weighted.at(k).at(i), "BNBWeighted_Variations", variations_BNB.at(i), legend, histnames.at(k));
             CompareWeightedDrawSpecs(hist_NuMI, "", variations.at(i), legend, histnames.at(k)); 
 
-            std::cout << "BNB Int: " << TH1D_hist_weighted.at(k).at(i)->Integral(0,-1) << "  NuMI Int: "<<  hist_NuMI->Integral(0, -1)<<  std::endl;
+            std::cout << "BNB Int: " << TH1D_hist_weighted.at(k).at(i)->Integral(0,-1) << "  NuMI Int: "<<  hist_NuMI->Integral(1, -1)<<  std::endl;
             
+            
+            std::cout << "error: " << 100* TH1D_hist_weighted.at(k).at(i)->GetBinError(1)/TH1D_hist_weighted.at(k).at(i)->GetBinContent(1) << std::endl;
+            std::cout << "error: " << 100* TH1D_hist_weighted.at(k).at(i)->GetBinError(2)/TH1D_hist_weighted.at(k).at(i)->GetBinContent(2) << std::endl;
+            std::cout << "error: " << 100* TH1D_hist_weighted.at(k).at(i)->GetBinError(3)/TH1D_hist_weighted.at(k).at(i)->GetBinContent(3) << std::endl;
+
             legend->Draw();
 
             char Canvas_name[1000];
-            snprintf(Canvas_name, 1000, "plots/weighted_bnb/%s_%s.pdf", histnames.at(k).c_str(), variations_name.at(i).c_str()); 
+            snprintf(Canvas_name, 1000, "plots/weighted_bnb/%s_%s.png", histnames.at(k).c_str(), variations_name.at(i).c_str()); 
             c->Print(Canvas_name);
             c->Close();
 
@@ -344,6 +353,8 @@ void CompareWeightedHistograms(TFile *fnumi, std::vector<std::vector<TH1D*>> TH1
 // -----------------------------------------------------------------------------
 void background_study(){
 
+    gStyle->SetOptStat(0); // say no to stats box
+
     // The input file
     TFile *file_in, *fweight, *fnumi;
      // Get the input file
@@ -351,7 +362,26 @@ void background_study(){
     GetFile(fnumi, "plots/variation_out_numi_bkg.root");
     GetFile(fweight, "plots/variation_weights.root");
 
-    std::vector<std::string> variations = {"BNBCV",  "BNBLArG4BugFix",  "BNBwithDIC",  "BNBdeadSaturatedChannels"};
+    // std::vector<std::string> variations = {"BNBCV",  "BNBLArG4BugFix",  "BNBwithDIC",  "BNBdeadSaturatedChannels"};
+    std::vector<std::string> variations = {
+                                        "BNBCV",
+                                        "BNBLArG4BugFix",
+                                        "BNBwithDIC",
+                                        "BNBdeadSaturatedChannels",
+                                        "BNBdataSCE",
+                                        "BNBDLup",
+                                        "BNBDLdown",
+                                        "BNBDTup",
+                                        "BNBDTdown",
+                                        "BNBnoiseAmpUp",
+                                        "BNBnoiseAmpDown",
+                                        "BNBaltDeadChannels",
+                                        "BNBstretchResp",
+                                        "BNBsqueezeResp",
+                                        "BNBupPEnoise",
+                                        "BNBEnhancedTPCVis",
+                                        "BNBBirksRecomb",
+                                        "BNBdownPEnoise"};
 
 
     enum cv_weights {
@@ -377,6 +407,7 @@ void background_study(){
 
 
     std::vector<double> bins = { 0, 15, 30, 45, 60, 75, 90}; 
+    // std::vector<double> bins = { 0, 22.5, 45, 67.5, 90}; // Even smaller amount of bins
     double* bins_phi_wrapped = &bins[0];
     int n_bins = bins.size() - 1;
 
@@ -458,7 +489,8 @@ void background_study(){
 
             // Use this weight for making the weighted histograms -- switch as needed
             // double weight = weight_1D(fweight, "phi" ,   mc_Phi,    *bkg_class, false); // Phi
-            double weight    = weight_2D(fweight, mc_Theta, mc_Phi, *bkg_class, false);      // Theta Phi
+            // double weight    = weight_2D(fweight, mc_Theta, mc_Phi, *bkg_class, false);      // Theta Phi
+            double weight    =weight_2D(fweight, mc_Theta, mc_Phi, *bkg_class, true); // Theta Phi Wrapped
 
             weight = weight * POT_Scaling;
             

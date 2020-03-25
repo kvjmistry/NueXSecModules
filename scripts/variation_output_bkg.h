@@ -52,6 +52,7 @@ class variation_output_bkg {
     variation_output_bkg(){
 
         std::vector<double> bins = { 0, 15, 30, 45, 60, 75, 90}; 
+        // std::vector<double> bins = { 0, 22.5, 45, 67.5, 90}; // Even smaller amount of bins
         double* bins_phi_wrapped = &bins[0];
         int n_bins = bins.size() - 1;
 
